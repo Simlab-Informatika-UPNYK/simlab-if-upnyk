@@ -164,7 +164,10 @@ export function AppSidebar({
 }) {
   return (
     (<Sidebar collapsible="icon" {...props}>
-     <SidebarHeader>
+      <SidebarHeader  className="h-16 border-b border-sidebar-border">
+        <NavUser user={data.user} />
+      </SidebarHeader>
+     {/* <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -180,14 +183,12 @@ export function AppSidebar({
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-      </SidebarHeader>
+      </SidebarHeader> */}
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
-      </SidebarFooter>
+      
       <SidebarRail />
     </Sidebar>)
   );

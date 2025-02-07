@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 
-export function LoginForm({
+export function RegisterForm({
   className,
   formAction,
   ...props
@@ -23,17 +23,27 @@ export function LoginForm({
               <span className="sr-only">Acme Inc.</span>
             </a>
             <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
-           
+            <div className="text-center text-sm">
+              Have an account?{" "}
+              <Link href="/login" className="underline underline-offset-4">
+                Login
+              </Link>
+            </div>
           </div>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input name="email"  id="email" type="email" placeholder="m@example.com" required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input name="password" id="password" type="password" required />
             </div>
+            <div className="grid gap-2">
+              <Label htmlFor="confirm-password">Confirm Password</Label>
+              <Input name="confirm-password" id="confirm-password" type="password" required />
+            </div>
+            
             <Button type="submit" className="w-full">
               Login
             </Button>
