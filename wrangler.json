@@ -1,6 +1,6 @@
 {
   "main": ".open-next/worker.js",
-  "name": "test-simlab",
+  "name": "simlab-if",
   "compatibility_date": "2025-02-10",
   "compatibility_flags": [
     "nodejs_compat"
