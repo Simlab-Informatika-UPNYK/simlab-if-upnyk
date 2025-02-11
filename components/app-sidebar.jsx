@@ -8,7 +8,11 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  IdCard,
+  LayoutDashboard,
+  LayoutDashboardIcon,
   Map,
+  MoreHorizontal,
   PieChart,
   Settings2,
   SquareTerminal,
@@ -17,15 +21,10 @@ import {
 import { NavMain } from "@/components/nav-main"
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
@@ -34,7 +33,7 @@ const data = {
   user: {
     name: "shadcn",
     email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    avatar: "https://ui.shadcn.com/avatars/shadcn.jpg",
   },
   teams: [
     {
@@ -55,42 +54,64 @@ const data = {
   ],
   navMain: [
     {
-      title: "Playground",
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+    },
+    {
+      title: "Master Setup",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
       items: [
         {
-          title: "History",
+          title: "Tahun Semester",
           url: "#",
         },
         {
-          title: "Starred",
+          title: "Lab",
           url: "#",
         },
         {
-          title: "Settings",
+          title: "Kalab",
+          url: "#",
+        },
+        {
+          title: "MK Praktikum",
+          url: "#",
+        },
+        {
+          title: "Dosen Pengampu",
+          url: "#",
+        },
+        {
+          title: "Inventaris Lab",
+          url: "#",
+        },
+        {
+          title: "User Pengguna",
+          url: "#",
+        },
+        {
+          title: "Honor Asisten",
           url: "#",
         },
       ],
     },
     {
-      title: "Models",
-      url: "#",
-      icon: Bot,
+      title: "Asisten",
+      url: "/aslab",
+      isActive: true,
+      icon: IdCard,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: "Asisten Aktif",
+          url: "/aslab",
         },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
+        // {
+        //   title: "Asisten Nonaktif",
+        //   url: "#",
+        // },
       ],
     },
     {
@@ -162,33 +183,18 @@ const data = {
 export function AppSidebar({
   ...props
 }) {
+  
   return (
     (<Sidebar collapsible="icon" {...props}>
-      <SidebarHeader  className="h-16 border-b border-sidebar-border">
+      <SidebarHeader className="h-16 border-b border-sidebar-border">
         <NavUser user={data.user} />
       </SidebarHeader>
-     {/* <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href="/">
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <GalleryVerticalEnd className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">Documentation</span>
-                  <span className="">v1.0.0</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarHeader> */}
+
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
       </SidebarContent>
-      
+
       <SidebarRail />
     </Sidebar>)
   );
