@@ -12,7 +12,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { MoreHorizontal, Copy, UserCheck } from "lucide-react"
-import useStore from "@/hooks/use-store"
 
 async function getData(nim) {
     const supabase = await createClient();
