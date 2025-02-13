@@ -21,15 +21,42 @@ import {
 import React from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Check, CheckCircle2, PlusCircle, XCircle } from "lucide-react"
+import Link from "next/link"
+import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+import { DataTableViewOptions } from "./data-table-view-options.jsx"
+import { useRouter } from "next/navigation"
 
 export function DataTable({
   columns,
   data,
 }) {
   const [sorting, setSorting] = React.useState([])
-  const [columnFilters, setColumnFilters] = React.useState(
+  const [globalFilter, setGlobalFilter] = React.useState(
     []
   )
+
+  const statuses = [
+    {
+      value: "Aktif",
+      label: "Aktif",
+      icon: CheckCircle2,
+    },
+    {
+      value: "Tidak Aktif",
+      label: "Tidak Aktif",
+      icon: XCircle,
+    },
+  ]
+
+  const prodi = [{
+    value: "Informatika",
+    label: "Informatika",
+  }, {
+    value: "Sistem Informasi",
+    label: "Sistem Informasi"
+  }]
+
 
   const table = useReactTable({
     data,
@@ -38,25 +65,50 @@ export function DataTable({
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
+    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      columnFilters,
+      globalFilter,
     },
   })
 
+  const router = useRouter()
+  const onRowClick = (row) => {
+    router.push(`/aslab/${row.original.nim}`)
+  }
+
   return (
     <>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue()) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+      <div className="flex items-center justify-between py-4">
+        <div className="flex gap-2">
+          <Input
+            value={(table.getState().globalFilter) ?? ""}
+            onChange={e => table.setGlobalFilter(String(e.target.value))}
+            placeholder="Search..."
+            className="max-w-sm"
+          />
+          {table.getColumn("status") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("status")}
+              title="Status"
+              options={statuses}
+            />
+          )}
+          {table.getColumn("program studi") && (
+            <DataTableFacetedFilter
+              column={table.getColumn("program studi")}
+              title="Program Studi"
+              options={prodi}
+            />
+          )}
+        </div>
+        <div className="flex gap-2">
+          <Link href="/aslab/new">
+            <Button><PlusCircle />Add Data</Button>
+          </Link>
+          <DataTableViewOptions table={table} />
+        </div>
       </div>
       <div className="rounded-md border">
 
@@ -83,7 +135,9 @@ export function DataTable({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
+                  onClick={() => { onRowClick?.(row) }}
                   key={row.id}
+                  className="hover:cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (

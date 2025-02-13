@@ -32,12 +32,12 @@ export function NavMain({
             <SidebarMenuItem
               key={item.title}
             >
-              <SidebarMenuButton>
-                {item.icon && <item.icon />}
-                <Link href={item.url}>
+              <Link href={item.url}>
+                <SidebarMenuButton>
+                  {item.icon && <item.icon />}
                   <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
+                </SidebarMenuButton>
+              </Link>
             </SidebarMenuItem>
             :
             <Collapsible

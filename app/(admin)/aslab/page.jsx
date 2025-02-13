@@ -1,12 +1,14 @@
 import { createClient } from "@/utils/supabase/server";
-import { Payment, columns } from "./columns"
-import { DataTable } from "./data-table"
+import { Payment, columns } from "./components/columns"
+import { DataTable } from "./components/data-table"
 
 async function getData() {
   // Fetch data from your API here.
   const supabase = await createClient();
 
-  const { data: aslab } = await supabase.from("aslab").select();
+  const { data: aslab } = await supabase
+    .from("aslab")
+    .select();
   return aslab
 }
 
