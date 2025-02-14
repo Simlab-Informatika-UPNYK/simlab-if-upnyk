@@ -23,9 +23,9 @@ export const columns = [
 
       return (
         <div className="flex items-center gap-3">
-          {user.foto ? (
+          {user.profile_picture ? (
             <img
-              src={user.foto}
+              src={user.profile_picture}
               alt={user.nama}
               className="h-8 w-8 rounded-full object-cover"
             />

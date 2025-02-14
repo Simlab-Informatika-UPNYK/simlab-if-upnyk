@@ -108,9 +108,17 @@ export default async function Page({ params }) {
 
                 <div className="space-y-6 ms-auto">
                     <div className="flex items-center justify-center py-4 px-12">
-                        <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
-                            <span className="text-gray-500">No Image</span>
-                        </div>
+                        {data.profile_picture ? (
+                            <img 
+                                src={data.profile_picture} 
+                                alt={`${data.nama}'s profile`}
+                                className="w-48 h-48 object-cover rounded-lg"
+                            />
+                        ) : (
+                            <div className="w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+                                <span className="text-gray-500">No Image</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
