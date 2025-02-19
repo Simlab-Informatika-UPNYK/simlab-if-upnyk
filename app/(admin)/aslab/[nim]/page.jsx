@@ -45,7 +45,6 @@ export default async function Page({ params }) {
                 <h1 className="text-2xl font-bold">{data.nama}</h1>
                 <div className="flex gap-2">
                     <Link href={`/aslab/${nim}/edit`}
-
                     >
                         <Button variant="outline" size="icon">
                             <Pencil className="h-4 w-4" />

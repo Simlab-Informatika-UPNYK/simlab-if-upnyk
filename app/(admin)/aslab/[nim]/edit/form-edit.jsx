@@ -22,6 +22,8 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Image, User, User2 } from "lucide-react"
+import { useState } from "react"
+import { createClient } from "@/utils/supabase/client"
 
 const formSchema = z.object({
     nama: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
@@ -30,11 +32,24 @@ const formSchema = z.object({
     angkatan: z.string().min(2, { message: "Pilih tahun angkatan" }),
     program_studi: z.string().min(2, { message: "Pilih program studi" }),
     pendidikan_terakhir: z.string().min(2, { message: "Pilih pendidikan terakhir" }),
-    status: z.string().min(2, { message: "Pilih status" })
+    status: z.string().min(2, { message: "Pilih status" }),
+    no_hp: z.union([z.string().length(0), z.string()
+        .min(10, { message: "Nomor HP minimal 10 digit" })
+        .refine((val) => /^\d+$/.test(val), { message: "Nomor HP harus berupa angka" })]).
+        optional().transform(e => e === null ? undefined : e),
+    profile_picture: z.union([
+        z.instanceof(File),
+        z.string(),
+        z.undefined()
+    ]).optional(),
 })
 
 export function FormEdit({ data }) {
-    console.log(data)
+    const [formError, setFormError] = useState("")  // Add this line
+    const [message, setMessage] = useState({})
+    const [open, setOpen] = useState(false)
+
+    // console.log("data" ,data)
     const form = useForm({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -44,19 +59,100 @@ export function FormEdit({ data }) {
             angkatan: data.angkatan,
             program_studi: data.program_studi,
             pendidikan_terakhir: data.pendidikan_terakhir,
-            status: data.status
+            status: data.status,
+            profile_picture: data.profile_picture
         },
     })
 
-    function onSubmit(values) {
-        console.log(values)
+    async function onSubmit(values) {
+        try {
+            setFormError("") // Reset error message
+            const supabase = createClient()
+
+            // Upload image to storage if it exists
+            let profileUrl = null
+            console.log(values)
+            if (typeof values.profile_picture === 'object' && values.profile_picture !== null) {
+                const file = values.profile_picture
+                const fileExt = file.name.split('.').pop()
+                const fileName = `${values.nim}.${fileExt}`
+
+                const { error: uploadError } = await supabase
+                    .storage
+                    .from('profile-pictures') // your bucket name
+                    .update(`aslab/${fileName}`, file, {
+                        cacheControl: '3600',
+                        upsert: true
+                    })
+
+                if (uploadError) {
+                    throw uploadError
+                }
+
+                // Get the public URL
+                const { data: { publicUrl } } = supabase
+                    .storage
+                    .from('profile-pictures')
+                    .getPublicUrl(`aslab/${fileName}`)
+
+                profileUrl = publicUrl
+
+                console.log(publicUrl)
+            }
+
+            // // Insert data into database
+            const { error: insertError } = await supabase
+                .from('aslab')
+                .update({
+                    ...values,
+                    profile_picture: profileUrl,
+                })
+                .eq('id_aslab', data.id_aslab)
+
+            if (insertError) throw insertError
+
+            console.log('Successfully update and saved!')
+
+            setMessage({
+                title: "Berhasil Mengupdate Asisten!",
+                description: "Data asisten berhasil diupdate!",
+                footer: {
+                    action: {
+                        label: "Tambahkan Lagi",
+                        onClick: () => {
+                            form.reset({
+                                nama: "",
+                                nim: "",
+                                email: "",
+                                angkatan: "",
+                                program_studi: "",
+                                pendidikan_terakhir: "",
+                                no_hp: "",
+                                status: "",
+                                profile_picture: undefined
+                            });
+                            setOpen(false)
+                        }
+                    }
+                }
+            });
+
+            setOpen(true)
+        } catch (error) {
+            console.error('Error:', error)
+
+            if (error.message && error.message.toLowerCase().includes('null')) {
+                setFormError("Data tidak boleh kosong")
+            } else {
+                setFormError(error.message || "Terjadi kesalahan saat menambahkan asisten baru")
+            }
+        }
     }
 
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <div className="mb-6">
-
                 </div>
                 <div className="grid grid-cols-1 md:flex md:flex-row-reverse gap-6">
                     <FormField
@@ -71,7 +167,7 @@ export function FormEdit({ data }) {
                                         <div className="flex h-40 w-40 items-center justify-center overflow-hidden rounded-full border-2 border-dashed border-gray-300 bg-gray-50">
                                             {field.value ? (
                                                 <img
-                                                    src={URL.createObjectURL(field.value)}
+                                                    src={typeof field.value === 'string' ? field.value : URL.createObjectURL(field.value)}
                                                     alt="Profile preview"
                                                     className="h-full w-full object-cover"
                                                 />

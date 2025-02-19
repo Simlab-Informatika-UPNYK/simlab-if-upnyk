@@ -1,14 +1,34 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { DataTableColumnHeader } from "./data-table-column-header"
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu"
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ActionCell } from "./action-cell"
+import Link from "next/link"
 
 export const columns = [
-{
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "nama",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama" />
@@ -22,7 +42,7 @@ export const columns = [
         .toUpperCase();
 
       return (
-        <div className="flex items-center gap-3">
+        <Link href={`/aslab/${user.nim}`} className="flex items-center gap-3">
           {user.profile_picture ? (
             <img
               src={user.profile_picture}
@@ -37,7 +57,7 @@ export const columns = [
             </div>
           )}
           <span>{user.nama}</span>
-        </div>
+        </Link >
       );
     },
   },
@@ -85,24 +105,7 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>Hapus</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
+      return <ActionCell row={row.original} />
     },
   },
   // {

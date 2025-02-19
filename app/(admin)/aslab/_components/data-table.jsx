@@ -1,7 +1,6 @@
 "use client"
 
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -32,9 +31,8 @@ export function DataTable({
   data,
 }) {
   const [sorting, setSorting] = React.useState([])
-  const [globalFilter, setGlobalFilter] = React.useState(
-    []
-  )
+  const [globalFilter, setGlobalFilter] = React.useState([])
+  const [rowSelection, setRowSelection] = React.useState({})
 
   const statuses = [
     {
@@ -67,16 +65,13 @@ export function DataTable({
     getSortedRowModel: getSortedRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       globalFilter,
+      rowSelection,
     },
   })
-
-  const router = useRouter()
-  const onRowClick = (row) => {
-    router.push(`/aslab/${row.original.nim}`)
-  }
 
   return (
     <>
@@ -111,7 +106,6 @@ export function DataTable({
         </div>
       </div>
       <div className="rounded-md border">
-
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -135,9 +129,7 @@ export function DataTable({
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  onClick={() => { onRowClick?.(row) }}
                   key={row.id}
-                  className="hover:cursor-pointer"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -159,7 +151,6 @@ export function DataTable({
       </div>
       <div className="h-4"></div>
       <DataTablePagination table={table} />
-
     </>
   )
 }

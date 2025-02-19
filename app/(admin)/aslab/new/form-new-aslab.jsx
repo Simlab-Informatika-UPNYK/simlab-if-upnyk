@@ -1,9 +1,19 @@
 "use client"
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -24,9 +34,9 @@ import {
 import { Image, User, User2 } from "lucide-react"
 
 import { createClient } from "@/utils/supabase/client"
-import DialogAlert from "./components/alert-dialog"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useToast } from "@/hooks/use-toast"
 
 const formSchema = z.object({
     nama: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
@@ -44,6 +54,7 @@ const formSchema = z.object({
 })
 
 export function NewAslabForm() {
+    const { toast } = useToast()
     const router = useRouter()
     const [open, setOpen] = useState(false)
     const [message, setMessage] = useState({})
@@ -108,38 +119,12 @@ export function NewAslabForm() {
             if (insertError) throw insertError
 
             console.log('Successfully uploaded and saved!')
+            toast({
+                title: `Berhasil Menambahkan`,
+                description: `Data ${values.nama} telah berhasil ditambahkan`,
+            })
+            router.push('/aslab')
 
-            setMessage({
-                title: "Berhasil Menambahkan Asisten!",
-                description: "Asisten baru berhasil ditambahkan! Apakah anda ingin menambahkan lagi?",
-                footer: {
-                    cancel: {
-                        label: "Tidak",
-                        onClick: () => {
-                            router.push("/aslab")
-                        }
-                    },
-                    action: {
-                        label: "Tambahkan Lagi",
-                        onClick: () => {
-                            form.reset({
-                                nama: "",
-                                nim: "",
-                                email: "",
-                                angkatan: "",
-                                program_studi: "",
-                                pendidikan_terakhir: "",
-                                no_hp: "",
-                                status: "",
-                                profile_picture: undefined
-                            });
-                            setOpen(false)
-                        }
-                    }
-                }
-            });
-
-            setOpen(true)
         } catch (error) {
             console.error('Error:', error)
 
@@ -153,7 +138,25 @@ export function NewAslabForm() {
 
     return (
         <>
-            <DialogAlert open={open} setOpen={setOpen} message={message} />
+            {/* <AlertDialog open={open} onOpenChange={setOpen}>
+                <AlertDialogTrigger></AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="font-bold text-2xl text-center"></AlertDialogTitle>
+                        <AlertDialogDescription className="text-center text-md">
+                            Apakah anda sudah yakin untuk menyimpan perubahan data ini?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="mx-auto">
+                        <AlertDialogCancel>
+                            No
+                        </AlertDialogCancel>
+                        <AlertDialogAction onClick={}>
+                            Yes
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog> */}
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                     {formError && (
