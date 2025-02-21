@@ -12,7 +12,7 @@ async function getData() {
   return aslab
 }
 
-export default async function DemoPage() {
+export default async function Page() {
   const data = await getData()
 
   return (

@@ -66,35 +66,35 @@ const data = {
       items: [
         {
           title: "Tahun Semester",
-          url: "#",
+          url: "/tahun-semester",
         },
         {
           title: "Lab",
-          url: "#",
+          url: "/lab",
         },
         {
           title: "Kalab",
-          url: "#",
+          url: "/kalab",
         },
         {
           title: "MK Praktikum",
-          url: "#",
+          url: "/mk-praktikum",
         },
         {
           title: "Dosen Pengampu",
-          url: "#",
+          url: "/dosen-pengampu",
         },
         {
           title: "Inventaris Lab",
-          url: "#",
+          url: "/inventaris-lab",
         },
         {
           title: "User Pengguna",
-          url: "#",
+          url: "/user",
         },
         {
           title: "Honor Asisten",
-          url: "#",
+          url: "/honor-asisten",
         },
       ],
     },

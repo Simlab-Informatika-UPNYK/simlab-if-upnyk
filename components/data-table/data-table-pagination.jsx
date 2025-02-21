@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 
-export default function DataTablePagination({
+export function DataTablePagination({
     table,
 }) {
 

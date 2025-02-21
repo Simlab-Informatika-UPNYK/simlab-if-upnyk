@@ -8,7 +8,6 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import DataTablePagination from "./data-table-pagination"
 import {
   Table,
   TableBody,
@@ -18,12 +17,19 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import React from "react"
+import { DataTablePagination } from "./data-table-pagination"
+import { DataTableFacetedFilter } from "./data-table-faceted-filter"
+import { Input } from "../ui/input"
+import { DataTableViewOptions } from "./data-table-view-options"
 
 export function DataTable({
   columns,
   data,
+  globalSearch,
+  viewOptions,
   toolbar,
-  footer,
+  filters = [],
+  pagination,
 }) {
   const [sorting, setSorting] = React.useState([])
   const [globalFilter, setGlobalFilter] = React.useState([])
@@ -48,7 +54,35 @@ export function DataTable({
 
   return (
     <>
-      {toolbar ?? ""}
+      <div className="flex items-center justify-between py-4">
+        <div className="flex gap-2">
+          {globalSearch && <Input
+            value={(table.getState().globalFilter) ?? ""}
+            onChange={e => table.setGlobalFilter(String(e.target.value))}
+            placeholder="Search..."
+            className="max-w-sm"
+          />}
+          {filters.map((filter) => {
+            const column = table.getColumn(filter.id)
+            if (!column) return null
+
+            return (
+              <DataTableFacetedFilter
+                key={filter.id}
+                column={column}
+                title={filter.title}
+                options={filter.options}
+              />
+            )
+          })}
+        </div>
+        <div className="flex gap-2">
+          {toolbar ?? ""}
+          {viewOptions &&
+            <DataTableViewOptions table={table} />
+          }
+        </div>
+      </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -93,7 +127,11 @@ export function DataTable({
           </TableBody>
         </Table>
       </div>
-      {footer ?? ""}
+      {pagination === true &&
+        <div className="mt-4">
+          <DataTablePagination table={table} />
+        </div>
+      }
     </>
   )
 }
