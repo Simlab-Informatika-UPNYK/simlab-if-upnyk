@@ -11,7 +11,7 @@ async function getData(nim) {
 }
 
 export default async function Page({ params }) {
-    const nim = (await params).nim
+    const nim = (await params).id
     const data = (await getData(nim))[0]
 
 

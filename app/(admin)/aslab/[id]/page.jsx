@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
 import Link from "next/link"
 import { Pencil, Trash2 } from "lucide-react"
+import BackButton from "@/components/back-button"
 
 // Add these imports at the top
 import {
@@ -23,21 +24,8 @@ async function getData(nim) {
 }
 
 export default async function Page({ params }) {
-    const nim = (await params).nim
+    const nim = (await params).id
     const data = (await getData(nim))[0]
-    // console.log(data)
-
-    // Dummy data for demonstration
-    // const data = {
-    //     nama: "Andi Permana",
-    //     nim: "123456789",
-    //     email: "andi@example.com",
-    //     angkatan: "2022",
-    //     program_studi: "Informatika",
-    //     status: "Aktif",
-    //     no_hp: "081234567890",
-    //     id_aslab: "8f83b528-7e08-4aec-ac2c-37f7f1b6413b"
-    // }
 
     return (
         <div className="container mx-auto p-6">
@@ -71,11 +59,7 @@ export default async function Page({ params }) {
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
-                    <Link href="/aslab">
-                        <Button variant="ghost" size="icon">
-                            <X className="h-4 w-4" />
-                        </Button>
-                    </Link>
+                    <BackButton />
                 </div>
             </div>
 

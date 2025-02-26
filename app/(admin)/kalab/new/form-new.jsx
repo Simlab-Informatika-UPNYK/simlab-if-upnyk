@@ -18,7 +18,7 @@ const formSchema = z.object({
   "No. Telepon": z.string().min(1, { message: "Harap isi No. Telepon" }),
 })
 
-export function FormNewDosen() {
+export function FormNew() {
   const { toast } = useToast()
   const router = useRouter()
 

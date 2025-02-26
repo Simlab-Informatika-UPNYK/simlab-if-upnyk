@@ -36,6 +36,19 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Laboratorium" /> // Updated title
     ),
+    cell: ({ row }) => {
+      const data = row.original;
+      return (
+        <div className="flex items-center">
+          <Link 
+            href={`/lab/${data.id}`}
+            className="hover:underline font-medium"
+          >
+            {data["Nama Laboratorium"]}
+          </Link>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "Lantai", // Updated accessorKey

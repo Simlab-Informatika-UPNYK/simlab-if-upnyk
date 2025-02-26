@@ -79,7 +79,7 @@ export function FormNewTahunSemester() {
           />
         </div>
         <div className="flex justify-end pt-4">
-          <Button type="submit" className="px-6">Submit</Button>
+          <Button type="submit" className="px-6">Tambahkan</Button>
         </div>
       </form>
     </Form>

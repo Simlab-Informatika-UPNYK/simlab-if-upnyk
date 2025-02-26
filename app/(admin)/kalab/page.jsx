@@ -1,8 +1,13 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
-import { Mail, MoreHorizontal, PhoneCall, PlusCircle } from "lucide-react";
+import { Mail, MoreHorizontal, PhoneCall, PlusCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { Pencil, Trash2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -11,9 +16,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-async function getData() {
-  // Fetch data from your API here.
+// Dummy data function
+function getData() {
   return [
     {
       "Nama Lengkap": "Dr. Heriyanto, A.Md, S.Kom., M.Cs.",
@@ -88,25 +101,49 @@ async function getData() {
   ];
 }
 
-const filters = [
-  //   {
-  //     id: "update_at",
-  //     title: "Semester",
-  //     options: [
-  //       {
-  //         value: "Genap",
-  //         label: "Genap",
-  //       },
-  //       {
-  //         value: "Ganjil",
-  //         label: "Ganjil",
-  //       },
-  //     ],
-  //   },
-];
+export default function Page() {
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
-export default async function Page() {
-  const data = await getData();
+  useEffect(() => {
+    // Fetch data initially
+    const fetchedData = getData();
+    setData(fetchedData);
+    setFilteredData(fetchedData);
+  }, []);
+
+  useEffect(() => {
+    // Filter data based on search query
+    if (searchQuery) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      const filtered = data.filter((kalab) => {
+        return (
+          kalab["Nama Lengkap"].toLowerCase().includes(lowercasedQuery) ||
+          kalab["NIDN/NIP"].toLowerCase().includes(lowercasedQuery) ||
+          kalab["Jabatan"].toLowerCase().includes(lowercasedQuery) ||
+          kalab["Email"].toLowerCase().includes(lowercasedQuery) ||
+          kalab["No. Telepon"].toLowerCase().includes(lowercasedQuery)
+        );
+      });
+      setFilteredData(filtered);
+      setCurrentPage(1); // Reset to first page on new search
+    } else {
+      setFilteredData(data);
+    }
+  }, [searchQuery, data]);
+
+  // Calculate pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   return (
     <div className="container mx-auto p-4">
@@ -127,43 +164,121 @@ export default async function Page() {
         </Card>
       </div>
 
-      <Link href="/kalab/new">
-        <Button>
-          <PlusCircle className="h-4 w-4 mr-2" />
-          Tambah Kalab
-        </Button>
-      </Link>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+        <div className="relative w-full sm:w-64">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search kalab..."
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+        
+        <Link href="/kalab/new">
+          <Button>
+            <PlusCircle className="h-4 w-4 mr-2" />
+            Tambah Kalab
+          </Button>
+        </Link>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-6">
-        {data.map((kalab, index) => (
-          <Card key={index}>
-            <CardHeader className="relative">
-              <div className="absolute right-4 top-4">
-                <MoreHorizontal className="h-5 w-5 text-gray-500 cursor-pointer hover:text-gray-700" />
-              </div>
-              <div className="relative w-24 rounded-full overflow-hidden h-24 mb-4">
-                <img
-                  src={`https://unsplash.it/200/200?random=${index}`}
-                  alt="Profile Header"
-                  className="w-full h-full object-cover rounded-t-lg"
-                />
-              </div>
-              <CardTitle>{kalab["Nama Lengkap"]}</CardTitle>
-              <CardDescription>{kalab["NIDN/NIP"]}</CardDescription>
-              <CardDescription>{kalab.Jabatan}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-neutral-500 flex gap-2">
-                <Mail className="h-4 w-4" /> Email: {kalab.Email}
-              </p>
-              <p className="text-sm text-neutral-500 flex gap-2">
-                <PhoneCall className="h-4 w-4" /> No. Telepon:{" "}
-                {kalab["No. Telepon"]}
-              </p>
-            </CardContent>
-          </Card>
+        {currentItems.map((kalab, index) => (
+          <Link href={`/kalab/${index}`} key={index}>
+            <Card>
+              <CardHeader className="relative">
+                <div className="absolute right-4 top-4">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Aksi</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href={`/kalab/${index}/edit`}>
+                          <div className="flex items-center">
+                            <Pencil className="mr-2 h-4 w-4" />
+                            <span>Edit</span>
+                          </div>
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="text-red-600">
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        <span>Hapus</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                <div className="relative w-24 rounded-full overflow-hidden h-24 mb-4">
+                  <img
+                    src={`https://unsplash.it/200/200?random=${index}`}
+                    alt="Profile Header"
+                    className="w-full h-full object-cover rounded-t-lg"
+                  />
+                </div>
+                <CardTitle>{kalab["Nama Lengkap"]}</CardTitle>
+                <CardDescription>{kalab["NIDN/NIP"]}</CardDescription>
+                <CardDescription>{kalab.Jabatan}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-neutral-500 flex gap-2">
+                  <Mail className="h-4 w-4" /> Email: {kalab.Email}
+                </p>
+                <p className="text-sm text-neutral-500 flex gap-2">
+                  <PhoneCall className="h-4 w-4" /> No. Telepon:{" "}
+                  {kalab["No. Telepon"]}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
         ))}
       </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-8">
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </Button>
+            
+            {[...Array(totalPages)].map((_, i) => (
+              <Button
+                key={i}
+                variant={currentPage === i + 1 ? "default" : "outline"}
+                size="sm"
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </Button>
+            ))}
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {filteredData.length === 0 && (
+        <div className="text-center py-10">
+          <p className="text-gray-500">No data found matching your search criteria.</p>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,11 +7,10 @@ import { ChevronLeft, X } from 'lucide-react'
 const Layout = ({ children }) => {
     const router = useRouter()
     return (
-        <div className='px-4'>
-
-            <div className="mx-auto p-6 bg-white rounded-lg shadow-md">
+        <div className='py-4'>
+            <div className="mx-auto px-4 py-2 bg-white rounded-lg">
                 <div className='flex justify-between'>
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Tambah Data Tahun Semester</h2>
+                    <h2 className="text-lg font-bold mb-6 text-gray-800">Tambah Data</h2>
                     <Button
                         variant='outline'
                         onClick={() => {

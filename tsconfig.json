@@ -24,15 +24,22 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
-    }
+      "@/*": [
+        "./*"
+      ]
+    },
+    "strictNullChecks": true
   },
   "include": [
     "next-env.d.ts",
     ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "app/(admin)/aslab/page.jsx", "app/(admin)/aslab/table.jsx", "app/(admin)/aslab/page.jsx", "middleware.js"  ],
+    "**/*.tsx",
+    "app/(admin)/aslab/page.jsx",
+    "app/(admin)/aslab/table.jsx",
+    "app/(admin)/aslab/page.jsx",
+    "middleware.js"
+  ],
   "exclude": [
     "node_modules"
   ]
