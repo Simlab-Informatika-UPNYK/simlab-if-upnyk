@@ -60,7 +60,7 @@ export function DataTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    // getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onGlobalFilterChange: setGlobalFilter,
@@ -149,8 +149,8 @@ export function DataTable({
           </TableBody>
         </Table>
       </div>
-      {/* <div className="h-4"></div> */}
-      {/* <DataTablePagination table={table} /> */}
+      <div className="h-4"></div>
+      <DataTablePagination table={table} />
     </>
   )
 }
