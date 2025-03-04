@@ -8,6 +8,7 @@ async function getData() {
   // Fetch data from your API here.
   return [
     {
+      id: "1",
       nama_lengkap: "Ahmad Jaelani",
       email: "ahmad.jaelani@example.com",
       peran: "Admin",
@@ -16,6 +17,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-27",
     },
     {
+      id: "2",
       nama_lengkap: "Siti Nurhaliza",
       email: "siti.nurhaliza@example.net",
       peran: "Editor",
@@ -24,6 +26,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-27",
     },
     {
+      id: "3",
       nama_lengkap: "Budi Santoso",
       email: "budi.santoso@example.org",
       peran: "Viewer",
@@ -32,6 +35,7 @@ async function getData() {
       tgl_login_terakhir: "-",
     },
     {
+      id: "4",
       nama_lengkap: "Rina Andriyani",
       email: "rina.andriyani@example.co.id",
       peran: "Admin",
@@ -40,6 +44,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-27",
     },
     {
+      id: "5",
       nama_lengkap: "Dedi Setiawan",
       email: "dedi.setiawan@example.id",
       peran: "Editor",
@@ -48,6 +53,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-26",
     },
     {
+      id: "6",
       nama_lengkap: "Sri Mulyani",
       email: "sri.mulyani@example.info",
       peran: "Viewer",
@@ -56,6 +62,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-27",
     },
     {
+      id: "7",
       nama_lengkap: "Taufik Hidayat",
       email: "taufik.hidayat@test.com",
       peran: "Admin",
@@ -64,6 +71,7 @@ async function getData() {
       tgl_login_terakhir: "-",
     },
     {
+      id: "8",
       nama_lengkap: "Andika Pratama",
       email: "andika.pratama@test.net",
       peran: "Editor",
@@ -72,6 +80,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-27",
     },
     {
+      id: "9",
       nama_lengkap: "Rina Wulandari",
       email: "rina.wulandari@test.org",
       peran: "Viewer",
@@ -80,6 +89,7 @@ async function getData() {
       tgl_login_terakhir: "2023-10-24",
     },
     {
+      id: "10",
       nama_lengkap: "Budi Cahyono",
       email: "budi.cahyono@test.co.id",
       peran: "Admin",

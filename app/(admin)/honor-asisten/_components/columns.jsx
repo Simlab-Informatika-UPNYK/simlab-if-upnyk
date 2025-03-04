@@ -42,6 +42,14 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jenis" />
     ),
+    cell: ({ row }) => {
+      const data = row.original;
+      return (
+        <Link href={`/honor-asisten/${data.no}`} className="hover:underline">
+          {data.jenis}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "biaya",

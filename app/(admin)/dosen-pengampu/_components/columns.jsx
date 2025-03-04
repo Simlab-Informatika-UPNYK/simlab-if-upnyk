@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { Checkbox } from "@/components/ui/checkbox"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { Edit, Trash } from "lucide-react"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Edit, Trash } from "lucide-react";
 
 export const columns = [
   {
@@ -35,9 +35,14 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama" />
     ),
+    cell: ({ row }) => {
+      const data = row.original;
+
+      return <Link href={`/dosen-pengampu/${data.nip}`}>{data.nama}</Link>;
+    },
   },
   {
-    id: 'NIP',
+    id: "NIP",
     accessorKey: "nip",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="NIP" />
@@ -74,4 +79,4 @@ export const columns = [
       );
     },
   },
-]
+];

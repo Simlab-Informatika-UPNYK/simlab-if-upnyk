@@ -1,8 +1,8 @@
-import { FormEditLab } from "./form-edit-lab"
+import { FormEditInventaris } from "./form-edit-inventaris"
 import { createClient } from "@/utils/supabase/server"
 import BackButton from "@/components/back-button"
 
-async function getLab(id) {
+async function getInventaris(id) {
   // const supabase = await createClient()
   // const { data, error } = await supabase
   //   .from("laboratorium")
@@ -15,38 +15,36 @@ async function getLab(id) {
   //   return null
   // }
 
-  // Return a dummy lab object for development/testing
-  const dummyLab = {
+  // Return a dummy lab inventory object for development/testing
+  const dummyInventarisLab = {
     id: id,
-    nama: "Laboratorium Dummy",
-    kode: "LAB-001",
-    deskripsi: "Ini adalah laboratorium dummy untuk pengembangan",
-    lokasi: "Gedung A Lantai 2",
-    kapasitas: 30,
-    status: "aktif",
+    nama: "Komputer Desktop",
+    jumlah: 10,
+    tahun: 2022,
+    kondisi: "Baik",
     created_at: new Date().toISOString()
   }
   
-  return dummyLab
+  return dummyInventarisLab
 }
 
-export default async function EditLabPage({ params }) {
-  const labId = params.id
-  const lab = await getLab(labId)
+export default async function EditInventarisLab({ params }) {
+  const inventarisId = params.id
+  const inventaris = await getInventaris(inventarisId)
 
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Edit Laboratorium</h1>
+        <h1 className="text-2xl font-bold">Edit Inventaris Lab</h1>
         <BackButton />
       </div>
 
       <div className="">
-        {lab ? (
-          <FormEditLab lab={lab} />
+        {inventaris ? (
+          <FormEditInventaris inventaris={inventaris} />
         ) : (
           <div className="text-center p-4">
-            <p className="text-red-500">Laboratorium tidak ditemukan</p>
+            <p className="text-red-500">Inventaris tidak ditemukan</p>
           </div>
         )}
       </div>

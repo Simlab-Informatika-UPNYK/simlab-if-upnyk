@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { Checkbox } from "@/components/ui/checkbox"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { Edit, Trash } from "lucide-react"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { Checkbox } from "@/components/ui/checkbox";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { Edit, Trash } from "lucide-react";
 
 export const columns = [
   {
@@ -35,6 +35,10 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Lengkap" />
     ),
+    cell: ({ row }) => {
+      const data = row.original;
+      return <Link href={`user/${data.id}`}>{data.nama_lengkap}</Link>;
+    },
   },
   {
     accessorKey: "email",
@@ -85,4 +89,4 @@ export const columns = [
       );
     },
   },
-]
+];

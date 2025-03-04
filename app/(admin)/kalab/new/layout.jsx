@@ -9,9 +9,9 @@ const Layout = ({ children }) => {
     return (
         <div className='px-4'>
 
-            <div className="mx-auto p-6 bg-white rounded-lg shadow-md">
+            <div className="mx-auto p-6 bg-white rounded-lg">
                 <div className='flex justify-between'>
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Tambah Data Tahun Semester</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Tambah Kepala Lab</h2>
                     <Button
                         variant='outline'
                         onClick={() => {
