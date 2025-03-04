@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { ActionCell } from "./action-cell";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash } from "lucide-react";
+
 
 export const columns = [
   // {
@@ -56,34 +56,14 @@ export const columns = [
   //   ),
   // },
   {
-    accessorKey: "tahun",
+    accessorKey: "tahun_ajaran",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Tahun" />
     ),
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <Link href={`/${data.semester}}`} className="hover:underline">
-          {data.tahun}
-        </Link>
-      );
-    },
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <div className="flex justify-end items-center space-x-2">
-          <Button variant="ghost" size="icon">
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-red-500">
-            <Trash className="h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
+    cell: ({ row }) => <ActionCell row={row} />,
   },
 ];

@@ -28,26 +28,24 @@ import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { DialogTrigger } from "@/components/ui/dialog";
-import { DeleteButton } from "./delete-button";
 
-export function ActionCell({ row }) {
+export function DeleteButton({ slug, variant = "outline" }) {
   const router = useRouter();
   const { toast } = useToast();
-  const data = row.original;
 
   const handleDelete = async () => {
     const supabase = createClient();
     const { data: deletedData, error } = await supabase
       .from("tahun_semester")
       .delete()
-      .eq("id", data.id)
+      .eq("slug", slug)
       .select();
 
     if (!error) {
-      router.refresh();
+      router.replace("/tahun-semester");
       toast({
         title: "Berhasil Menghapus",
-        description: `Tahun Semester ${deletedData[0].nama} telah berhasil dihapus`,
+        description: `Semester ${deletedData[0].slug} telah berhasil dihapus`,
       });
       return;
     }
@@ -60,13 +58,25 @@ export function ActionCell({ row }) {
   };
 
   return (
-    <div className="flex justify-end items-center space-x-2">
-      <Link href={`/tahun-semester/${data.slug}/edit`}>
-        <Button variant="ghost" size="icon">
-          <Edit className="h-4 w-4" />
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant={variant} size="icon" className="text-red-500">
+          <Trash className="h-4 w-4" />
         </Button>
-      </Link>
-      <DeleteButton variant="ghost" slug={data.slug} />
-    </div>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Penghapusan bersifat permanen. Data mengenai Tahun Semester ini akan
+            terhapus.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Batal</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete}>Hapus</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

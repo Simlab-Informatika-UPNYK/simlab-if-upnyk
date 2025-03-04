@@ -1,9 +1,22 @@
 import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { Trash, X } from "lucide-react";
 import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
-
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { DeleteButton } from "../_components/delete-button.jsx";
 // Add these imports at the top
 import {
   DropdownMenu,
@@ -15,11 +28,47 @@ import { MoreHorizontal, Copy, UserCheck } from "lucide-react";
 import { FormNewTahunSemester } from "@/app/(admin)/tahun-semester/new/form-new-tahun-semester";
 import BackButton from "@/components/back-button";
 
+async function getDetail(slug) {
+  const supabase = await createClient();
+
+  const { data: tahun_semester } = await supabase
+    .from("tahun_semester")
+    .select()
+    .eq("slug", slug);
+  return tahun_semester;
+}
+
+async function deleteTahunSemester(formData) {
+  "use server";
+
+  const slug = formData.get("slug");
+
+  try {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from("tahun_semester")
+      .delete()
+      .eq("slug", slug);
+
+    if (error) {
+      console.error("Error deleting tahun semester:", error);
+      throw new Error("Failed to delete tahun semester");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("Something went wrong");
+  }
+
+  // These need to be outside the try/catch to ensure they execute
+  revalidatePath("/tahun-semester");
+  return redirect("/tahun-semester");
+}
+
 export default async function Page({ params }) {
   const slug = (await params).id;
-  //   const data = await getData(slug);
+  const data = (await getDetail(slug))[0];
 
-  // const data = await getData(slug);
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between mb-6">
@@ -29,11 +78,11 @@ export default async function Page({ params }) {
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <h3 className="text-sm text-gray-500">Tahun</h3>
-                <p className="font-medium">2022/2024</p>
+                <p className="font-medium">{data.tahun_ajaran}</p>
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Semester</h3>
-                <p className="font-medium">Genap</p>
+                <p className="font-medium">{data.semester}</p>
               </div>
             </div>
           </div>
@@ -44,19 +93,7 @@ export default async function Page({ params }) {
               <Pencil className="h-4 w-4" />
             </Button>
           </Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                More <MoreHorizontal className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-red-600">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DeleteButton slug={slug} />
           <BackButton />
         </div>
       </div>
