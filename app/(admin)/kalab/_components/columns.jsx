@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Edit, Trash } from "lucide-react"
+import { DeleteButton } from "./delete-button"
 
 
 export const columns = [
@@ -67,9 +68,7 @@ export const columns = [
           <Button variant="ghost" size="icon">
             <Edit className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-red-500">
-             <Trash className="h-4 w-4" />
-          </Button>
+          <DeleteButton slug={data.slug} />
         </div>
       );
     },

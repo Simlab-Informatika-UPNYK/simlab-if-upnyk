@@ -45,24 +45,25 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Delete } from "./_components/delete.jsx";
 
-export default function Page() {
+export default function KalabPage() {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedKalab, setSelectedKalab] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Add this state
   const itemsPerPage = 6;
 
   useEffect(() => {
-    // Fetch data initially
+    // Fetch data initially and when refreshTrigger changes
     async function fetchData() {
       const fetchedData = await getKalabData();
       setData(fetchedData);
       setFilteredData(fetchedData);
     }
     fetchData();
-  }, []);
+  }, [refreshTrigger]); // Add refreshTrigger as a dependency
 
   useEffect(() => {
     // Filter data based on search query
@@ -99,6 +100,12 @@ export default function Page() {
     e.stopPropagation();
     setSelectedKalab(kalab);
     setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteSuccess = () => {
+    // Increment refreshTrigger to cause a data refresh
+    setRefreshTrigger(prev => prev + 1);
+    setDeleteDialogOpen(false);
   };
 
   return (
@@ -226,6 +233,7 @@ export default function Page() {
                 <Delete
                   setDeleteDialogOpen={setDeleteDialogOpen}
                   slug={selectedKalab.slug}
+                  onDeleteSuccess={handleDeleteSuccess} // Pass the new handler
                 />
               )}
             </AlertDialogFooter>

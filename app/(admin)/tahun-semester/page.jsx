@@ -3,7 +3,7 @@ import { columns } from "./_components/columns";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/server.js";
+import { createClient } from "@/utils/supabase/server";
 
 async function getData() {
   const supabase = await createClient();

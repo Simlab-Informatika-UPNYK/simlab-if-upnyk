@@ -1,10 +1,11 @@
-import React from 'react'
-import { FormNewLab } from './form-new-lab'
+import React from "react";
+import { FormNewLab } from "./form-new-lab";
+import { getAllKalab } from "../actions.jsx";
 
-const page = () => {
-  return (
-    <FormNewLab />
-  )
-}
+const page = async () => {
+  const listKalab = await getAllKalab();
 
-export default page
+  return <FormNewLab listKalab={listKalab} />;
+};
+
+export default page;

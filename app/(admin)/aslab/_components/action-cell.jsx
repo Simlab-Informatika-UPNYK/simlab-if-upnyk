@@ -48,12 +48,12 @@ export function ActionCell({ row }) {
                 description: `Data ${data[0].nama} telah berhasil dihapus`,
                 // action: <ToastAction altText="Undo">Undo</ToastAction>,
             })
-        } 
-
-        toast({
-            title: `Gagal Menghapus`,
-            description: `Data ${data[0].nama} gagal dihapus`
-        })
+        } else {
+            toast({
+                title: `Gagal Menghapus`,
+                description: `Gagal menghapus data: ${error?.message || 'Terjadi kesalahan'}`
+            })
+        }
     }
 
     return (

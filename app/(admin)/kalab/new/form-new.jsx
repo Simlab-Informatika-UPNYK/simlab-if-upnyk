@@ -8,14 +8,15 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
+import { createKalab } from "../actions"
 
 // Schema with keys matching the required fields
 const formSchema = z.object({
   "Nama Lengkap": z.string().min(1, { message: "Harap isi Nama Lengkap" }),
   "NIDN/NIP": z.string().min(1, { message: "Harap isi NIDN/NIP" }),
-  "Jabatan": z.string().min(1, { message: "Harap isi Jabatan" }),
+  // "Jabatan": z.string().min(1, { message: "Harap isi Jabatan" }),
   "Email": z.string().email({ message: "Email tidak valid" }),
-  "No. Telepon": z.string().min(1, { message: "Harap isi No. Telepon" }),
+  "No Telepon": z.string().min(1, { message: "Harap isi No Telepon" }),
 })
 
 export function FormNew() {
@@ -27,22 +28,37 @@ export function FormNew() {
     defaultValues: {
       "Nama Lengkap": "",
       "NIDN/NIP": "",
-      "Jabatan": "",
+      // "Jabatan": "",
       "Email": "",
-      "No. Telepon": ""
+      "No Telepon": ""
     },
   })
 
   async function onSubmit(values) {
     try {
-      // ...submission logic for dosen data...
-      toast({
-        title: "Berhasil Menambahkan",
-        description: `Data dosen berhasil ditambahkan`,
-      })
-      router.push('/kalab') // Change route as needed
+      // Call the server action to create a new kalab entry
+      const result = await createKalab(values);
+      
+      if (result.success) {
+        toast({
+          title: "Berhasil Menambahkan",
+          description: `Data kepala laboratorium berhasil ditambahkan`,
+          variant: "success"
+        })
+        router.push('/kalab')
+      } else {
+        toast({
+          title: "Gagal Menambahkan",
+          description: result.error || "Terjadi kesalahan saat menambahkan data",
+          variant: "destructive"
+        })
+      }
     } catch (error) {
-      console.error(error)
+      toast({
+        title: "Error",
+        description: "Terjadi kesalahan tak terduga",
+        variant: "destructive"
+      })
     }
   }
 

@@ -9,37 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-async function getLab(id) {
-//   const supabase = await createClient();
-//   const { data, error } = await supabase
-//     .from("laboratorium")
-//     .select()
-//     .eq("id", id)
-//     .single();
-  
-//   if (error) {
-//     console.error("Error fetching lab:", error);
-//     return null;
-//   }
-  
-// // Return the actual data if available
-// if (data) return data;
-
-// Return dummy data as fallback
-return {
-    id: id,
-    nama: "Laboratorium Dummy",
-    lantai: "2",
-    kapasitas: "30",
-    kalab: "Dr. John Doe",
-    deskripsi: "Data laboratorium tidak tersedia"
-};
-}
+import { getOneLab } from "../actions.jsx";
 
 export default async function LabDetailPage({ params }) {
-  const labId = (await params).id;
-  const lab = await getLab(labId);
+  const slug = (await params).id;
+  const lab = await getOneLab(slug);
   
   if (!lab) {
     return (
@@ -57,7 +31,7 @@ export default async function LabDetailPage({ params }) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{lab.nama}</h1>
         <div className="flex gap-2">
-          <Link href={`/lab/${labId}/edit`}>
+          <Link href={`/lab/${lab.slug}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
