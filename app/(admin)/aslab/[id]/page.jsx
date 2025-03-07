@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Copy, UserCheck } from "lucide-react";
 
-// Updated function to fetch IDs without requiring cookies
 async function fetchAslabIds() {
   const supabase = createClient();
   const { data, error } = await supabase.from("aslab").select("nim");
@@ -25,7 +24,7 @@ async function fetchAslabIds() {
   return data.map(item => item.nim);
 }
 
-export const dynamicParams = true; // Changed to true to allow fallback
+export const dynamicParams = true; 
 
 export async function generateStaticParams() {
   try {
@@ -43,7 +42,7 @@ async function getData(nim) {
   const supabase = await createClient();
 
   try {
-    const { data: aslab, error } = await supabase.from("aslab").select().eq("nim", nim);
+    const { data: aslab, error } = await supabase.from("aslab").select().eq("nim", nim).single();
     
     if (error) {
       throw error;
@@ -58,7 +57,7 @@ async function getData(nim) {
 
 export default async function Page({ params }) {
   const nim = params.id;
-  const data = (await getData(nim))[0];
+  const data = (await getData(nim));
   
   if (!data) {
     return <div className="container mx-auto p-6">Aslab not found</div>;
