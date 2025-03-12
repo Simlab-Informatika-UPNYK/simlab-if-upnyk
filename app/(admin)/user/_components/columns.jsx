@@ -6,6 +6,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Edit, Trash } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteUser } from "../actions";
 
 export const columns = [
   {
@@ -31,13 +43,13 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "nama_lengkap",
+    accessorKey: "nama",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Lengkap" />
+      <DataTableColumnHeader column={column} title="Nama" />
     ),
     cell: ({ row }) => {
       const data = row.original;
-      return <Link href={`user/${data.id}`}>{data.nama_lengkap}</Link>;
+      return <Link href={`user/${data.slug}`}>{data.nama}</Link>;
     },
   },
   {
@@ -47,27 +59,15 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "peran",
+    accessorKey: "role",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Peran" />
+      <DataTableColumnHeader column={column} title="Role" />
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Status" />
-    ),
-  },
-  {
-    accessorKey: "tgl_daftar",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tanggal Daftar" />
-    ),
-  },
-  {
-    accessorKey: "tgl_login_terakhir",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Login Terakhir" />
+      <DataTableColumnHeader column={column} title="Created At" />
     ),
   },
   {
@@ -79,12 +79,32 @@ export const columns = [
       const data = row.original;
       return (
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon">
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-red-500">
-            <Trash className="h-4 w-4" />
-          </Button>
+          <Link href={`/user/${data.slug}/edit`}>
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </Link>
+
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="ghost" size="icon" className="text-red-500">
+                <Trash className="h-4 w-4" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Apakah anda yakin?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Penghapusan bersifat permanen. Data mengenai Tahun Semester
+                  ini akan terhapus.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Batal</AlertDialogCancel>
+                <AlertDialogAction onClick={deleteUser(data.id)}>Hapus</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       );
     },

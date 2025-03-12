@@ -9,40 +9,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import { format } from "date-fns";
-
-async function getUser(id) {
-  // Uncomment this when you're ready to fetch real data
-  // const supabase = await createClient();
-  // const { data, error } = await supabase
-  //   .from("users")
-  //   .select()
-  //   .eq("id", id)
-  //   .single();
-  
-  // if (error) {
-  //   console.error("Error fetching user:", error);
-  //   return null;
-  // }
-  
-  // if (data) return data;
-
-  // Return dummy data as fallback
-  return {
-    id: id,
-    nama_lengkap: "John Doe",
-    email: "john.doe@example.com",
-    peran: "Admin",
-    status: "Active",
-    tgl_daftar: "2023-01-15T08:30:00Z",
-    tgl_login_terakhir: "2023-06-22T14:45:00Z"
-  };
-}
+import { getOneUser } from "../actions";
 
 export default async function UserDetailPage({ params }) {
-  const userId = (await params).id;
-  const user = await getUser(userId);
-  
+  const slug = (await params).id;
+  const user = await getOneUser(slug);
+
   if (!user) {
     return (
       <div className="container mx-auto p-6">
@@ -53,22 +25,24 @@ export default async function UserDetailPage({ params }) {
       </div>
     );
   }
-  
+
   // Format dates if they exist
-  const formattedRegDate = user.tgl_daftar ? new Date(user.tgl_daftar).toLocaleDateString('id-ID', { 
-    day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
-  }) : 'Tidak tersedia';
-  
-  const formattedLastLogin = user.tgl_login_terakhir ? new Date(user.tgl_login_terakhir).toLocaleDateString('id-ID', { 
-    day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
-  }) : 'Tidak tersedia';
-  
+  const formattedRegDate = user.created_at
+    ? new Date(user.created_at).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "Tidak tersedia";
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Detail Pengguna</h1>
         <div className="flex gap-2">
-          <Link href={`/user/${userId}/edit`}>
+          <Link href={`/user/${user.slug}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
@@ -94,7 +68,7 @@ export default async function UserDetailPage({ params }) {
         <div className="grid grid-cols-1 gap-4">
           <div>
             <h3 className="text-sm text-gray-500">Nama Lengkap</h3>
-            <p className="font-medium">{user.nama_lengkap}</p>
+            <p className="font-medium">{user.nama}</p>
           </div>
           <div>
             <h3 className="text-sm text-gray-500">Email</h3>
@@ -102,21 +76,11 @@ export default async function UserDetailPage({ params }) {
           </div>
           <div>
             <h3 className="text-sm text-gray-500">Peran</h3>
-            <p className="font-medium">{user.peran}</p>
-          </div>
-          <div>
-            <h3 className="text-sm text-gray-500">Status</h3>
-            <p className={`font-medium ${user.status === 'Active' ? 'text-green-600' : 'text-red-600'}`}>
-              {user.status}
-            </p>
+            <p className="font-medium">{user.role}</p>
           </div>
           <div>
             <h3 className="text-sm text-gray-500">Tanggal Pendaftaran</h3>
             <p className="font-medium">{formattedRegDate}</p>
-          </div>
-          <div>
-            <h3 className="text-sm text-gray-500">Login Terakhir</h3>
-            <p className="font-medium">{formattedLastLogin}</p>
           </div>
         </div>
       </div>

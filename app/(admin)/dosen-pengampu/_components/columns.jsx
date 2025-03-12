@@ -38,7 +38,7 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
 
-      return <Link href={`/dosen-pengampu/${data.nip}`}>{data.nama}</Link>;
+      return <Link href={`/dosen-pengampu/${data.slug}`}>{data.nama}</Link>;
     },
   },
   {
@@ -49,15 +49,9 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "mata_kuliah",
+    accessorKey: "email",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Mata Kuliah" />
-    ),
-  },
-  {
-    accessorKey: "kelas",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kelas" />
+      <DataTableColumnHeader column={column} title="Email" />
     ),
   },
   {
@@ -69,9 +63,11 @@ export const columns = [
       const data = row.original;
       return (
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon">
-            <Edit className="h-4 w-4" />
-          </Button>
+          <Link href={`dosen-pengampu/${data.slug}/edit`}>
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </Link>
           <Button variant="ghost" size="icon" className="text-red-500">
             <Trash className="h-4 w-4" />
           </Button>

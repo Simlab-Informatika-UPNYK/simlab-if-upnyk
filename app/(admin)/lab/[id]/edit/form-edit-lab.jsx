@@ -69,7 +69,7 @@ export function FormEditLab({ lab, listKalab }) {
           description: "Data kepala laboratorium berhasil diperbarui",
           variant: "default",
         });
-        router.push("/kalab");
+        router.push("/lab");
       } else {
         toast({
           title: "Gagal Mengubah",

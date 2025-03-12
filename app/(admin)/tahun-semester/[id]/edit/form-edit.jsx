@@ -1,135 +1,136 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { useState } from "react"
-import { createClient } from "@/utils/supabase/client"
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { createClient } from "@/utils/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
-    tahun: z.string().min(4, { message: "Tahun harus diisi minimal 4 karakter" }),
-    semester: z.string().min(1, { message: "Semester harus diisi" }),
-})
+  tahun_ajaran: z
+    .string()
+    .min(4, { message: "Tahun harus diisi minimal 4 karakter" }),
+  semester: z.string().min(1, { message: "Semester harus diisi" }),
+});
 
 export function FormEdit({ data }) {
-    const [formError, setFormError] = useState("")
-    const [message, setMessage] = useState({})
-    const [open, setOpen] = useState(false)
+  const { toast } = useToast();
+  const router = useRouter();
 
-    const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            tahun: data.tahun,
-            semester: data.semester,
-        },
-    })
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      tahun_ajaran: data.tahun_ajaran,
+      semester: data.semester,
+    },
+  });
 
-    async function onSubmit(values) {
-        try {
-            setFormError("")
-            const supabase = createClient()
+  async function onSubmit(values) {
+    try {
+      const supabase = createClient();
 
-            const { error: updateError } = await supabase
-                .from('tahun_semester')
-                .update(values)
-                .eq('id', data.id)
+      const result = await supabase
+        .from("tahun_semester")
+        .update(values)
+        .eq("id", data.id);
 
-            if (updateError) throw updateError
+      if (result.error)
+        throw toast({
+          title: "Gagal Mengubah",
+          description:
+            result.error || "Terjadi kesalahan saat memperbarui data",
+          variant: "destructive",
+        });
 
-            console.log('Successfully updated!')
-
-            setMessage({
-                title: "Berhasil Mengupdate Tahun Semester!",
-                description: "Data tahun semester berhasil diupdate!",
-                footer: {
-                    action: {
-                        label: "Tambahkan Lagi",
-                        onClick: () => {
-                            form.reset({
-                                tahun: "",
-                                semester: "",
-                            });
-                            setOpen(false)
-                        }
-                    }
-                }
-            });
-
-            setOpen(true)
-        } catch (error) {
-            console.error('Error:', error)
-
-            if (error.message && error.message.toLowerCase().includes('null')) {
-                setFormError("Data tidak boleh kosong")
-            } else {
-                setFormError(error.message || "Terjadi kesalahan saat mengupdate tahun semester")
-            }
-        }
+      toast({
+        title: "Berhasil mengupdate",
+        description: "Data Tahun Semester berhaisl diperbarui",
+        variant: "default",
+      });
+      router.push("/tahun-semester");
+      router.refresh();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Gagal memperbarui data: ${error.message}`,
+        variant: "destructive",
+      });
     }
+  }
 
-    return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <FormField
-                        control={form.control}
-                        name="tahun"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-sm font-medium">Tahun</FormLabel>
-                                <FormControl>
-                                    <Input className="w-full" placeholder="Masukkan tahun" {...field} />
-                                </FormControl>
-                                <FormMessage className="text-sm text-red-500" />
-                            </FormItem>
-                        )}
-                    />
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="tahun_ajaran"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">Tahun</FormLabel>
+                <FormControl>
+                  <Input
+                    className="w-full"
+                    placeholder="Masukkan tahun"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-sm text-red-500" />
+              </FormItem>
+            )}
+          />
 
-                    <FormField
-                        control={form.control}
-                        name="semester"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel className="text-sm font-medium">Semester</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                    <FormControl>
-                                        <SelectTrigger className="w-full">
-                                            <SelectValue placeholder="Pilih semester" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                        <SelectItem value="Ganjil">Ganjil</SelectItem>
-                                        <SelectItem value="Genap">Genap</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage className="text-sm text-red-500" />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+          <FormField
+            control={form.control}
+            name="semester"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-sm font-medium">Semester</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Pilih semester" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="Gasal">Gasal</SelectItem>
+                    <SelectItem value="Genap">Genap</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage className="text-sm text-red-500" />
+              </FormItem>
+            )}
+          />
+        </div>
 
-                <div className="flex justify-end pt-4">
-                    <Button type="submit" className="px-6">Simpan Perubahan</Button>
-                </div>
-            </form>
-        </Form>
-    )
+        <div className="flex justify-end pt-4">
+          <Button type="submit" className="px-6">
+            Simpan Perubahan
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
 }

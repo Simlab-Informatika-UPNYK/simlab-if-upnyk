@@ -31,13 +31,8 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "kode_mk",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kode MK" />
-    ),
-  },
-  {
-    accessorKey: "mata_kuliah",
+    id: "mata kuliah",
+    accessorKey: "nama",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Mata Kuliah" />
     ),
@@ -45,10 +40,10 @@ export const columns = [
       const data = row.original;
       return (
         <Link
-          href={`/mk-praktikum/${data.kode_mk}`}
+          href={`/mk-praktikum/${data.slug}`}
           className="hover:underline font-medium"
         >
-          {data.mata_kuliah}
+          {data.nama}
         </Link>
       );
     },
@@ -60,6 +55,7 @@ export const columns = [
     ),
   },
   {
+    id: "jumlah kelas",
     accessorKey: "jumlah_kelas",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jumlah Kelas" />
@@ -74,9 +70,11 @@ export const columns = [
       const data = row.original;
       return (
         <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon">
-            <Edit className="h-4 w-4" />
-          </Button>
+          <Link href={`/mk-praktikum/${data.slug}/edit`}>
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </Link>
           <Button variant="ghost" size="icon" className="text-red-500">
             <Trash className="h-4 w-4" />
           </Button>

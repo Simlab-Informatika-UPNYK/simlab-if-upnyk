@@ -1,34 +1,10 @@
+import { getOneMk } from "../../actions.jsx";
 import { FormEditMK } from "./form-edit-mk";
-import { createClient } from "@/utils/supabase/server";
 import BackButton from "@/components/back-button";
 
-async function getMK(id) {
-  // const supabase = await createClient()
-  // const { data, error } = await supabase
-  //   .from("mk_praktikum")
-  //   .select()
-  //   .eq("id", id)
-  //   .single()
-
-  // if (error) {
-  //   console.error("Error fetching MK:", error)
-  //   return null
-  // }
-
-  // Return a dummy MK object for development/testing
-  const dummyMk = {
-    kode_mk: "124210411",
-    mata_kuliah: "Praktikum Cloud Computing",
-    semester: "Ganjil",
-    jumlah_kelas: 8,
-  };
-
-  return dummyMk;
-}
-
 export default async function EditMKPage({ params }) {
-  const mkId = (await params).id;
-  const mk = await getMK(mkId);
+  const slug = (await params).id;
+  const mk = await getOneMk(slug);
 
   return (
     <div className="container mx-auto p-6">

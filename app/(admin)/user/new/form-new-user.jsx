@@ -15,57 +15,49 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { editUser } from "../../actions";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { createUser } from "../actions";
 
 const formSchema = z.object({
-  nama: z.string().min(2, { message: "Nama lengkap minimal 2 karakter" }),
+  nama: z.string().min(2, { message: "Nama minimal 2 karakter" }),
   email: z.string().email({ message: "Email tidak valid" }),
-  role: z.string().min(1, { message: "Peran harus diisi" }),
+  role: z.string().min(2, { message: "Peran minimal 2 karakter" }),
 });
 
-export function FormEditUser({ user }) {
+export function FormNewUser() {
   const { toast } = useToast();
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nama: user.nama || "",
-      email: user.email || "",
-      role: user.role || "",
+      nama: "",
+      email: "",
+      role: "",
     },
   });
 
   async function onSubmit(values) {
-    setIsSubmitting(true);
-    try {
-      const result = await editUser(user.id, values);
-      if (result.success) {
-        toast({
-          title: "Berhasil Mengubah",
-          description: `Data pengguna ${values.nama} telah berhasil diperbarui`,
-        });
-        router.push("/user");
-        router.refresh();
-      } else {
-        toast({
-          title: "Error",
-          description: `Gagal memperbarui data: ${error.message}`,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
+    const result = await createUser(values);
+    if (result.success) {
       toast({
-        title: "Error",
-        description: `Gagal memperbarui data: ${error.message}`,
-        variant: "destructive",
+        title: "Berhasil Menambahkan",
+        description: `${values.nama} telah berhasil ditambahkan`,
+      });
+      router.push("/user");
+      router.refresh();
+    } else {
+      toast({
+        title: "Gagal Menambahkan",
+        description: `Terjadi kesalahan saat menambahkan`,
       });
       console.error(error);
-    } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -77,15 +69,9 @@ export function FormEditUser({ user }) {
           name="nama"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">
-                Nama Lengkap
-              </FormLabel>
+              <FormLabel className="text-sm font-medium">Nama</FormLabel>
               <FormControl>
-                <Input
-                  className="w-full"
-                  placeholder="Nama Lengkap"
-                  {...field}
-                />
+                <Input className="w-full" placeholder="Nama" {...field} />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
@@ -99,9 +85,9 @@ export function FormEditUser({ user }) {
               <FormLabel className="text-sm font-medium">Email</FormLabel>
               <FormControl>
                 <Input
+                  type="email"
                   className="w-full"
                   placeholder="Email"
-                  type="email"
                   {...field}
                 />
               </FormControl>
@@ -109,9 +95,6 @@ export function FormEditUser({ user }) {
             </FormItem>
           )}
         />
-        {/* 
-        // TODO: buat jadi select
-        */}
         <FormField
           control={form.control}
           name="role"
@@ -133,17 +116,9 @@ export function FormEditUser({ user }) {
             </FormItem>
           )}
         />
-        <div className="flex justify-end gap-3 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-            disabled={isSubmitting}
-          >
-            Batal
-          </Button>
-          <Button type="submit" className="px-6" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan"}
+        <div className="flex justify-end pt-4">
+          <Button type="submit" className="px-6">
+            Submit
           </Button>
         </div>
       </form>

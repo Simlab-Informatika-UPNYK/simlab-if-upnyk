@@ -16,12 +16,11 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { editMk } from "../../actions";
 
 // Schema for MK Praktikum
 const formSchema = z.object({
-  kode_mk: z.string().min(2, { message: "Kode MK minimal 2 karakter" }),
-  mata_kuliah: z.string().min(2, { message: "Mata Kuliah minimal 2 karakter" }),
+  nama: z.string().min(2, { message: "Mata Kuliah minimal 2 karakter" }),
   semester: z.string().min(1, { message: "Semester harus diisi" }),
   jumlah_kelas: z.preprocess(
     (arg) => (arg === "" ? undefined : Number(arg)),
@@ -39,8 +38,7 @@ export function FormEditMK({ mk }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      kode_mk: mk.kode_mk || "",
-      mata_kuliah: mk.mata_kuliah || "",
+      nama: mk.nama || "",
       semester: mk.semester || "",
       jumlah_kelas: mk.jumlah_kelas || "",
     },
@@ -50,28 +48,22 @@ export function FormEditMK({ mk }) {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
+      const result = await editMk(mk.id, values);
 
-      const { error } = await supabase
-        .from("mk_praktikum")
-        .update({
-          kode_mk: values.kode_mk,
-          mata_kuliah: values.mata_kuliah,
-          semester: values.semester,
-          jumlah_kelas: values.jumlah_kelas,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", mk.id);
+      if (result.success) {
+        toast({
+          title: "Berhasil Mengubah",
+          description: `Mata Kuliah ${values.nama} telah berhasil diperbarui`,
+        });
 
-      if (error) throw error;
-
-      toast({
-        title: "Berhasil Mengubah",
-        description: `Mata Kuliah ${values.mata_kuliah} telah berhasil diperbarui`,
-      });
-
-      router.push("/mk-praktikum");
-      router.refresh();
+        router.push("/mk-praktikum");
+        router.refresh();
+      } else {
+        toast({
+          title: "Gagal Mengubah",
+          description: `Mata Kuliah gagal diperbarui`,
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -87,7 +79,7 @@ export function FormEditMK({ mk }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <FormField
+        {/* <FormField
           control={form.control}
           name="kode_mk"
           render={({ field }) => (
@@ -99,15 +91,19 @@ export function FormEditMK({ mk }) {
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
-          name="mata_kuliah"
+          name="nama"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">Mata Kuliah</FormLabel>
               <FormControl>
-                <Input className="w-full" placeholder="Mata Kuliah" {...field} />
+                <Input
+                  className="w-full"
+                  placeholder="Mata Kuliah"
+                  {...field}
+                />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
@@ -131,13 +127,15 @@ export function FormEditMK({ mk }) {
           name="jumlah_kelas"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Jumlah Kelas</FormLabel>
+              <FormLabel className="text-sm font-medium">
+                Jumlah Kelas
+              </FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
-                  className="w-full" 
-                  placeholder="Jumlah Kelas" 
-                  {...field} 
+                <Input
+                  type="number"
+                  className="w-full"
+                  placeholder="Jumlah Kelas"
+                  {...field}
                 />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />

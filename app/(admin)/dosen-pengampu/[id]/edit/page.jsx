@@ -1,34 +1,10 @@
 import { FormEditDosenPengampu } from "./form-edit-dosen-pengampu";
-import { createClient } from "@/utils/supabase/server";
 import BackButton from "@/components/back-button";
-
-async function getDosenPengampu(id) {
-  // const supabase = await createClient()
-  // const { data, error } = await supabase
-  //   .from("dosen_pengampu")
-  //   .select()
-  //   .eq("id", id)
-  //   .single()
-
-  // if (error) {
-  //   console.error("Error fetching dosen pengampu:", error)
-  //   return null
-  // }
-
-  // Return a dummy data object for development/testing
-  const dummyData = {
-    nama: "Dr. Budi Santoso",
-    nip: "198501152010121003",
-    mata_kuliah: "Praktikum Cloud Computing",
-    kelas: "Informatika A",
-  };
-
-  return dummyData;
-}
+import { getOneDosen } from "../../actions";
 
 export default async function EditDosenPengampuPage({ params }) {
-  const dosenId = (await params).id;
-  const dosenPengampu = await getDosenPengampu(dosenId);
+  const slug = (await params).id;
+  const dosenPengampu = await getOneDosen(slug);
 
   return (
     <div className="container mx-auto p-6">

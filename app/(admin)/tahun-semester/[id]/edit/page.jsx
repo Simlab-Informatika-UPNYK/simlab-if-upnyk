@@ -1,17 +1,20 @@
 import { createClient } from "@/utils/supabase/server";
 import { FormEdit } from "./form-edit";
 
-async function getData(id) {
-//   const supabase = await createClient();
-  return {
-    tahun: "2022/2023",
-    semester: "Genap",
-  };
+async function getDetail(slug) {
+  const supabase = await createClient();
+
+  const { data: tahun_semester } = await supabase
+    .from("tahun_semester")
+    .select()
+    .eq("slug", slug)
+    .single();
+  return tahun_semester;
 }
 
 export default async function Page({ params }) {
   const slug = (await params).id;
-  const data = (await getData(slug));
+  const data = (await getDetail(slug));
 
   return <FormEdit data={data} />;
 }

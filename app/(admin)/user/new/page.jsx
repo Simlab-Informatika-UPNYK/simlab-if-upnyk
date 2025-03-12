@@ -1,9 +1,9 @@
 import React from 'react'
-import { FormNewInventarisLab } from './form-new-inventaris-lab'
+import { FormNewUser } from './form-new-user'
 
 const page = () => {
   return (
-    <FormNewInventarisLab />
+    <FormNewUser />
   )
 }
 

@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
@@ -9,40 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-async function getDosen(id) {
-  //   const supabase = await createClient();
-  //   const { data, error } = await supabase
-  //     .from("mk_praktikum")
-  //     .select()
-  //     .eq("id", id)
-  //     .single();
-
-  //   if (error) {
-  //     console.error("Error fetching MK:", error);
-  //     return null;
-  //   }
-
-  // // Return the actual data if available
-  // if (data) return data;
-
-  // Return dummy data as fallback
-  return {
-    nama: "Rina Wulandari, M.Kom.",
-    nip: "10111213",
-    mata_kuliah: "Praktikum Desain Grafis",
-    kelas: "TI-E",
-  };
-}
+import { getOneDosen } from "../actions";
 
 export default async function EditDosenPengampu({ params }) {
   const nip = (await params).id;
-  const dataDosen = await getDosen(nip);
-
-  /* nama: "Rina Wulandari, M.Kom.",
-      nip: "10111213",
-      mata_kuliah: "Praktikum Desain Grafis",
-      kelas: "TI-E", */
+  const dataDosen = await getOneDosen(nip);
 
   if (!dataDosen) {
     return (
@@ -96,12 +66,8 @@ export default async function EditDosenPengampu({ params }) {
               <p className="font-medium">{dataDosen.nama}</p>
             </div>
             <div>
-              <h3 className="text-sm text-gray-500">Mata Kuliah</h3>
-              <p className="font-medium">{dataDosen.mata_kuliah}</p>
-            </div>
-            <div>
-              <h3 className="text-sm text-gray-500">Kelas</h3>
-              <p className="font-medium">{dataDosen.kelas}</p>
+              <h3 className="text-sm text-gray-500">Email</h3>
+              <p className="font-medium">{dataDosen.email}</p>
             </div>
           </div>
         </div>

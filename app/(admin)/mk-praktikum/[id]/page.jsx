@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
@@ -9,35 +8,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-async function getMk(id) {
-  //   const supabase = await createClient();
-  //   const { data, error } = await supabase
-  //     .from("mk_praktikum")
-  //     .select()
-  //     .eq("id", id)
-  //     .single();
-
-  //   if (error) {
-  //     console.error("Error fetching MK:", error);
-  //     return null;
-  //   }
-
-  // // Return the actual data if available
-  // if (data) return data;
-
-  // Return dummy data as fallback
-  return {
-    kode_mk: "124210411",
-    mata_kuliah: "Praktikum Cloud Computing",
-    semester: "Ganjil",
-    jumlah_kelas: 8,
-  };
-}
+import { getOneMk } from "../actions.jsx";
 
 export default async function MkDetailPage({ params }) {
-  const mkId = (await params).id;
-  const mk = await getMk(mkId);
+  const slug = (await params).id;
+  const mk = await getOneMk(slug);
 
   if (!mk) {
     return (
@@ -55,9 +30,9 @@ export default async function MkDetailPage({ params }) {
   return (
     <div className="container mx-auto p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{mk.mata_kuliah}</h1>
+        <h1 className="text-2xl font-bold">{mk.nama}</h1>
         <div className="flex gap-2">
-          <Link href={`/mk-praktikum/${mkId}/edit`}>
+          <Link href={`/mk-praktikum/${slug}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
@@ -83,12 +58,8 @@ export default async function MkDetailPage({ params }) {
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
             <div>
-              <h3 className="text-sm text-gray-500">Kode MK</h3>
-              <p className="font-medium">{mk.kode_mk}</p>
-            </div>
-            <div>
               <h3 className="text-sm text-gray-500">Mata Kuliah</h3>
-              <p className="font-medium">{mk.mata_kuliah}</p>
+              <p className="font-medium">{mk.nama}</p>
             </div>
             <div>
               <h3 className="text-sm text-gray-500">Semester</h3>

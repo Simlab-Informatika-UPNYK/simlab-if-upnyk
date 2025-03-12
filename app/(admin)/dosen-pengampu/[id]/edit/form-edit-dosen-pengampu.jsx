@@ -16,14 +16,13 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
+import { editDosen } from "../../actions";
 
 // Updated schema for dosen pengampu
 const formSchema = z.object({
   nama: z.string().min(2, { message: "Nama minimal 2 karakter" }),
   nip: z.string().min(1, { message: "NIP harus diisi" }),
-  mata_kuliah: z.string().min(2, { message: "Mata kuliah harus diisi" }),
-  kelas: z.string().min(1, { message: "Kelas harus diisi" }),
+  email: z.string().min(2, { message: "Mata kuliah harus diisi" }),
 });
 
 export function FormEditDosenPengampu({ dosen }) {
@@ -36,8 +35,7 @@ export function FormEditDosenPengampu({ dosen }) {
     defaultValues: {
       nama: dosen.nama || "",
       nip: dosen.nip || "",
-      mata_kuliah: dosen.mata_kuliah || "",
-      kelas: dosen.kelas || "",
+      email: dosen.email || "",
     },
   });
 
@@ -45,28 +43,21 @@ export function FormEditDosenPengampu({ dosen }) {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
+      const result = await editDosen(dosen.id, values);
 
-      const { error } = await supabase
-        .from("dosen_pengampu")
-        .update({
-          nama: values.nama,
-          nip: values.nip,
-          mata_kuliah: values.mata_kuliah,
-          kelas: values.kelas,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", dosen.id);
-
-      if (error) throw error;
-
-      toast({
-        title: "Berhasil Mengubah",
-        description: `Data dosen ${values.nama} telah berhasil diperbarui`,
-      });
-
-      router.push("/dosen-pengampu");
-      router.refresh();
+      if (result.success) {
+        toast({
+          title: "Berhasil Mengubah",
+          description: `Data dosen ${values.nama} telah berhasil diperbarui`,
+        });
+        router.push("/dosen-pengampu");
+        router.refresh();
+      } else {
+        toast({
+          title: "Gagal Mengubah",
+          description: `Terjadi kesalahan saat diperbarui`,
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",
@@ -110,25 +101,12 @@ export function FormEditDosenPengampu({ dosen }) {
         />
         <FormField
           control={form.control}
-          name="mata_kuliah"
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Mata Kuliah</FormLabel>
+              <FormLabel className="text-sm font-medium">Email</FormLabel>
               <FormControl>
-                <Input className="w-full" placeholder="Mata Kuliah" {...field} />
-              </FormControl>
-              <FormMessage className="text-sm text-red-500" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="kelas"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm font-medium">Kelas</FormLabel>
-              <FormControl>
-                <Input className="w-full" placeholder="Kelas" {...field} />
+                <Input className="w-full" placeholder="Email" {...field} />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>

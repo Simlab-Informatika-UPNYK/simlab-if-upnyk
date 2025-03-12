@@ -3,69 +3,72 @@ import { columns } from "./_components/columns";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-
+import {getAllDosen} from "./actions"
+/* nama
+nip
+email */
 async function getData() {
   // Fetch data from your API here.
   return [
     {
       nama: "Juwairiah, S.Si., M.T.",
       nip: "01020304",
-      mata_kuliah: "Praktikum Manajemen Proses Bisnis",
-      kelas: "SI-A",
+      email: "test@gmail.com",
+      slug: "juwai"
     },
     {
       nama: "Ahmad Dani, S.Kom., M.Cs.",
       nip: "02030405",
-      mata_kuliah: "Praktikum Basis Data",
-      kelas: "SI-B",
+      email: "test@gmail.com",
+      slug: "ahmad"
     },
     {
       nama: "Siti Nurhaliza, S.T., M.Eng.",
       nip: "03040506",
-      mata_kuliah: "Praktikum Pemrograman Web",
-      kelas: "TI-A",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Budi Santoso, M.Kom.",
       nip: "04050607",
-      mata_kuliah: "Praktikum Jaringan Komputer",
-      kelas: "TI-B",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Rina Andriyani, S.Si., M.Sc.",
       nip: "05060708",
-      mata_kuliah: "Praktikum Sistem Operasi",
-      kelas: "SI-C",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Dedi Setiawan, S.Kom., M.M.",
       nip: "06070809",
-      mata_kuliah: "Praktikum Keamanan Sistem",
-      kelas: "TI-C",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Sri Mulyani, S.T., M.Si.",
       nip: "07080910",
-      mata_kuliah: "Praktikum Mobile Programming",
-      kelas: "SI-D",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Taufik Hidayat, M.T.",
       nip: "08091011",
-      mata_kuliah: "Praktikum Data Mining",
-      kelas: "TI-D",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Andika Pratama, S.Si., M.Eng.",
       nip: "09101112",
-      mata_kuliah: "Praktikum Cloud Computing",
-      kelas: "SI-E",
+      email: "test@gmail.com",
+      slug: ""
     },
     {
       nama: "Rina Wulandari, M.Kom.",
       nip: "10111213",
-      mata_kuliah: "Praktikum Desain Grafis",
-      kelas: "TI-E",
+      email: "test@gmail.com",
+      slug: ""
     },
   ];
 }
@@ -88,7 +91,7 @@ const filters = [
 ];
 
 export default async function Page() {
-  const data = await getData();
+  const data = await getAllDosen();
 
   return (
     <div className="container mx-auto p-4">
