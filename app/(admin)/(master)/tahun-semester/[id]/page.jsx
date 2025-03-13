@@ -25,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Copy, UserCheck } from "lucide-react";
-import { FormNewTahunSemester } from "@/app/(admin)/tahun-semester/new/form-new-tahun-semester";
+import { FormNewTahunSemester } from "@/app/(admin)/(master)/tahun-semester/new/form-new-tahun-semester.jsx";
 import BackButton from "@/components/back-button";
 
 async function getDetail(slug) {

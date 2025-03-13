@@ -5,9 +5,11 @@ import {
   AudioWaveform,
   BookOpen,
   Bot,
+  Calendar,
   Command,
   Frame,
   GalleryVerticalEnd,
+  HandCoins,
   IdCard,
   LayoutDashboard,
   LayoutDashboardIcon,
@@ -16,6 +18,7 @@ import {
   PieChart,
   Settings2,
   SquareTerminal,
+  TicketCheck,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -120,6 +123,21 @@ const data = {
         //   url: "#",
         // },
       ],
+    },
+    {
+      title: "Jadwal Praktikum",
+      url: "/jadwal-praktikum",
+      icon: Calendar,
+    },
+    {
+      title: "Honor Praktikum",
+      url: "/honor-praktikum",
+      icon: HandCoins,
+    },
+    {
+      title: "Sertifikat",
+      url: "/sertifikat",
+      icon: TicketCheck,
     },
     // {
     //   title: "Documentation",

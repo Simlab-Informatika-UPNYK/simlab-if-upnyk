@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import BackButton from "@/components/back-button";
 import { getKalabDetail } from "../actions.js";
-import { DeleteButton } from "./../_components/delete-button.jsx";
+import { DeleteButton } from "../_components/delete-button.jsx";
 
 export default async function KalabDetailPage({ params }) {
   const slug = (await params).id;

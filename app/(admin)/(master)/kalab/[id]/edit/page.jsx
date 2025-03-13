@@ -1,5 +1,5 @@
 import { getKalabDetail } from "../../actions.js";
-import { FormEdit } from "./form-edit";
+import { FormEdit } from "./form-edit.jsx";
 
 export default async function Page({ params }) {
   const slug = (await params).id;

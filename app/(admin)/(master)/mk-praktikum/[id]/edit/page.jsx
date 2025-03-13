@@ -1,5 +1,5 @@
 import { getOneMk } from "../../actions.jsx";
-import { FormEditMK } from "./form-edit-mk";
+import { FormEditMK } from "./form-edit-mk.jsx";
 import BackButton from "@/components/back-button";
 
 export default async function EditMKPage({ params }) {

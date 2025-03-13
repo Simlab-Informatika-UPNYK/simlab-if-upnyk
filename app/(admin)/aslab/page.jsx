@@ -1,6 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { columns } from './_components/columns.jsx'
-import { DataTable } from "./_components/data-table"
+import { DataTable } from "./_components/data-table.jsx"
 
 async function getData() {
   // Fetch data from your API here.

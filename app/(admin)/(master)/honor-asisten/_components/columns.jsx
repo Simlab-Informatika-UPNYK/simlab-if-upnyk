@@ -30,13 +30,6 @@ export const columns = [
     enableSorting: false,
     enableHiding: false,
   },
-
-  {
-    accessorKey: "no",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="No" />
-    ),
-  },
   {
     accessorKey: "jenis",
     header: ({ column }) => (
