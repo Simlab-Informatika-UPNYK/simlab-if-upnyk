@@ -72,7 +72,7 @@ const data = {
       title: "Master Setup",
       url: "#",
       icon: SquareTerminal,
-      isActive: true,
+      // isActive: true,
       items: [
         {
           title: "Tahun Semester",
@@ -111,18 +111,18 @@ const data = {
     {
       title: "Asisten",
       url: "/aslab",
-      isActive: true,
+      // isActive: true,
       icon: IdCard,
-      items: [
-        {
-          title: "Asisten Aktif",
-          url: "/aslab",
-        },
-        // {
-        //   title: "Asisten Nonaktif",
-        //   url: "#",
-        // },
-      ],
+      // items: [
+      //   {
+      //     title: "Asisten Aktif",
+      //     url: "/aslab",
+      //   },
+      //   // {
+      //   //   title: "Asisten Nonaktif",
+      //   //   url: "#",
+      //   // },
+      // ],
     },
     {
       title: "Jadwal Praktikum",
