@@ -26,24 +26,21 @@ export default async function Page() {
   const data = await getAllJadwal();
 
   return (
-    <div className="container mx-auto p-4">
-      {/* {JSON.stringify(users)} */}
-      <DataTable
-        toolbar={
-          <Link href="/jadwal-praktikum/new">
-            <Button>
-              <PlusCircle />
-              Add Data
-            </Button>
-          </Link>
-        }
-        viewOptions={true}
-        globalSearch={true}
-        filters={filters}
-        pagination={true}
-        columns={columns}
-        data={data}
-      />
-    </div>
+    <DataTable
+      toolbar={
+        <Link href="/jadwal-praktikum/new">
+          <Button>
+            <PlusCircle />
+            Add Data
+          </Button>
+        </Link>
+      }
+      viewOptions={true}
+      globalSearch={true}
+      filters={filters}
+      pagination={true}
+      columns={columns}
+      data={data}
+    />
   );
 }

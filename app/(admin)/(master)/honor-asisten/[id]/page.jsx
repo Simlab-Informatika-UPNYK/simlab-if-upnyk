@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server";
+import { getHonorJenisByJenis } from "../actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
@@ -9,34 +9,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-async function getHonorAsisten(id) {
-  //   const supabase = await createClient();
-  //   const { data, error } = await supabase
-  //     .from("honor_asisten")
-  //     .select()
-  //     .eq("id", id)
-  //     .single();
-
-  //   if (error) {
-  //     console.error("Error fetching Honor Asisten:", error);
-  //     return null;
-  //   }
-
-  // // Return the actual data if available
-  // if (data) return data;
-
-  // Return dummy data as fallback
-  return {
-    id: "1",
-    jenis: "Praktikum Reguler",
-    biaya: 25000,
-  };
-}
+import { DeleteButton } from "../_components/delete-button.jsx";
 
 export default async function HonorAsistenDetail({ params }) {
-  const id = (await params).id;
-  const dataHonor = await getHonorAsisten(id);
+  const jenis = (await params).id;
+  const dataHonor = await getHonorJenisByJenis(jenis);
 
   if (!dataHonor) {
     return (
@@ -58,24 +35,12 @@ export default async function HonorAsistenDetail({ params }) {
           Honor Asisten - {dataHonor.jenis}
         </h1>
         <div className="flex gap-2">
-          <Link href={`/honor-asisten/${id}/edit`}>
+          <Link href={`/honor-asisten/${dataHonor.jenis}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
           </Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                More <MoreHorizontal className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-red-600">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <DeleteButton variant="outline" id={dataHonor.id} />
           <BackButton />
         </div>
       </div>
@@ -83,10 +48,6 @@ export default async function HonorAsistenDetail({ params }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
-            <div>
-              <h3 className="text-sm text-gray-500">ID</h3>
-              <p className="font-medium">{dataHonor.id}</p>
-            </div>
             <div>
               <h3 className="text-sm text-gray-500">Jenis</h3>
               <p className="font-medium">{dataHonor.jenis}</p>

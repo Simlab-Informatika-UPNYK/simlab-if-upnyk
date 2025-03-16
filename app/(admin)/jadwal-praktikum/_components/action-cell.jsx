@@ -18,19 +18,27 @@ import { deleteUser } from "../actions";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 export const ActionCell = ({ data }) => {
   const { toast } = useToast();
   const router = useRouter();
+  const supabase = createClient();
   const handleDelete = async () => {
     try {
-      deleteUser(data.id);
-      router.refresh();
+      const { dataKelas, error } = await supabase
+        .from("kelas_praktikum")
+        .delete()
+        .eq("id", data.id)
+        .select();
+      if (!error) {
+        router.refresh();
 
-      toast({
-        title: `Berhasil Menghapus`,
-        description: `Data telah berhasil dihapus`,
-      });
+        toast({
+          title: `Berhasil Menghapus`,
+          description: `Data telah berhasil dihapus`,
+        });
+      }
     } catch (error) {
       toast({
         title: `Gagal Menghapus`,

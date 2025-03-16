@@ -20,7 +20,8 @@ export async function getAllJadwal() {
         dosen_pengampu(id, nama),
         lab(id, nama),
         aslab1:aslab!kelas_praktikum_id_asisten1_fkey(id_aslab, nama),
-        aslab2:aslab!kelas_praktikum_id_asisten2_fkey(id_aslab, nama)
+        aslab2:aslab!kelas_praktikum_id_asisten2_fkey(id_aslab, nama),
+        slug
       `);
 
     if (error) {
@@ -41,7 +42,7 @@ export async function getAllJadwal() {
       
       return {
         id: item.id,
-        slug: slugify(slugText),
+        slug: item.slug,
         kelas: item.kelas,
         mata_kuliah: mataKuliah,
         dosen: dosen,

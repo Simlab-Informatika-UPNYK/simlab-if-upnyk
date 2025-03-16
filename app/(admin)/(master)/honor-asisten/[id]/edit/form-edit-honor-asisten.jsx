@@ -17,13 +17,15 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import { updateHonorJenis } from "../../actions";
 
 // Schema for honor asisten data
 const formSchema = z.object({
   jenis: z.string().min(1, { message: "Jenis honor harus diisi" }),
   biaya: z.preprocess(
     (arg) => (arg === "" ? undefined : Number(arg)),
-    z.number({ invalid_type_error: "Biaya harus berupa angka" })
+    z
+      .number({ invalid_type_error: "Biaya harus berupa angka" })
       .min(1, { message: "Biaya minimal 1" })
   ),
 });
@@ -45,26 +47,17 @@ export function FormEditHonorAsisten({ honor }) {
     setIsSubmitting(true);
 
     try {
-      const supabase = createClient();
-
-      const { error } = await supabase
-        .from("honor_asisten")
-        .update({
-          jenis: values.jenis,
-          biaya: values.biaya,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", honor.id);
-
-      if (error) throw error;
-
+      await updateHonorJenis({
+        id: honor.id,
+        biaya: values.biaya,
+        jenis: values.jenis,
+      });
+      router.push("/honor-asisten");
+      router.refresh();
       toast({
         title: "Berhasil Mengubah",
         description: `Honor ${values.jenis} telah berhasil diperbarui`,
       });
-
-      router.push("/honor-asisten");
-      router.refresh();
     } catch (error) {
       toast({
         title: "Error",
@@ -87,7 +80,11 @@ export function FormEditHonorAsisten({ honor }) {
             <FormItem>
               <FormLabel className="text-sm font-medium">Jenis Honor</FormLabel>
               <FormControl>
-                <Input className="w-full" placeholder="Jenis Honor" {...field} />
+                <Input
+                  className="w-full"
+                  placeholder="Jenis Honor"
+                  {...field}
+                />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
@@ -100,11 +97,11 @@ export function FormEditHonorAsisten({ honor }) {
             <FormItem>
               <FormLabel className="text-sm font-medium">Biaya</FormLabel>
               <FormControl>
-                <Input 
-                  type="number" 
-                  className="w-full" 
-                  placeholder="Biaya" 
-                  {...field} 
+                <Input
+                  type="number"
+                  className="w-full"
+                  placeholder="Biaya"
+                  {...field}
                 />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />

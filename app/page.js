@@ -65,7 +65,7 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-50 to-white py-20">
+      <section className="bg-gradient-to-b mt-12">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center">
           <div className="flex flex-col w-full md:w-1/2 justify-center items-start md:mb-0 md:pr-10">
             <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6 text-gray-800">
@@ -86,16 +86,15 @@ export default function Home() {
               </Link>
             </div>
           </div>
-          <div className="w-full md:w-1/2 mt-10 md:mt-0 flex justify-center">
-            <div className="w-full max-w-md h-80 bg-blue-100 rounded-lg shadow-lg relative overflow-hidden">
-              {/* Placeholder for an image */}
+          {/* <div className="w-full md:w-1/2 mt-10 md:mt-0 flex justify-center">
+            <div className="w-full max-w-md h-80 bg-blue-100 rounded-lg relative overflow-hidden">
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-blue-800 font-semibold">
                   Laboratory Image
                 </span>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -152,7 +151,7 @@ export default function Home() {
             Nasional Veteran Yogyakarta.
           </p>
           <div className="flex flex-col md:flex-row gap-8 items-center justify-center">
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+            <div className="bg-white p-6 rounded-lg w-full max-w-md">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Visi</h3>
               <p className="text-gray-600">
                 Menjadi pusat keunggulan dalam pengelolaan laboratorium
@@ -160,7 +159,7 @@ export default function Home() {
                 akademik serta riset berkualitas tinggi.
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+            <div className="bg-white p-6 rounded-lg  w-full max-w-md">
               <h3 className="text-xl font-bold text-gray-800 mb-4">Misi</h3>
               <p className="text-gray-600">
                 Menyediakan infrastruktur dan layanan laboratorium yang optimal

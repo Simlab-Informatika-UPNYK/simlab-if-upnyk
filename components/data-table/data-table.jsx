@@ -59,8 +59,8 @@ export function DataTable({
           {globalSearch && <Input
             value={(table.getState().globalFilter) ?? ""}
             onChange={e => table.setGlobalFilter(String(e.target.value))}
-            placeholder="Search..."
-            className="max-w-sm"
+              placeholder="Search..."
+              className="max-w-sm"
           />}
           {filters.map((filter) => {
             const column = table.getColumn(filter.id)
@@ -83,7 +83,7 @@ export function DataTable({
           }
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border relative w-[0] min-w-full overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -94,9 +94,9 @@ export function DataTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
                   )
                 })}
@@ -127,11 +127,11 @@ export function DataTable({
           </TableBody>
         </Table>
       </div>
-      {pagination === true &&
+      {pagination === true && (
         <div className="mt-4">
           <DataTablePagination table={table} />
         </div>
-      }
+      )}
     </>
   )
 }
