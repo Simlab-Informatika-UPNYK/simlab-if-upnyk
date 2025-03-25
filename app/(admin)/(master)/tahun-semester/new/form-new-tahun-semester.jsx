@@ -49,7 +49,7 @@ export function FormNewTahunSemester() {
       setFormError(""); // Reset error message
       const supabase = createClient();
 
-      const slugTahun = slugify(`${values.semester} ${values.tahun_ajaran}`);
+      const slugTahun = slugify(`${values.tahun_ajaran}-${values.semester}`);
 
       // Check if the tahun_semester with the same slug already exists
       const { data: existingData, error: checkError } = await supabase

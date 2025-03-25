@@ -13,7 +13,7 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
       return (
-        <Link href={`/honor-asisten/${data.jenis}`} className="hover:underline">
+        <Link href={`/honor-asisten/${data.slug}`} className="hover:underline">
           {data.jenis}
         </Link>
       );

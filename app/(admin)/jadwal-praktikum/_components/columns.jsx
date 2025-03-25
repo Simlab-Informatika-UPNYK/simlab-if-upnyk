@@ -44,7 +44,7 @@ export const columns = [
     accessorKey: "lab",
   },
   {
-    accessorKey: "asisten1",
+    accessorKey: "asisten",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Asisten" />
     ),
@@ -52,8 +52,13 @@ export const columns = [
       const data = row.original;
       return (
         <ul className="list-disc pl-4">
-          <li>{data.asisten1}</li>
-          <li>{data.asisten2}</li>
+          {Array.isArray(data.asisten) ? (
+            data.asisten.map((asisten, index) => (
+              <li key={index}>{asisten}</li>
+            ))
+          ) : (
+            <li>{data.asisten}</li>
+          )}
         </ul>
       );
     },

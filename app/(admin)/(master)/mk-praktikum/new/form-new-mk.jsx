@@ -27,15 +27,9 @@ import { createMk } from "../actions";
 
 // Updated schema for Mata Kuliah inputs
 const formSchema = z.object({
-  // kodeMK: z.string().min(2, { message: "Kode MK minimal 2 karakter" }),
+  kode_mk: z.string().min(2, { message: "Kode MK minimal 2 karakter" }),
   nama: z.string().min(2, { message: "Mata Kuliah minimal 2 karakter" }),
   semester: z.string().min(1, { message: "Semester harus diisi" }),
-  jumlah_kelas: z.preprocess(
-    (arg) => (arg === "" ? undefined : Number(arg)),
-    z
-      .number({ invalid_type_error: "Jumlah Kelas harus berupa angka" })
-      .min(1, { message: "Jumlah Kelas minimal 1" })
-  ),
 });
 
 export function FormNewMK() {
@@ -45,10 +39,9 @@ export function FormNewMK() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      // kodeMK: "",
+      kode_mk: "",
       nama: "",
       semester: "",
-      jumlah_kelas: "",
     },
   });
 
@@ -79,9 +72,9 @@ export function FormNewMK() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* <FormField
+        <FormField
           control={form.control}
-          name="kodeMK"
+          name="kode_mk"
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">Kode MK</FormLabel>
@@ -91,7 +84,7 @@ export function FormNewMK() {
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
           )}
-        /> */}
+        />
         <FormField
           control={form.control}
           name="nama"
@@ -130,7 +123,7 @@ export function FormNewMK() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="jumlah_kelas"
           render={({ field }) => (
@@ -149,7 +142,7 @@ export function FormNewMK() {
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
           )}
-        />
+        /> */}
         <div className="flex justify-end pt-4">
           <Button type="submit" className="px-6">
             Submit

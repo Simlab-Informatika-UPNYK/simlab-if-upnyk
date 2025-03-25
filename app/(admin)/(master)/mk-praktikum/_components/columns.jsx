@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
 import { Edit, Trash } from "lucide-react";
 
 export const columns = [
-  
+  {
+    id: "Kode Matkul",
+    accessorKey: "kode_mk",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Kode Matkul" />
+    ),
+  },
   {
     id: "mata kuliah",
     accessorKey: "nama",

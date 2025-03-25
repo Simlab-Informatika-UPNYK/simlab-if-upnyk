@@ -156,7 +156,10 @@ export function FormEditLab({ lab, listKalab }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">Kalab</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select 
+                onValueChange={field.onChange} 
+                value={String(field.value)}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Silahkan pilih kepala lab" />
@@ -165,7 +168,7 @@ export function FormEditLab({ lab, listKalab }) {
                 <SelectContent>
                   {listKalab &&
                     listKalab.map((kalab) => (
-                      <SelectItem key={kalab.id} value={kalab.id}>
+                      <SelectItem key={kalab.id} value={String(kalab.id)}>
                         {kalab.nama}
                       </SelectItem>
                     ))}

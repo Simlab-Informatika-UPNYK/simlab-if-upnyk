@@ -13,20 +13,19 @@ async function getJadwalDetail(slug) {
       .select(`
         id,
         kelas,
-        id_mk,
+        id_mk:mata_kuliah,
         id_dosen,
         jumlah_praktikan,
         hari,
         lab,
-        id_asisten1,
-        id_asisten2,
         jenis_praktikan,
         waktu,
         slug
       `)
       .eq("slug", slug)
+      .limit(1)
       .single();
-    
+
     if (error) {
       console.error("Error fetching jadwal:", error);
       return null;

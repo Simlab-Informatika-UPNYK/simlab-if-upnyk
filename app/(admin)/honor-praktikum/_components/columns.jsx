@@ -10,34 +10,18 @@ export const columns = [
     accessorKey: "nim",
   },
   {
-    id: "Nama Asisten",
-    header: "Nama Asisten",
-    accessorKey: "nama_asisten",
+    id: "Nama",
+    header: "Nama",
+    accessorKey: "nama",
   },
   {
-    id: "Periode",
-    header: "Periode",
-    accessorKey: "periode",
+    id: "Jumlah Kelas",
+    header: "Jumlah Kelas",
+    accessorKey: "jumlah_kelas",
   },
   {
-    id: "Jumlah Honor",
-    header: "Jumlah Honor",
-    accessorKey: "jumlah_honor",
-  },
-  {
-    id: "Tanggal Pengambilan",
-    header: "Tanggal Pengambilan",
-    accessorKey: "tanggal_pengambilan",
-  },
-  {
-    id: "aksi",
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <Link href={`/honor-praktikum/${data.nim}`}>
-          <Button variant="secondary">Detail</Button>
-        </Link>
-      );
-    },
+    id: "Tanggal Diambil",
+    header: "Tanggal Diambil",
+    accessorKey: "tanggal_diambil",
   },
 ];

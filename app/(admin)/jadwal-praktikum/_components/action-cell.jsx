@@ -38,6 +38,11 @@ export const ActionCell = ({ data }) => {
           title: `Berhasil Menghapus`,
           description: `Data telah berhasil dihapus`,
         });
+      } else {
+        toast({
+          title: `Gagal Menghapus`,
+          description: "Terjadi kesalahan",
+        });
       }
     } catch (error) {
       toast({

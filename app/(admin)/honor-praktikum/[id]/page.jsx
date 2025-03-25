@@ -1,3 +1,8 @@
+"use client";
+
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import React from "react"; // Add this import for React.use()
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
@@ -8,7 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { getOneHonor } from "../actions";
+import { getOneHonor, getTahunSemesterId } from "../actions";
 import {
   Table,
   TableBody,
@@ -18,91 +23,50 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { BelumDiambil, UpdateDialog } from "../_components/update-dialog";
+import { HonorProvider, useHonor } from "../_components/honor-context";
 
-export default async function DetailPage({ params }) {
-  const nim = (await params).id;
-  const data = await getOneHonor(nim);
+function DetailPageContent() {
+  const { data } = useHonor();
+  const searchParams = useSearchParams();
+  const periodeSlug = searchParams.get("periode");
+  const [tahunSemesterId, setTahunSemesterId] = useState(-1);
 
-  // Dummy data
-  const dummyData = {
-    asisten: {
-      id: "001",
-      nim: "124200023",
-      nama: "Cantika Amalia",
-      periode: "Gasal 2024/2025",
-      jumlah_honor: "Rp. 2,500,000",
-      tanggal_pengambilan: "-",
-    },
-    honorarium: {
-      records: [
-        {
-          semester_kelas: "B",
-          mata_kuliah: "Manajemen Proses Bisnis",
-          responsi: 35000,
-          jumlah_mahasiswa: 25,
-          honorarium: 400000,
-          koreksi: 75000,
-          naskah: 38000,
-          jumlah_total: 513000,
-        },
-        {
-          semester_kelas: "D",
-          mata_kuliah: "Pemrograman Web",
-          responsi: 35000,
-          jumlah_mahasiswa: 26,
-          honorarium: 400000,
-          koreksi: 78000,
-          naskah: 38000,
-          jumlah_total: 516000,
-        },
-        {
-          semester_kelas: "A",
-          mata_kuliah: "Algoritma Pemrograman",
-          responsi: 35000,
-          jumlah_mahasiswa: 25,
-          honorarium: 400000,
-          koreksi: 75000,
-          naskah: 38000,
-          jumlah_total: 513000,
-        },
-      ],
-      total: {
-        responsi: 105000,
-        honorarium: 1200000,
-        koreksi: 228000,
-        naskah: 114000,
-        jumlah_total: 1647000,
-      },
-    },
-  };
+  useEffect(() => {
+    const fetchTahunSemesterId = async () => {
+      const idPeriode = await getTahunSemesterId(periodeSlug);
+      setTahunSemesterId(idPeriode);
+    };
+
+    fetchTahunSemesterId();
+  }, [periodeSlug]);
 
   return (
     <div className="max-w-screen-xl w-full mx-auto">
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Detail Honor Praktikum</h1>
+        <h1 className="text-2xl font-bold">
+          Honor Praktikum
+          {/* - {periodeSlug && <span className="text-primary">{periodeSlug}</span>} */}
+        </h1>
         <div className="flex gap-2">
-          <Link href={`/honor-praktikum/${nim}/edit`}>
-            <Button variant="outline" size="icon">
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                More <MoreHorizontal className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-red-600">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <BackButton />
+          {data.kelas &&
+            data.kelas.length > 0 &&
+            (data.tanggal_diambil ? (
+              <BelumDiambil
+                idAslabHonor={data.id_aslab_honor}
+                aslabId={data.asisten?.id_aslab}
+                tahunSemesterId={tahunSemesterId}
+              />
+            ) : (
+              <UpdateDialog
+                idAslabHonor={data.id_aslab_honor}
+                aslabId={data.asisten?.id_aslab}
+                tahunSemesterId={tahunSemesterId}
+              />
+            ))}
         </div>
       </div>
-
       <div className="space-y-6">
         {/* Asisten Information */}
         <div>
@@ -110,28 +74,44 @@ export default async function DetailPage({ params }) {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-sm text-gray-500">NIM</p>
-              <p>{dummyData.asisten.nim}</p>
+              <p>{data.asisten?.nim}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Nama</p>
-              <p>{dummyData.asisten.nama}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Periode</p>
-              <p>{dummyData.asisten.periode}</p>
+              <p>{data.asisten?.nama}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Jumlah Honor</p>
-              <p>{dummyData.asisten.jumlah_honor}</p>
+              <p>{data.formatted_honor}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Tanggal Pengambilan</p>
-              <p>{dummyData.asisten.tanggal_pengambilan}</p>
+              <p>{data.tanggal_diambil ?? "-"}</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg border p-6 shadow-sm">
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">
+            Perhitungan
+          </h2>
+          <div className="space-y-2 text-sm">
+            <div className="flex items-center">
+              <span className="w-24 font-medium">Responsi</span>
+              <span className="text-gray-600">: 1 × Rp 35.000</span>
+            </div>
+            <div className="flex items-center">
+              <span className="w-24 font-medium">Koreksi</span>
+              <span className="text-gray-600">
+                : Jumlah mahasiswa × Rp 6.000
+              </span>
+            </div>
+            <div className="flex items-center">
+              <span className="w-24 font-medium">Honorarium</span>
+              <span className="text-gray-600">: Jumlah hadir × Rp 40.000</span>
             </div>
           </div>
         </div>
 
-        {/* Honorarium Table */}
         <div className="relative w-[0] min-w-full overflow-x-auto">
           <h2 className="text-xl font-semibold mb-4">Detail Honorarium</h2>
           <Table className="w-full">
@@ -141,56 +121,43 @@ export default async function DetailPage({ params }) {
                 <TableHead>Kelas</TableHead>
                 <TableHead className="text-right">Responsi</TableHead>
                 <TableHead className="text-right">Jumlah Mahasiswa</TableHead>
-                <TableHead className="text-right">Honorarium</TableHead>
                 <TableHead className="text-right">Koreksi</TableHead>
                 <TableHead className="text-right">Naskah</TableHead>
-                <TableHead className="text-right">Jumlah Total</TableHead>
+                <TableHead className="text-right">Honorarium</TableHead>
+                <TableHead className="text-right">Total</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {dummyData.honorarium.records.map((record, index) => (
+              {data.kelas?.map((kelas, index) => (
                 <TableRow key={index}>
-                  <TableCell>{record.mata_kuliah}</TableCell>
-                  <TableCell>{record.semester_kelas}</TableCell>
+                  <TableCell>{kelas.mata_kuliah.nama}</TableCell>
+                  <TableCell>{kelas.kelas}</TableCell>
                   <TableCell className="text-right">
-                    Rp. {record.responsi.toLocaleString()}
+                    Rp. {kelas.honor_breakdown.responsi.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    {record.jumlah_mahasiswa}
+                    {kelas.jumlah_praktikan}
                   </TableCell>
                   <TableCell className="text-right">
-                    Rp. {record.honorarium.toLocaleString()}
+                    Rp. {kelas.honor_breakdown.koreksi.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    Rp. {record.koreksi.toLocaleString()}
+                    Rp. {kelas.honor_breakdown.naskah.toLocaleString()}
                   </TableCell>
                   <TableCell className="text-right">
-                    Rp. {record.naskah.toLocaleString()}
+                    Rp. {kelas.honor_breakdown.honorarium.toLocaleString()}
                   </TableCell>
-                  <TableCell className="text-right">
-                    Rp. {record.jumlah_total.toLocaleString()}
+                  <TableCell className="text-right font-bold">
+                    Rp. {kelas.honor_kelas.toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={2}>Total</TableCell>
-                <TableCell className="text-right">
-                  Rp. {dummyData.honorarium.total.responsi.toLocaleString()}
-                </TableCell>
-                <TableCell className="text-right">-</TableCell>
-                <TableCell className="text-right">
-                  Rp. {dummyData.honorarium.total.honorarium.toLocaleString()}
-                </TableCell>
-                <TableCell className="text-right">
-                  Rp. {dummyData.honorarium.total.koreksi.toLocaleString()}
-                </TableCell>
-                <TableCell className="text-right">
-                  Rp. {dummyData.honorarium.total.naskah.toLocaleString()}
-                </TableCell>
+                <TableCell colSpan={7}>Total</TableCell>
                 <TableCell className="text-right font-bold">
-                  Rp. {dummyData.honorarium.total.jumlah_total.toLocaleString()}
+                  {data.formatted_honor}
                 </TableCell>
               </TableRow>
             </TableFooter>
@@ -198,5 +165,42 @@ export default async function DetailPage({ params }) {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DetailPage({ params }) {
+  // Unwrap params using React.use()
+  const unwrappedParams = React.use(params);
+  const nim = unwrappedParams.id;
+
+  const searchParams = useSearchParams();
+  const periodeSlug = searchParams.get("periode");
+
+  const [initialData, setInitialData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Initial data fetch logic...
+    const fetchData = async () => {
+      try {
+        const tahunSemesterId = await getTahunSemesterId(periodeSlug);
+        const honorData = await getOneHonor(nim, tahunSemesterId);
+        setInitialData(honorData);
+        console.log("honor data", honorData);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [nim, periodeSlug]);
+
+  if (loading) return <div>Loading...</div>;
+  if (!initialData) return <div>Honor not found</div>;
+
+  return (
+    <HonorProvider initialData={initialData}>
+      <DetailPageContent />
+    </HonorProvider>
   );
 }

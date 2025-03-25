@@ -24,6 +24,7 @@ import {
 import { createClient } from "@/utils/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import slugify from "react-slugify";
 
 const formSchema = z.object({
   tahun_ajaran: z
@@ -50,7 +51,10 @@ export function FormEdit({ data }) {
 
       const result = await supabase
         .from("tahun_semester")
-        .update(values)
+        .update({
+          ...values,
+          slug: slugify(`${values.tahun_ajaran}-${values.semester}`),
+        })
         .eq("id", data.id);
 
       if (result.error)

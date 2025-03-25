@@ -11,6 +11,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -20,6 +27,7 @@ import { editMk } from "../../actions";
 
 // Schema for MK Praktikum
 const formSchema = z.object({
+  kode_mk: z.string().min(2, { message: "Kode MK minimal 2 karakter" }),
   nama: z.string().min(2, { message: "Mata Kuliah minimal 2 karakter" }),
   semester: z.string().min(1, { message: "Semester harus diisi" }),
   jumlah_kelas: z.preprocess(
@@ -38,6 +46,7 @@ export function FormEditMK({ mk }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      kode_mk: `${mk.kode_mk}` || "",
       nama: mk.nama || "",
       semester: mk.semester || "",
       jumlah_kelas: mk.jumlah_kelas || "",
@@ -79,7 +88,7 @@ export function FormEditMK({ mk }) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        {/* <FormField
+        <FormField
           control={form.control}
           name="kode_mk"
           render={({ field }) => (
@@ -91,7 +100,7 @@ export function FormEditMK({ mk }) {
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
           )}
-        /> */}
+        />
         <FormField
           control={form.control}
           name="nama"
@@ -115,9 +124,17 @@ export function FormEditMK({ mk }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">Semester</FormLabel>
-              <FormControl>
-                <Input className="w-full" placeholder="Semester" {...field} />
-              </FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Pilih semester" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Gasal">Gasal</SelectItem>
+                  <SelectItem value="Genap">Genap</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
           )}

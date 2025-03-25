@@ -62,6 +62,10 @@ export default async function MkDetailPage({ params }) {
               <p className="font-medium">{mk.nama}</p>
             </div>
             <div>
+              <h3 className="text-sm text-gray-500">Kode Mata Kuliah</h3>
+              <p className="font-medium">{mk.kode_mk}</p>
+            </div>
+            <div>
               <h3 className="text-sm text-gray-500">Semester</h3>
               <p className="font-medium">{mk.semester}</p>
             </div>

@@ -24,7 +24,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { createClient } from "@/utils/supabase/client";
+import { AslabPicker } from "@/components/aslab-picker";
+import slugify from "react-slugify";
 
+// Updated schema to match the new form with asisten as array
 const formSchema = z.object({
   kelas: z.string().min(1, { message: "Kelas harus diisi" }),
   id_mk: z.coerce
@@ -41,8 +44,9 @@ const formSchema = z.object({
     .positive({ message: "Jumlah praktikan harus diisi" }),
   hari: z.string().min(1, { message: "Hari harus dipilih" }),
   lab: z.coerce.number().int().positive({ message: "Lab harus dipilih" }),
-  id_asisten1: z.string().uuid({ message: "Asisten 1 harus dipilih" }),
-  id_asisten2: z.string().uuid().optional(),
+  asisten: z
+    .array(z.string().uuid())
+    .min(1, { message: "Pilih minimal 1 asisten" }),
   jenis_praktikan: z
     .string()
     .min(1, { message: "Jenis praktikan harus dipilih" }),
@@ -71,8 +75,7 @@ export function FormEditJadwal({ jadwal }) {
       jumlah_praktikan: jadwal.jumlah_praktikan?.toString() || "",
       hari: jadwal.hari || "",
       lab: jadwal.lab?.toString() || "",
-      id_asisten1: jadwal.id_asisten1 || "",
-      id_asisten2: jadwal.id_asisten2 || "",
+      asisten: [], // Will be populated after fetching
       jenis_praktikan: jadwal.jenis_praktikan || "",
       waktu: jadwal.waktu || "",
     },
@@ -111,7 +114,7 @@ export function FormEditJadwal({ jadwal }) {
         // Fetch aslab data
         const { data: aslabData, error: aslabError } = await supabase
           .from("aslab")
-          .select("id_aslab, nama");
+          .select("id_aslab, nama, nim");
 
         if (aslabError) throw aslabError;
         setAslab(aslabData || []);
@@ -130,29 +133,80 @@ export function FormEditJadwal({ jadwal }) {
     fetchReferenceData();
   }, [supabase, toast]);
 
+  // Fetch existing assistants for this class
+  useEffect(() => {
+    async function fetchAssistants() {
+      if (!jadwal.id) return;
+
+      try {
+        const { data, error } = await supabase
+          .from("kelas_aslab")
+          .select("aslab")
+          .eq("kelas", jadwal.id);
+
+        if (error) throw error;
+
+        // Extract aslab IDs and set in form
+        const aslabIds = data.map((item) => item.aslab);
+
+        // Convert legacy format if needed (from id_asisten1 and id_asisten2)
+        form.setValue("asisten", aslabIds);
+      } catch (error) {
+        console.error("Error fetching assistants:", error);
+      }
+    }
+
+    fetchAssistants();
+  }, [jadwal.id, supabase, form]);
+
   async function onSubmit(values) {
     try {
       setIsSubmitting(true);
-      
+      const selectedMK = mataKuliah.find(
+        (mk) => mk.id.toString() === values.id_mk.toString()
+      );
+      const mkNama = selectedMK ? selectedMK.nama : "";
+
       const { data, error } = await supabase
         .from("kelas_praktikum")
         .update({
           kelas: values.kelas,
-          id_mk: values.id_mk,
+          mata_kuliah: values.id_mk,
           id_dosen: values.id_dosen,
           jumlah_praktikan: values.jumlah_praktikan,
           hari: values.hari,
           lab: values.lab,
-          id_asisten1: values.id_asisten1,
-          id_asisten2: values.id_asisten2 || null,
           jenis_praktikan: values.jenis_praktikan,
           waktu: values.waktu,
+          slug: slugify(`${mkNama} ${values.kelas}`),
         })
         .eq("id", jadwal.id)
         .select();
 
       if (error) {
         throw error;
+      }
+
+      // First delete all existing assistant relationships for this class
+      const { error: deleteError } = await supabase
+        .from("kelas_aslab")
+        .delete()
+        .eq("kelas", jadwal.id);
+
+      if (deleteError) throw deleteError;
+
+      // Then insert the new assistant relationships
+      if (values.asisten && values.asisten.length > 0) {
+        const aslabInserts = values.asisten.map((aslabId) => ({
+          kelas: jadwal.id,
+          aslab: aslabId,
+        }));
+
+        const { error: aslabError } = await supabase
+          .from("kelas_aslab")
+          .insert(aslabInserts);
+
+        if (aslabError) throw aslabError;
       }
 
       toast({
@@ -323,52 +377,24 @@ export function FormEditJadwal({ jadwal }) {
           )}
         />
 
+        {/* Replace the separate asisten1 and asisten2 fields with a single asisten field */}
         <FormField
           control={form.control}
-          name="id_asisten1"
+          name="asisten"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Asisten 1</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Asisten 1" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {aslab.map((a) => (
-                    <SelectItem key={a.id_aslab} value={a.id_aslab}>
-                      {a.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage className="text-sm text-red-500" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="id_asisten2"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-sm font-medium">
-                Asisten 2
-              </FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Asisten 2" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {aslab.map((a) => (
-                    <SelectItem key={a.id_aslab} value={a.id_aslab}>
-                      {a.nama}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <FormLabel className="text-sm font-medium">Asisten</FormLabel>
+              <div className="space-y-2">
+                <AslabPicker
+                  options={aslab.map((a) => ({
+                    value: a.id_aslab,
+                    label: a.nama,
+                    nim: a.nim,
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </div>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
           )}

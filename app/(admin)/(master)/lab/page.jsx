@@ -28,8 +28,8 @@ export default async function Page() {
       <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Jumlah Kepala Laboratorium</CardTitle>
-            <CardDescription>Total keseluruhan kalab</CardDescription>
+            <CardTitle>Jumlah Laboratorium</CardTitle>
+            <CardDescription>Total keseluruhan lab</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">{data.length}</p>

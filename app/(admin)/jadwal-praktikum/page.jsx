@@ -5,25 +5,25 @@ import { getAllJadwal } from "./actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const filters = [
-  //   {
-  //     id: "update_at",
-  //     title: "Semester",
-  //     options: [
-  //       {
-  //         value: "Genap",
-  //         label: "Genap",
-  //       },
-  //       {
-  //         value: "Ganjil",
-  //         label: "Ganjil",
-  //       },
-  //     ],
-  //   },
-];
+const filters = [];
 
 export default async function Page() {
   const data = await getAllJadwal();
+
+  const transformedData = data.map((item) => {
+    return {
+      ...item,
+      kelas: item.kelas,
+      mata_kuliah: item.mata_kuliah.nama,
+      dosen: item.dosen_pengampu.nama,
+      jumlah_praktikan: item.jumlah_praktikan,
+      hari: item.hari,
+      waktu: item.waktu,
+      lab: item.lab.nama,
+      jenis_praktikan: item.jenis_praktikan,
+      asisten: item.aslab.map((a) => a.aslab.nama),
+    };
+  });
 
   return (
     <DataTable
@@ -40,7 +40,7 @@ export default async function Page() {
       filters={filters}
       pagination={true}
       columns={columns}
-      data={data}
+      data={transformedData}
     />
   );
 }

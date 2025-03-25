@@ -12,8 +12,8 @@ import {
 import { DeleteButton } from "../_components/delete-button.jsx";
 
 export default async function HonorAsistenDetail({ params }) {
-  const jenis = (await params).id;
-  const dataHonor = await getHonorJenisByJenis(jenis);
+  const slug = (await params).id;
+  const dataHonor = await getHonorJenisByJenis(slug);
 
   if (!dataHonor) {
     return (

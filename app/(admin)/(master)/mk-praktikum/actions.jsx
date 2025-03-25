@@ -17,7 +17,7 @@ export async function getAllMk() {
   const supabase = await createClient();
   try {
     const { data, error } = await supabase.from("mata_kuliah_praktikum").select(`
-        created_at, nama, semester, jumlah_kelas, slug`);
+        created_at, nama, semester, jumlah_kelas, slug, kode_mk`);
 
     if (error) {
       console.error("Error fetching data from Supabase:", error);
@@ -37,7 +37,7 @@ export async function getOneMk(slug) {
   try {
     const { data, error } = await supabase
       .from("mata_kuliah_praktikum")
-      .select(`id, nama, semester, jumlah_kelas, slug`)
+      .select(`id, nama, semester, jumlah_kelas, kode_mk, slug`)
       .eq("slug", slug)
       .limit(1)
       .single();
@@ -62,6 +62,7 @@ export async function createMk(data) {
       nama: data.nama,
       semester: data.semester,
       jumlah_kelas: data.jumlah_kelas,
+      kode_mk: data.kode_mk,
       slug: slugify(data.nama),
     };
 

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import slugify from "react-slugify";
 
 /**
  * Fetch all honor jenis records
@@ -30,7 +31,7 @@ export async function createHonorJenis({ jenis, biaya }) {
 
   const { data, error } = await supabase
     .from("honor_jenis")
-    .insert([{ jenis, biaya }])
+    .insert([{ jenis, biaya, slug: slugify(jenis) }])
     .select();
 
   if (error) {
@@ -50,7 +51,7 @@ export async function updateHonorJenis({ id, jenis, biaya }) {
 
   const { data, error } = await supabase
     .from("honor_jenis")
-    .update({ jenis, biaya })
+    .update({ jenis, biaya, slug: slugify(jenis) })
     .eq("id", id)
     .select();
 
@@ -83,13 +84,13 @@ export async function deleteHonorJenis(id) {
 /**
  * Get a single honor jenis by ID
  */
-export async function getHonorJenisByJenis(jenis) {
+export async function getHonorJenisByJenis(slug) {
   const supabase = await createClient();
 
   const { data, error } = await supabase
     .from("honor_jenis")
     .select("*")
-    .eq("jenis", jenis)
+    .eq("slug", slug)
     .single();
 
   if (error) {
