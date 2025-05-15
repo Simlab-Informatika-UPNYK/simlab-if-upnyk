@@ -16,7 +16,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const data = row.original;
-      return <Link className="hover:underline" href={`/inventaris-lab/${data.id}`}>{data.nama}</Link>;
+      return <Link className="text-blue-600" href={`/inventaris-lab/${data.id}`}>{data.nama}</Link>;
     },
   },
   {

@@ -5,114 +5,114 @@ import { revalidatePath } from "next/cache";
 
 export async function getAllCertificateRequests() {
   // Initialize Supabase client
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // TODO: Implement actual Supabase query when database is ready
   // Example:
-  // const { data, error } = await supabase
-  //   .from('certificate_requests')
-  //   .select('*')
-  //   .order('tanggal_pengajuan', { ascending: false });
+  const { data, error } = await supabase
+    .from("permintaan_sertifikat")
+    .select("*, aslab(*)");
+  // .order('waktu_pengajuan', { ascending: false });
 
-  // if (error) {
-  //   console.error('Error fetching certificate requests:', error);
-  //   throw new Error('Failed to fetch certificate requests');
-  // }
+  if (error) {
+    console.error("Error fetching certificate requests:", error);
+    throw new Error("Failed to fetch certificate requests");
+  }
 
-  // For development, return dummy data
-  return [
-    {
-      id: "001",
-      nim: "124200023",
-      nama_asisten: "Cantika Amalia",
-      tanggal_pengajuan: "10 Desember 2024",
-      status: "Waiting",
-    },
-    {
-      id: "002",
-      nim: "1245678903",
-      nama_asisten: "Kesha Azka Afleni",
-      tanggal_pengajuan: "10 Desember 2024",
-      status: "Waiting",
-    },
-    {
-      id: "003",
-      nim: "124210023",
-      nama_asisten: "Hana Hanida",
-      tanggal_pengajuan: "10 Desember 2024",
-      status: "Waiting",
-    },
-    {
-      id: "004",
-      nim: "124230023",
-      nama_asisten: "Barita",
-      tanggal_pengajuan: "26 November 2024",
-      status: "Approve",
-    },
-    {
-      id: "005",
-      nim: "123210024",
-      nama_asisten: "Kamilia Hana",
-      tanggal_pengajuan: "21 November 2024",
-      status: "Approve",
-    },
-    {
-      id: "006",
-      nim: "123200023",
-      nama_asisten: "Lala Kamila",
-      tanggal_pengajuan: "21 November 2024",
-      status: "Approve",
-    },
-    {
-      id: "007",
-      nim: "124220022",
-      nama_asisten: "Habib Maulana",
-      tanggal_pengajuan: "02 November 2024",
-      status: "Reject",
-    },
-    {
-      id: "008",
-      nim: "124220100",
-      nama_asisten: "Faiz Ahmad",
-      tanggal_pengajuan: "14 Oktober 2024",
-      status: "Reject",
-    },
-    {
-      id: "009",
-      nim: "123220025",
-      nama_asisten: "Lulu Kamilia",
-      tanggal_pengajuan: "11 Oktober 2024",
-      status: "Approve",
-    },
-    {
-      id: "010",
-      nim: "124200025",
-      nama_asisten: "Ahmad Dzaky",
-      tanggal_pengajuan: "11 Oktober 2024",
-      status: "Reject",
-    },
-  ];
+  return data.map((item) => ({
+    id: item.id.toString(),
+    nim: item.aslab.nim,
+    nama_asisten: item.aslab.nama,
+    tanggal_pengajuan: item.waktu_pengajuan
+      ? new Date(item.waktu_pengajuan).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "-",
+    status: item.status.charAt(0).toUpperCase() + item.status.slice(1),
+  }));
 }
 
 export async function getCertificateRequestByNim(nim) {
   // Initialize Supabase client
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // TODO: Implement actual Supabase query when database is ready
   // Example:
-  // const { data, error } = await supabase
-  //   .from('certificate_requests')
-  //   .select('*, mata_kuliah_praktikum(*)')
-  //   .eq('nim', nim)
-  //   .single();
-  //
+  // Query certificate request where aslab is not null (using !inner join)
+  const { data, error } = await supabase
+    .from("permintaan_sertifikat")
+    .select(
+      `
+      *,
+      aslab!inner(
+        nama, nim, program_studi,
+        kelas_aslab(kelas(mata_kuliah(nama), tahun_semester(semester, tahun_ajaran)))
+      )
+      `
+    )
+    .eq("aslab.nim", nim)
+    .single()
+
+  if (error) {
+    console.error("Error fetching certificate request:", error);
+    return null;
+  }
+
+  return {
+    id: data.id,
+    waktu_pengajuan: data.waktu_pengajuan,
+    status: data.status.charAt(0).toUpperCase() + data.status.slice(1),
+    keterangan: data.keterangan,
+    nama_mahasiswa: data.aslab.nama,
+    nim: data.aslab.nim,
+    program_studi: data.aslab.program_studi,
+    tahun_ajaran: (() => {
+      if (!data.aslab.kelas_aslab || data.aslab.kelas_aslab.length === 0) {
+        return "";
+      }
+
+      const allSemesters = data.aslab.kelas_aslab.map((item) => ({
+        semester: item.kelas.tahun_semester.semester,
+        tahun_ajaran: item.kelas.tahun_semester.tahun_ajaran,
+      }));
+
+      // Sort by academic year and semester
+      allSemesters.sort((a, b) => {
+        const yearA = parseInt(a.tahun_ajaran.split("/")[0]);
+        const yearB = parseInt(b.tahun_ajaran.split("/")[0]);
+
+        if (yearA !== yearB) return yearA - yearB;
+        return a.semester === "Gasal" ? -1 : 1;
+      });
+
+      const earliest = allSemesters[0];
+      const latest = allSemesters[allSemesters.length - 1];
+
+      // If years are the same, don't use "s.d." format
+      if (earliest.tahun_ajaran === latest.tahun_ajaran) {
+        if (earliest.semester === latest.semester) {
+          return `${earliest.semester} ${earliest.tahun_ajaran}`;
+        } else {
+          return `${earliest.semester} - ${latest.semester} ${earliest.tahun_ajaran}`;
+        }
+      } else {
+        return `${earliest.semester} ${earliest.tahun_ajaran} s.d. ${latest.semester} ${latest.tahun_ajaran}`;
+      }
+    })(),
+    mata_kuliah_praktikum: data.aslab.kelas_aslab.map((item) => ({
+      nama: item.kelas.mata_kuliah.nama,
+      tahun_ajaran: `${item.kelas.tahun_semester.semester} ${item.kelas.tahun_semester.tahun_ajaran}`,
+    })),
+  };
   // if (error) {
   //   console.error('Error fetching certificate request:', error);
   //   throw new Error('Failed to fetch certificate request');
   // }
 
   // For development, return dummy data
-  return {
+  /* return {
     nama_mahasiswa: "Imam Agus Faisal",
     nim: "124200077",
     program_studi: "Sistem Informasi",
@@ -161,5 +161,96 @@ export async function getCertificateRequestByNim(nim) {
         tahun_ajaran: "Genap 2023/2024",
       },
     ],
-  };
+  }; */
 }
+
+// Add these new functions to handle certificate approval/rejection
+
+export const approveCertificateRequest = async (requestId) => {
+  const supabase = await createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("permintaan_sertifikat")
+      .update({
+        status: "Disetujui",
+        keterangan: null,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", requestId)
+      .select();
+
+    if (error) {
+      console.error("Error approving certificate request:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Unexpected error in approve certificate:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const rejectCertificateRequest = async (requestId, reason) => {
+  const supabase = await createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("permintaan_sertifikat")
+      .update({
+        status: "Ditolak",
+        keterangan: reason,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", requestId)
+      .select();
+
+    if (error) {
+      console.error("Error rejecting certificate request:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Unexpected error in reject certificate:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const cancelCertificateStatus = async (requestId) => {
+  const supabase = await createClient();
+
+  try {
+    const { data, error } = await supabase
+      .from("permintaan_sertifikat")
+      .update({
+        status: "pending", // Set back to pending
+        keterangan: null, // Clear any rejection reason
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", requestId)
+      .select();
+
+    if (error) {
+      console.error("Error canceling certificate status:", error);
+      return { success: false, error: error.message };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Unexpected error in cancel certificate status:", error);
+    return { success: false, error: error.message };
+  }
+};
+
+export const getAllAslab = async () => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("aslab").select(
+    `
+      *
+      `
+  );
+
+  return data;
+};

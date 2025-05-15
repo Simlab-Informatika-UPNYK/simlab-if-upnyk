@@ -26,7 +26,7 @@ export const columns = [
       return (
         <Link
           href={`/mk-praktikum/${data.slug}`}
-          className="hover:underline font-medium"
+          className="text-blue-600 font-medium"
         >
           {data.nama}
         </Link>

@@ -29,13 +29,15 @@ async function getJadwalDetail(slug) {
         jenis_praktikan,
         slug,
         aslab:kelas_aslab(aslab(nama, nim)),
-        mata_kuliah:mata_kuliah_praktikum!kelas_praktikum_id_mk_fkey(id, nama),
+        mata_kuliah:mata_kuliah_praktikum(id, nama),
         dosen:dosen_pengampu!kelas_praktikum_id_dosen_fkey(id, nama),
         laboratorium:lab!kelas_praktikum_lab_fkey(id, nama)
       `
       )
       .eq("slug", slug)
       .single();
+
+    console.log(jadwal);
 
     if (error) {
       console.error("Error fetching jadwal:", error);

@@ -13,35 +13,44 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const data = row.original;
-      return <Link href={`jadwal-praktikum/${data.slug}`}>{data.kelas}</Link>;
+      return <Link href={`jadwal-praktikum/${data.slug}`} className="text-blue-600">{data.kelas}</Link>;
     },
   },
   {
     accessorKey: "mata_kuliah",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="mata_kuliah" />
+      <DataTableColumnHeader column={column} title="Mata Kuliah" />
     ),
   },
   {
     accessorKey: "dosen",
-    // header: ({ column }) => (
-    //   <DataTableColumnHeader column={column} title="Role" />
-    // ),
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Dosen" />
+    ),
   },
   {
     accessorKey: "jumlah_praktikan",
-    // header: ({ column }) => (
-    //   <DataTableColumnHeader column={column} title="Created At" />
-    // ),
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Jumlah Praktikan" />
+    ),
   },
   {
     accessorKey: "hari",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Hari" />
+    ),
   },
   {
     accessorKey: "waktu",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Waktu" />
+    ),
   },
   {
     accessorKey: "lab",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Lab" />
+    ),
   },
   {
     accessorKey: "asisten",
@@ -65,6 +74,9 @@ export const columns = [
   },
   {
     accessorKey: "jenis_praktikan",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Jenis Praktikan" />
+    ),
   },
   {
     id: "aksi",

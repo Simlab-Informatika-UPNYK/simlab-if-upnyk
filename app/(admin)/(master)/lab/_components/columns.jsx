@@ -21,7 +21,7 @@ export const columns = [
         <div className="flex items-center">
           <Link
             href={`/lab/${data.slug}`}
-            className="hover:underline font-medium"
+            className="text-blue-600 font-medium"
           >
             {data.nama}
           </Link>

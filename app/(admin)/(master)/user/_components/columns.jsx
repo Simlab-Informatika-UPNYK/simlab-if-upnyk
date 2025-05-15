@@ -13,7 +13,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const data = row.original;
-      return <Link href={`user/${data.slug}`}>{data.nama}</Link>;
+      return <Link href={`user/${data.slug}`} className="text-blue-600">{data.nama}</Link>;
     },
   },
   {

@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
     <>
       <div className="flex justify-between">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Tambah Honor Asisten
+          Pilih Mahasiswa untuk Mencetak Sertifikat
         </h2>
         <Button
           variant="outline"

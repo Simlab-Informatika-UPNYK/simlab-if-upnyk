@@ -16,7 +16,7 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
 
-      return <Link href={`/dosen-pengampu/${data.slug}`}>{data.nama}</Link>;
+      return <Link href={`/dosen-pengampu/${data.slug}`} className="text-blue-600">{data.nama}</Link>;
     },
   },
   {

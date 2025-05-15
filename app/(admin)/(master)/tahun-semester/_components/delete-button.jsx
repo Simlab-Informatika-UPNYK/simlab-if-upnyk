@@ -39,22 +39,31 @@ export function DeleteButton({ slug, variant = "outline" }) {
       .from("tahun_semester")
       .delete()
       .eq("slug", slug)
-      .select();
+      .select()
+      .single();
 
     if (!error) {
       router.replace("/tahun-semester");
       toast({
         title: "Berhasil Menghapus",
-        description: `Semester ${deletedData[0].slug} telah berhasil dihapus`,
+        description: `Semester ${deletedData.slug} telah berhasil dihapus`,
       });
       return;
     }
 
-    toast({
-      title: "Gagal Menghapus",
-      description: "Tahun Semester gagal dihapus",
-      variant: "destructive",
-    });
+    if (error.code == "23503") {
+      toast({
+        title: "Gagal Menghapus",
+        description: error.details,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Gagal Menghapus",
+        description: "Tahun Semester gagal dihapus",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

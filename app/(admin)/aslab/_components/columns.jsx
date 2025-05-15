@@ -35,7 +35,7 @@ export const columns = [
               </span>
             </div>
           )}
-          <span>{user.nama}</span>
+          <span className="text-blue-600">{user.nama}</span>
         </Link >
       );
     },
