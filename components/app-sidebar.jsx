@@ -72,7 +72,7 @@ const data = {
       title: "Master Setup",
       url: "#",
       icon: SquareTerminal,
-      // isActive: true,
+      isActive: true,
       items: [
         {
           title: "Tahun Semester",

@@ -1,123 +1,146 @@
-import { DataTable } from "@/components/data-table/data-table";
-import { columns } from "./_components/columns";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Link from "next/link";
+import React, { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Plus, Edit, Folder } from "lucide-react";
+import FolderFormDialog from "./_components/folder-form-dialog";
+import DeleteFolderButton from "./_components/delete-folder-button";
 
-async function getData() {
-  // Fetch data from your API here.
-  return [
-    {
-      id: 1,
-      nama: "Komputer",
-      jumlah: 30,
-      tahun: 2020,
-      kondisi: "Baik",
-    },
-    {
-      id: 2,
-      nama: "Kursi",
-      jumlah: 30,
-      tahun: 2020,
-      kondisi: "-",
-    },
-    {
-      id: 3,
-      nama: "Meja",
-      jumlah: 30,
-      tahun: 2020,
-      kondisi: "Tidak Baik",
-    },
-    {
-      id: 4,
-      nama: "Papan Tulis",
-      jumlah: 30,
-      tahun: 2020,
-      kondisi: "-",
-    },
-    {
-      id: 5,
-      nama: "Kursi",
-      jumlah: 30,
-      tahun: 2020,
-      kondisi: "-",
-    },
-    {
-      id: 6,
-      nama: "Kursi",
-      jumlah: 30,
-      tahun: 2020,
-      kondisi: "-",
-    },
-    {
-      id: 7,
-      nama: "Lemari",
-      jumlah: 10,
-      tahun: 2019,
-      kondisi: "Baik",
-    },
-    {
-      id: 8,
-      nama: "Proyektor",
-      jumlah: 5,
-      tahun: 2021,
-      kondisi: "Baik",
-    },
-    {
-      id: 9,
-      nama: "AC",
-      jumlah: 2,
-      tahun: 2022,
-      kondisi: "Tidak Baik",
-    },
-    {
-      id: 10,
-      nama: "Rak Buku",
-      jumlah: 8,
-      tahun: 2020,
-      kondisi: "Baik",
-    },
-  ];
-}
-
-const filters = [
-  //   {
-  //     id: "update_at",
-  //     title: "Semester",
-  //     options: [
-  //       {
-  //         value: "Genap",
-  //         label: "Genap",
-  //       },
-  //       {
-  //         value: "Ganjil",
-  //         label: "Ganjil",
-  //       },
-  //     ],
-  //   },
+// Data folder default
+const defaultFolderData = [
+  {
+    title: "Komputasi",
+    url: "/komputasi",
+  },
+  {
+    title: "Jaringan",
+    url: "/jaringan",
+  },
+  {
+    title: "IoT",
+    url: "/iot",
+  },
+  {
+    title: "Basis Data",
+    url: "/basis-data",
+  },
+  {
+    title: "Multimedia",
+    url: "/multimedia",
+  },
+  {
+    title: "Geoinformatika",
+    url: "/geoinformatika",
+  },
+  {
+    title: "Pemrograman",
+    url: "/pemrograman",
+  },
+  {
+    title: "RBPL",
+    url: "/rbpl",
+  },
+  {
+    title: "PPSI",
+    url: "/ppsi",
+  },
+  {
+    title: "LAB 10 (TI Komputasi)",
+    url: "/lab-10-ti-komputasi",
+  },
+  {
+    title: "LAB 11 (TI Studio Desain)",
+    url: "/lab-11-ti-studio-desain",
+  },
+  {
+    title: "Perangkat Jaringan",
+    url: "/perangkat-jaringan",
+  },
 ];
 
-export default async function Page() {
-  const data = await getData();
+const Page = () => {
+  const [folderData, setFolderData] = useState([]);
+  const [refreshFlag, setRefreshFlag] = useState(0);
+
+  useEffect(() => {
+    // Ambil data folder dari localStorage atau gunakan data default
+    const savedFolders = localStorage.getItem("lab-folders");
+    if (savedFolders) {
+      setFolderData(JSON.parse(savedFolders));
+    } else {
+      // Jika belum ada data, gunakan data default dan simpan ke localStorage
+      localStorage.setItem("lab-folders", JSON.stringify(defaultFolderData));
+      setFolderData(defaultFolderData);
+    }
+  }, [refreshFlag]);
+
+  // Handler untuk refresh data setelah add/edit/delete
+  const refreshData = () => {
+    setRefreshFlag(prev => prev + 1);
+  };
 
   return (
     <div className="container mx-auto p-4">
-      <DataTable
-        toolbar={
-          <Link href="/inventaris-lab/new">
-            <Button>
-              <PlusCircle />
-              Add Data
-            </Button>
-          </Link>
-        }
-        viewOptions={true}
-        globalSearch={true}
-        filters={filters}
-        pagination={true}
-        columns={columns}
-        data={data}
-      />
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Inventaris Lab</h1>
+        <FolderFormDialog onSuccess={refreshData}>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" /> Tambah Folder
+          </Button>
+        </FolderFormDialog>
+      </div>
+
+      <div className="bg-white p-4 rounded-lg shadow">
+        <ul className="space-y-2">
+          {folderData.map((folder, index) => (
+            <li
+              key={index}
+              className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
+            >
+              <Link
+                href={`/inventaris-lab${folder.url}`}
+                className="flex items-center flex-grow"
+              >
+                <Folder className="w-5 h-5 mr-3 text-blue-500" />
+                <span className="font-medium text-blue-600">
+                  {folder.title}
+                </span>
+              </Link>
+              
+              <div className="flex items-center space-x-1">
+                <FolderFormDialog 
+                  mode="edit" 
+                  initialData={folder} 
+                  onSuccess={refreshData}
+                >
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-gray-500 hover:text-blue-600 hover:bg-blue-50"
+                    title="Edit"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                </FolderFormDialog>
+                
+                <DeleteFolderButton 
+                  folder={folder} 
+                  onSuccess={refreshData} 
+                />
+              </div>
+            </li>
+          ))}
+          
+          {folderData.length === 0 && (
+            <li className="p-8 text-center text-gray-500">
+              Belum ada folder. Klik tombol "Tambah Folder" untuk membuat folder baru.
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
   );
-}
+};
+
+export default Page;
