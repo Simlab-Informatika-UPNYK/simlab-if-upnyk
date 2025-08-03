@@ -91,7 +91,7 @@ const Page = () => {
         </FolderFormDialog>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow">
+      <div className="">
         <ul className="space-y-2">
           {folderData.map((folder, index) => (
             <li

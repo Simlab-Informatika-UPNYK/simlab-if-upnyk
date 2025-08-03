@@ -10,7 +10,8 @@ async function getData() {
 
   const { data: tahun_semester } = await supabase
     .from("tahun_semester")
-    .select();
+    .select()
+    .order("slug", { ascending: true });
   // console.log(tahun_semester);
   return tahun_semester;
 }
@@ -31,7 +32,6 @@ export default async function Page() {
               </Button>
             </Link>
           }
-          viewOptions={true}
           globalSearch={true}
           pagination={true}
           columns={columns}

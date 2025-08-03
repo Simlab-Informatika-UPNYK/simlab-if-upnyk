@@ -20,7 +20,6 @@ import React from "react";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
 import { DataTableFacetedFilter } from "@/components/data-table/data-table-faceted-filter";
 import { Input } from "@/components/ui/input";
-import { DataTableViewOptions } from "@/components/data-table/data-table-view-options";
 import { useRouter } from "next/navigation";
 
 export function DataTable({
@@ -80,7 +79,6 @@ export function DataTable({
         </div>
         <div className="flex gap-2">
           {toolbar ?? ""}
-          {viewOptions && <DataTableViewOptions table={table} />}
         </div>
       </div>
       <div className="rounded-md border relative w-[0] min-w-full overflow-x-auto">

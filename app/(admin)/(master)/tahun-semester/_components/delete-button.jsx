@@ -1,8 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Edit, Trash, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { Trash } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import {
   AlertDialog,
@@ -15,19 +14,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { DialogTrigger } from "@/components/ui/dialog";
 
 export function DeleteButton({ slug, variant = "outline" }) {
   const router = useRouter();

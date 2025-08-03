@@ -21,7 +21,7 @@ export default async function KalabDetailPage({ params }) {
         <h1 className="text-2xl font-bold">{data.nama}</h1>
         <div className="flex gap-2">
           <Link href={`/kalab/${data.slug}/edit`}>
-            <Button variant="outline" size="icon">
+            <Button className="border-0" variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
           </Link>

@@ -1,21 +1,19 @@
-"use client"; 
+"use client";
 
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function BackButton() {
-  const router = useRouter();
-
-  const handleBack = () => {
-    router.back();
-  };
+  const pathname = usePathname();
+  const parentPath = pathname.split("/").slice(0, -1).join("/") || "/";
 
   return (
-    <>
-      <Button onClick={handleBack} variant="ghost" size="icon">
+    <Link href={parentPath}>
+      <Button variant="ghost" size="icon">
         <X className="h-4 w-4" />
       </Button>
-    </>
+    </Link>
   );
 }

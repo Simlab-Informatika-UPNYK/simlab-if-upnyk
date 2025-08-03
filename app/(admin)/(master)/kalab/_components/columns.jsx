@@ -1,55 +1,57 @@
-"use client"
-
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { Checkbox } from "@/components/ui/checkbox"
-import Link from "next/link"
+import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { Edit, Trash } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import Link from "next/link"
+import { Pencil, Trash2 } from "lucide-react"
 import { DeleteButton } from "./delete-button"
 
-
 export const columns = [
-  
   {
-    accessorKey: "Nama Laboratorium", // Updated accessorKey
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama Laboratorium" /> // Updated title
-    ),
+    accessorKey: "no",
+    header: "No",
+    cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: "Lantai", // Updated accessorKey
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Lantai" /> // Updated title
-    ),
-  },
-  {
-    accessorKey: "Kapasitas", // Updated accessorKey
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kapasitas" /> // Updated title
-    ),
-  },
-  {
-    accessorKey: "Kalab", // Updated accessorKey
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kalab" /> // Updated title
-    ),
-  },
-  {
-    id: "Aksi", // Updated id
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" /> // Updated title
-    ),
+    accessorKey: "Nama Lengkap",
+    header: "Nama Lengkap",
     cell: ({ row }) => {
-      const data = row.original;
+      const kalab = row.original
       return (
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon">
-            <Edit className="h-4 w-4" />
-          </Button>
-          <DeleteButton slug={data.slug} />
+        <Link href={`/kalab/${kalab.slug}`}>
+          <span className="text-blue-600 hover:underline cursor-pointer">
+            {kalab["Nama Lengkap"]}
+          </span>
+        </Link>
+      )
+    },
+  },
+  {
+    accessorKey: "NIDN/NIP",
+    header: "NIDN/NIP",
+  },
+  {
+    accessorKey: "Email",
+    header: "Email",
+  },
+  {
+    accessorKey: "no_hp",
+    header: "No. Telepon",
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      const kalab = row.original
+
+      return (
+        <div className="flex gap-2">
+          <Link href={`/kalab/${kalab.slug}/edit`}>
+            <Button variant="ghost" size="sm">
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </Link>
+          <DeleteButton slug={kalab.slug} />
         </div>
-      );
+      )
     },
   },
 ]

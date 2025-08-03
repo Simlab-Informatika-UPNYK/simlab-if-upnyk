@@ -246,11 +246,27 @@ export const cancelCertificateStatus = async (requestId) => {
 
 export const getAllAslab = async () => {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("aslab").select(
-    `
-      *
-      `
-  );
+  const { data, error } = await supabase.from("aslab").select(`
+    *,
+    kelas_aslab(
+      kelas(
+        mata_kuliah(nama), 
+        tahun_semester(semester, tahun_ajaran)
+      )
+    )
+  `);
 
-  return data;
+  if (error) {
+    console.error("Error fetching aslab data:", error);
+    return [];
+  }
+
+  return data.map(aslab => ({
+    ...aslab,
+    courses: aslab.kelas_aslab?.map((item, index) => ({
+      no: index + 1,
+      subject: item.kelas.mata_kuliah.nama,
+      year: `${item.kelas.tahun_semester.semester} ${item.kelas.tahun_semester.tahun_ajaran}`
+    })) || []
+  }));
 };

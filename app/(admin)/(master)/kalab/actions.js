@@ -20,7 +20,7 @@ export async function getKalabData() {
       "Nama Lengkap": item.nama,
       "NIDN/NIP": item.nip,
       Email: item.email,
-      "No. Telepon": item.no_hp,
+      "no_hp": item.no_hp,
       Jabatan: "",
       slug: item.slug,
       photo: `https://unsplash.it/200/200?random=${index}`,

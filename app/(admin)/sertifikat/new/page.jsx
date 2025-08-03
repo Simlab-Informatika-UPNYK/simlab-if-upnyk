@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import {
-  PDFDownloadLink,
   PDFViewer,
   Document,
   Image,
@@ -13,7 +12,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { getAllAslab } from "../actions";
-import { Button } from "@/components/ui/button";
+import { MahasiswaCombobox } from "@/app/(admin)/sertifikat/_components/mahasiswa-combobox";
 
 Font.register({
   family: "CenturyGothic",
@@ -362,7 +361,8 @@ const NewPage = () => {
   const [aslabData, setAslabData] = useState([]);
   const [selectedAslab, setSelectedAslab] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [viewer, setViewer] = useState({ width: "100%", height: "70vh" });
+  const [viewer] = useState({ width: "100%", height: "50rem" });
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -379,56 +379,34 @@ const NewPage = () => {
     fetchData();
   }, []);
 
-  const handleSelectChange = (e) => {
-    const selectedId = e.target.value;
-    if (selectedId) {
-      const selected = aslabData.find((aslab) => aslab.id_aslab === selectedId);
-      // Tidak menambahkan data dummy lagi
-      setSelectedAslab(selected);
-    } else {
-      setSelectedAslab(null);
-    }
+  const filteredAslab = aslabData.filter((aslab) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      aslab.nama.toLowerCase().includes(searchLower) ||
+      aslab.nim.toLowerCase().includes(searchLower) ||
+      aslab.program_studi.toLowerCase().includes(searchLower)
+    );
+  });
+
+  const handleSelectAslab = (aslab) => {
+    setSelectedAslab(aslab);
   };
 
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
-        <label
-          htmlFor="aslab-select"
-          className="block text-sm font-medium mb-1"
-        >
-          Pilih Asisten Laboratorium:
+        <label className="block text-sm font-medium mb-1">
+          Pilih Mahasiswa:
         </label>
-        <select
-          id="aslab-select"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
-          value={selectedAslab?.id_aslab || ""}
-          onChange={handleSelectChange}
-        >
-          <option value="">-- Pilih Mahasiswa --</option>
-          {!loading &&
-            aslabData.map((aslab) => (
-              <option key={aslab.id_aslab} value={aslab.id_aslab}>
-                {aslab.nama} ({aslab.nim}) - {aslab.program_studi}
-              </option>
-            ))}
-        </select>
+        <MahasiswaCombobox 
+          data={filteredAslab}
+          value={selectedAslab}
+          onSelect={handleSelectAslab}
+        />
       </div>
 
-      {selectedAslab ? (
+      {selectedAslab && (
         <div className="flex flex-col gap-4">
-          <Button>
-            <PDFDownloadLink
-              document={<SertifikatPDF data={selectedAslab} />}
-              fileName={`sertifikat-${selectedAslab.nim}.pdf`}
-              // className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center"
-            >
-              {({ blob, url, loading, error }) =>
-                loading ? "Membuat dokumen..." : "Unduh Sertifikat"
-              }
-            </PDFDownloadLink>
-          </Button>
-
           <div className="mt-4">
             <h2 className="text-lg font-semibold mb-2">Preview Sertifikat</h2>
             <PDFViewer style={viewer}>
@@ -436,13 +414,6 @@ const NewPage = () => {
             </PDFViewer>
           </div>
         </div>
-      ) : (
-        <Button
-          // className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed"
-          disabled
-        >
-          Pilih Mahasiswa Terlebih Dahulu
-        </Button>
       )}
     </div>
   );

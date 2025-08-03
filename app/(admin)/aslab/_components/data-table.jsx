@@ -23,7 +23,6 @@ import { Button } from "@/components/ui/button"
 import { Check, CheckCircle2, PlusCircle, XCircle } from "lucide-react"
 import Link from "next/link"
 import { DataTableFacetedFilter } from "./data-table-faceted-filter"
-import { DataTableViewOptions } from "./data-table-view-options.jsx"
 import { useRouter } from "next/navigation"
 
 export function DataTable({
@@ -102,7 +101,6 @@ export function DataTable({
           <Link href="/aslab/new">
             <Button><PlusCircle />Add Data</Button>
           </Link>
-          <DataTableViewOptions table={table} />
         </div>
       </div>
       <div className="rounded-md border">

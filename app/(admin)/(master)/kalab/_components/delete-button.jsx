@@ -52,7 +52,7 @@ export function DeleteButton({ slug, variant = "outline", children = null }) {
 
     toast({
       title: "Gagal Menghapus",
-      description: "Kepala lab gagal dihapus",
+      description: error.message,
       variant: "destructive",
     });
   };
@@ -61,7 +61,7 @@ export function DeleteButton({ slug, variant = "outline", children = null }) {
     <AlertDialog>
       {!children ? (
         <AlertDialogTrigger asChild>
-          <Button variant={variant} size="icon" className="text-red-500">
+          <Button variant={variant} size="icon" className="text-red-500 border-0">
             <Trash className="h-4 w-4" />
           </Button>
         </AlertDialogTrigger>
