@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { LoadingButton } from "@/components/ui/loading-button"
+// import { LoadingButton } from "@/components/ui/loading-button"
 
 const formSchema = z.object({
   nama: z.string().min(2, "Nama harus diisi minimal 2 karakter"),
@@ -312,9 +312,9 @@ export function NewAslabForm() {
         />
 
         <div className="flex justify-end pt-4">
-          <LoadingButton type="submit" loading={isLoading}>
+          <Button type="submit" {...(isLoading ? { loading: "true" } : {})}>
             Submit
-          </LoadingButton>
+          </Button>
         </div>
       </form>
     </Form>

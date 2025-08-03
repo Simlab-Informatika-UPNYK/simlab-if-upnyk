@@ -1,6 +1,5 @@
 "use client"
 
-import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "./data-table-column-header"
 import { ActionCell } from "./action-cell"
 import Link from "next/link"
