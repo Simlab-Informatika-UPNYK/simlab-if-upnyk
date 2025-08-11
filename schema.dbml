@@ -1,0 +1,173 @@
+Table aslab [headercolor: #175e7a] {
+	id_aslab uuid [ pk, unique ]
+	nama text
+	nim text
+	email text
+	no_hp varchar(15)
+	angkatan varchar(4)
+	program_studi text
+	status varchar(20)
+	profile_picture text
+}
+
+Table aslab_honor [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	aslab uuid
+	tahun_semester bigint
+	status_honor text
+	tanggal_diambil date
+}
+
+Table dosen_pengampu [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	nama text
+	nip text
+	email text
+	slug text
+}
+
+Table honor_jenis [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	jenis text
+	biaya bigint
+	slug text
+}
+
+Table kalab [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	nama text
+	nip text
+	email text
+	no_hp text
+	photo text
+	slug text
+}
+
+Table kelas_aslab [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	aslab uuid
+	kelas bigint
+}
+
+Table kelas_praktikum [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	kelas text
+	mata_kuliah bigint
+	id_dosen bigint
+	jumlah_praktikan bigint
+	hari text
+	lab bigint
+	jenis_praktikan text
+	waktu text
+	slug text
+	tahun_semester bigint
+}
+
+Table lab [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	nama text
+	lantai text
+	kapasitas bigint
+	kalab bigint
+	slug text
+}
+
+Table mata_kuliah_praktikum [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	nama text
+	semester text
+	jumlah_kelas bigint
+	slug text
+	kode_mk integer
+}
+
+Table permintaan_sertifikat [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	updated_at timestamp
+	id_aslab uuid
+	waktu_pengajuan timestamp
+	status text
+	keterangan text
+}
+
+Table user [headercolor: #175e7a] {
+	id uuid [ pk, unique ]
+	created_at timestamp
+	role text
+	aslab_id uuid
+	slug text
+	admin_id uuid
+	password text
+	username text
+}
+
+Table tahun_semester [headercolor: #175e7a] {
+	id bigint [ pk, unique ]
+	created_at timestamp
+	semester text
+	tahun_ajaran text
+	slug text
+}
+
+Table admin [headercolor: #175e7a] {
+	id uuid [ pk, not null, unique ]
+	nama text
+	email text
+}
+
+Ref fk_aslab_honor_aslab_aslab {
+	aslab_honor.aslab > aslab.id_aslab [ delete: no action, update: no action ]
+}
+
+Ref fk_aslab_honor_tahun_semester_tahun_semester {
+	aslab_honor.tahun_semester > tahun_semester.id [ delete: no action, update: no action ]
+}
+
+Ref fk_kelas_aslab_aslab_aslab {
+	kelas_aslab.aslab > aslab.id_aslab [ delete: no action, update: no action ]
+}
+
+Ref fk_kelas_aslab_kelas_kelas_praktikum {
+	kelas_aslab.kelas > kelas_praktikum.id [ delete: no action, update: no action ]
+}
+
+Ref fk_kelas_praktikum_mata_kuliah_mata_kuliah_praktikum {
+	kelas_praktikum.mata_kuliah > mata_kuliah_praktikum.id [ delete: no action, update: no action ]
+}
+
+Ref fk_kelas_praktikum_id_dosen_dosen_pengampu {
+	kelas_praktikum.id_dosen > dosen_pengampu.id [ delete: no action, update: no action ]
+}
+
+Ref fk_kelas_praktikum_lab_lab {
+	kelas_praktikum.lab > lab.id [ delete: no action, update: no action ]
+}
+
+Ref fk_kelas_praktikum_tahun_semester_tahun_semester {
+	kelas_praktikum.tahun_semester > tahun_semester.id [ delete: no action, update: no action ]
+}
+
+Ref fk_lab_kalab_kalab {
+	lab.kalab > kalab.id [ delete: no action, update: no action ]
+}
+
+Ref fk_permintaan_sertifikat_id_aslab_aslab {
+	permintaan_sertifikat.id_aslab > aslab.id_aslab [ delete: no action, update: no action ]
+}
+
+Ref fk_profiles_aslab_id_aslab {
+	user.aslab_id > aslab.id_aslab [ delete: no action, update: no action ]
+}
+
+Ref fk_profiles_admin_id_admin {
+	user.admin_id - admin.id [ delete: no action, update: no action ]
+}

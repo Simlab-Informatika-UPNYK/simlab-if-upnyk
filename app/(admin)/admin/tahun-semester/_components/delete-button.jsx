@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,41 +15,35 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { deleteTahunSemester } from "../actions";
 
 export function DeleteButton({ slug, variant = "outline" }) {
   const router = useRouter();
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    const supabase = createClient();
-    const { data: deletedData, error } = await supabase
-      .from("tahun_semester")
-      .delete()
-      .eq("slug", slug)
-      .select()
-      .single();
-
-    if (!error) {
-      router.replace("/tahun-semester");
+    try {
+      const deletedData = await deleteTahunSemester(slug);
+      
+      router.replace("/admin/tahun-semester");
       toast({
         title: "Berhasil Menghapus",
         description: `Semester ${deletedData.slug} telah berhasil dihapus`,
       });
-      return;
-    }
-
-    if (error.code == "23503") {
-      toast({
-        title: "Gagal Menghapus",
-        description: error.details,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Gagal Menghapus",
-        description: "Tahun Semester gagal dihapus",
-        variant: "destructive",
-      });
+    } catch (error) {
+      if (error.code == "23503") {
+        toast({
+          title: "Gagal Menghapus",
+          description: error.details,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Gagal Menghapus",
+          description: "Tahun Semester gagal dihapus",
+          variant: "destructive",
+        });
+      }
     }
   };
 

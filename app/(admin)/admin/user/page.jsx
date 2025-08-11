@@ -30,7 +30,7 @@ export default async function Page() {
       {/* {JSON.stringify(users)} */}
       <DataTable
         toolbar={
-          <Link href="/user/new">
+          <Link href="/admin/user/new">
             <Button>
               <PlusCircle />
               Add Data

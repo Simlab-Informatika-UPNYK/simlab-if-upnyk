@@ -38,8 +38,9 @@
     "app/(admin)/aslab/page.jsx",
     "app/(admin)/aslab/table.jsx",
     "app/(admin)/aslab/page.jsx",
-    "middleware.js"
-  ],
+    "middleware.js",
+    "db/schema.js"
+, "db/index.js", "db/seed.js", "app/api/auth/[...all]/route.js"  ],
   "exclude": [
     "node_modules"
   ]

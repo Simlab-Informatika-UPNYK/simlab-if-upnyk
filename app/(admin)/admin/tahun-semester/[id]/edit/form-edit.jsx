@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createClient } from "@/utils/supabase/client";
+import { updateTahunSemester } from "../../actions";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import slugify from "react-slugify";
@@ -47,30 +47,17 @@ export function FormEdit({ data }) {
 
   async function onSubmit(values) {
     try {
-      const supabase = createClient();
-
-      const result = await supabase
-        .from("tahun_semester")
-        .update({
-          ...values,
-          slug: slugify(`${values.tahun_ajaran}-${values.semester}`),
-        })
-        .eq("id", data.id);
-
-      if (result.error)
-        throw toast({
-          title: "Gagal Mengubah",
-          description:
-            result.error || "Terjadi kesalahan saat memperbarui data",
-          variant: "destructive",
-        });
+      const updatedData = await updateTahunSemester(data.slug, {
+        ...values,
+        slug: slugify(`${values.tahun_ajaran}-${values.semester}`),
+      });
 
       toast({
         title: "Berhasil mengupdate",
         description: "Data Tahun Semester berhaisl diperbarui",
         variant: "default",
       });
-      router.push("/tahun-semester");
+      router.push("/admin/tahun-semester");
       router.refresh();
     } catch (error) {
       toast({

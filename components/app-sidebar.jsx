@@ -1,29 +1,17 @@
 "use client";
 
-import * as React from "react";
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
   Calendar,
   Command,
-  Frame,
   GalleryVerticalEnd,
   HandCoins,
   IdCard,
   LayoutDashboard,
-  LayoutDashboardIcon,
-  Map,
-  MoreHorizontal,
-  PieChart,
-  Settings2,
   SquareTerminal,
   TicketCheck,
 } from "lucide-react";
-
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -35,10 +23,8 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import favicon from "@/app/favicon.svg";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import Link from "next/link";
 
-// This is sample data.
 const data = {
   user: {
     name: "shadcn",
@@ -76,35 +62,35 @@ const data = {
       items: [
         {
           title: "Tahun Semester",
-          url: "/tahun-semester",
+          url: "/admin/tahun-semester",
         },
         {
           title: "Lab",
-          url: "/lab",
+          url: "/admin/lab",
         },
         {
           title: "Kalab",
-          url: "/kalab",
+          url: "/admin/kalab",
         },
         {
           title: "MK Praktikum",
-          url: "/mk-praktikum",
+          url: "/admin/mk-praktikum",
         },
         {
           title: "Dosen Pengampu",
-          url: "/dosen-pengampu",
+          url: "/admin/dosen-pengampu",
         },
         {
           title: "Inventaris Lab",
-          url: "/inventaris-lab",
+          url: "/admin/inventaris-lab",
         },
         {
           title: "User Pengguna",
-          url: "/user",
+          url: "/admin/user",
         },
         {
           title: "Honor Asisten",
-          url: "/honor-asisten",
+          url: "/admin/honor-asisten",
         },
       ],
     },
@@ -113,16 +99,6 @@ const data = {
       url: "/aslab",
       // isActive: true,
       icon: IdCard,
-      // items: [
-      //   {
-      //     title: "Asisten Aktif",
-      //     url: "/aslab",
-      //   },
-      //   // {
-      //   //   title: "Asisten Nonaktif",
-      //   //   url: "#",
-      //   // },
-      // ],
     },
     {
       title: "Jadwal Praktikum",
@@ -139,70 +115,7 @@ const data = {
       url: "/sertifikat",
       icon: TicketCheck,
     },
-    // {
-    //   title: "Documentation",
-    //   url: "#",
-    //   icon: BookOpen,
-    //   items: [
-    //     {
-    //       title: "Introduction",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Get Started",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Tutorials",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Changelog",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: "Settings",
-    //   url: "#",
-    //   icon: Settings2,
-    //   items: [
-    //     {
-    //       title: "General",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Team",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Billing",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Limits",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
   ],
-  // projects: [
-  //   {
-  //     name: "Design Engineering",
-  //     url: "#",
-  //     icon: Frame,
-  //   },
-  //   {
-  //     name: "Sales & Marketing",
-  //     url: "#",
-  //     icon: PieChart,
-  //   },
-  //   {
-  //     name: "Travel",
-  //     url: "#",
-  //     icon: Map,
-  //   },
-  // ],
 };
 
 export function AppSidebar({ ...props }) {

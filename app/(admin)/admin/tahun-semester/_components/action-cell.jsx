@@ -10,7 +10,7 @@ export function ActionCell({ row }) {
 
   return (
     <div className="flex justify-end items-center space-x-2">
-      <Link href={`/tahun-semester/${data.slug}/edit`}>
+      <Link href={`/admin/tahun-semester/${data.slug}/edit`}>
         <Button variant="ghost" size="icon">
           <Edit className="h-4 w-4" />
         </Button>

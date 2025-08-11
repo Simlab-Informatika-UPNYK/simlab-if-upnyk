@@ -39,7 +39,7 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
       return (
-        <Link href={`/tahun-semester/${data.slug}`} className="text-blue-600">
+        <Link href={`/admin/tahun-semester/${data.slug}`} className="text-blue-600">
           {data.tahun_ajaran} Semester {data.semester}
         </Link>
       );

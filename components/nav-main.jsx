@@ -26,7 +26,7 @@ export function NavMain({ items }) {
 
   // Fungsi untuk mengecek apakah URL aktif
   const isActive = (url) => {
-    return pathname === url;
+    return pathname.startsWith(url);
   };
 
   return (

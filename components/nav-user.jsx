@@ -8,7 +8,7 @@ import {
   LogOut,
   Sparkles,
 } from "lucide-react";
-import { signOut } from '@/app/(auth)/login/actions';
+import { signOut } from "@/app/(auth)/login/actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -25,9 +25,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -92,7 +95,8 @@ export function NavUser({ user }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={async () => {
-                await signOut();
+                authClient.signOut();
+                router.push("/login");
               }}
             >
               <LogOut />

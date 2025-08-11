@@ -1,25 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/server";
-import LogoutButton from "./logout-button";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import LogoutButton from "@/app/(auth)/logout-button";
 
 export default async function Page() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-      {user !== null ? (
-        <div className="flex items-center gap-2"></div>
-      ) : (
-        <Button asChild>
-          <Link href="/login">Sign In</Link>
-        </Button>
-      )}
-
+    <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
       <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card>
           <CardHeader>

@@ -23,8 +23,8 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 import slugify from "react-slugify";
+import { checkTahunSemesterExists, createTahunSemester } from "../actions";
 
 // Updated schema for input data tahun semester
 const formSchema = z.object({
@@ -47,23 +47,11 @@ export function FormNewTahunSemester() {
   async function onSubmit(values) {
     try {
       setFormError(""); // Reset error message
-      const supabase = createClient();
-
       const slugTahun = slugify(`${values.tahun_ajaran}-${values.semester}`);
 
-      // Check if the tahun_semester with the same slug already exists
-      const { data: existingData, error: checkError } = await supabase
-        .from("tahun_semester")
-        .select("slug")
-        .eq("slug", slugTahun)
-        .single();
-
-      if (checkError && checkError.code !== "PGRST116") {
-        // PGRST116 means no rows returned, which is what we want
-        throw checkError;
-      }
-
-      if (existingData) {
+      // Check if tahun semester exists
+      const exists = await checkTahunSemesterExists(slugTahun);
+      if (exists) {
         setFormError(
           "Tahun semester dengan kombinasi semester dan tahun ajaran ini sudah ada"
         );
@@ -76,25 +64,24 @@ export function FormNewTahunSemester() {
         return;
       }
 
-      // Insert data into database
-      const { error: insertError } = await supabase
-        .from("tahun_semester")
-        .insert({
-          ...values,
-          slug: slugTahun,
-        });
-
-      if (insertError) throw insertError;
-
-      console.log("Successfully uploaded and saved!");
+      // Create new record
+      await createTahunSemester({
+        ...values,
+        slug: slugTahun,
+      });
 
       toast({
         title: "Berhasil Menambahkan",
         description: `Semester ${values.semester} tahun ${values.tahun_ajaran} telah berhasil ditambahkan`,
       });
-      router.push("/tahun-semester"); // Change this route as needed
+      router.push("/admin/tahun-semester");
     } catch (error) {
       console.error(error);
+      toast({
+        variant: "destructive",
+        title: "Gagal Menambahkan",
+        description: "Terjadi kesalahan saat menambahkan tahun semester",
+      });
     }
   }
 

@@ -3,21 +3,10 @@ import { columns } from "./_components/columns";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/server";
-
-async function getData() {
-  const supabase = await createClient();
-
-  const { data: tahun_semester } = await supabase
-    .from("tahun_semester")
-    .select()
-    .order("slug", { ascending: true });
-  // console.log(tahun_semester);
-  return tahun_semester;
-}
+import { getTahunSemester } from "./actions";
 
 export default async function Page() {
-  const data = await getData();
+  const data = await getTahunSemester();
 
   return (
     <>
@@ -25,7 +14,7 @@ export default async function Page() {
         {/* <h1 className="text-xl font-bold">Data Tahun Semester</h1> */}
         <DataTable
           toolbar={
-            <Link href="/tahun-semester/new">
+            <Link href="tahun-semester/new">
               <Button>
                 <PlusCircle />
                 Add Data

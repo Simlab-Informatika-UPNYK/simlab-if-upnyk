@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/utils/supabase/client"
 import { useToast } from "@/hooks/use-toast"
 import { Image } from "lucide-react"
+import { signup } from "@/app/(auth)/register/actions"
 
 // Components
 import { Button } from "@/components/ui/button"
@@ -21,7 +22,8 @@ const formSchema = z.object({
   nim: z.string()
     .length(9, "NIM harus 9 digit")
     .regex(/^\d+$/, "NIM harus berupa angka"),
-  email: z.string().email("Email tidak valid"),
+  password: z.string().min(6, "Password minimal 6 karakter"),
+  confirmPassword: z.string().min(6, "Konfirmasi password minimal 6 karakter"),
   angkatan: z.string().min(1, "Pilih angkatan"),
   program_studi: z.string().min(1, "Pilih program studi"),
   pendidikan_terakhir: z.string().min(1, "Pilih pendidikan"),
@@ -31,6 +33,9 @@ const formSchema = z.object({
     .min(10, "Minimal 10 digit")
     .optional(),
   profile_picture: z.instanceof(File).optional()
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Password tidak sama",
+  path: ["confirmPassword"]
 })
 
 export function NewAslabForm() {
@@ -44,7 +49,8 @@ export function NewAslabForm() {
     defaultValues: {
       nama: "",
       nim: "",
-      email: "",
+      password: "",
+      confirmPassword: "",
       angkatan: "",
       program_studi: "",
       pendidikan_terakhir: "",
@@ -61,6 +67,18 @@ export function NewAslabForm() {
       
       const supabase = createClient()
       let profileUrl = null
+
+      // Create formData for signup action
+      const formData = new FormData()
+      formData.append('username', values.nim)
+      formData.append('password', values.password)
+      formData.append('confirm-password', values.confirmPassword)
+
+      // First create auth user using register action
+      const signupResult = await signup(null, formData)
+      if (signupResult?.errors) {
+        throw new Error(signupResult.errors.general || "Gagal membuat akun")
+      }
 
       // Handle image upload if exists
       if (values.profile_picture) {
@@ -84,11 +102,18 @@ export function NewAslabForm() {
         profileUrl = publicUrl
       }
 
-      // Insert data
+      // Insert aslab data
       const { error: insertError } = await supabase
         .from('aslab')
         .insert({
-          ...values,
+          nama: values.nama,
+          nim: values.nim,
+          email: `${values.nim}@student.upnyk.ac.id`,
+          angkatan: values.angkatan,
+          program_studi: values.program_studi,
+          pendidikan_terakhir: values.pendidikan_terakhir,
+          status: values.status,
+          no_hp: values.no_hp,
           profile_picture: profileUrl
         })
 
@@ -185,20 +210,35 @@ export function NewAslabForm() {
           </div>
         </div>
 
-        {/* Email */}
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input placeholder="Masukkan email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Password Fields */}
+        <div className="grid md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="Masukkan password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Konfirmasi Password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="Konfirmasi password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         {/* Angkatan and Program Studi */}
         <div className="grid md:grid-cols-2 gap-6">
