@@ -9,7 +9,11 @@ import { Edit } from "lucide-react";
 import { DeleteButton } from "./delete-button";
 
 export const columns = [
-  
+  {
+    accessorKey: "no",
+    header: () => "No",
+    cell: ({ row }) => row.index + 1,
+  },
   {
     accessorKey: "nama", // Updated accessorKey
     header: ({ column }) => (
@@ -20,7 +24,7 @@ export const columns = [
       return (
         <div className="flex items-center">
           <Link
-            href={`/lab/${data.slug}`}
+            href={`/admin/lab/${data.slug}`}
             className="text-blue-600 font-medium"
           >
             {data.nama}
@@ -57,7 +61,7 @@ export const columns = [
       const data = row.original;
       return (
         <div className="flex items-center space-x-2">
-          <Link href={`/lab/${data.slug}/edit`}>
+          <Link href={`/admin/lab/${data.slug}/edit`}>
             <Button variant="ghost" size="icon">
               <Edit className="h-4 w-4" />
             </Button>

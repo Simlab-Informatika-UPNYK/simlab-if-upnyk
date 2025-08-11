@@ -11,7 +11,6 @@ export default async function Page() {
   return (
     <>
       <div className="container mx-auto px-4 py-2">
-        {/* <h1 className="text-xl font-bold">Data Tahun Semester</h1> */}
         <DataTable
           toolbar={
             <Link href="tahun-semester/new">

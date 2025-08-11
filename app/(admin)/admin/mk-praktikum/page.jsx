@@ -29,7 +29,7 @@ export default async function Page() {
     <div className="container mx-auto p-4">
       <DataTable
         toolbar={
-          <Link href="/mk-praktikum/new">
+          <Link href="/admin/mk-praktikum/new">
             <Button>
               <PlusCircle />
               Add Data

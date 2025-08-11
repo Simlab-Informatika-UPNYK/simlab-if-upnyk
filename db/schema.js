@@ -37,7 +37,7 @@ export const dosen_pengampu = pgTable("dosen_pengampu", {
   nama: text("nama"),
   nip: text("nip"),
   email: text("email"),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
 });
 
 export const honor_jenis = pgTable("honor_jenis", {
@@ -45,7 +45,7 @@ export const honor_jenis = pgTable("honor_jenis", {
   created_at: timestamp("created_at"),
   jenis: text("jenis"),
   biaya: integer("biaya"),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
 });
 
 export const kalab = pgTable("kalab", {
@@ -56,7 +56,7 @@ export const kalab = pgTable("kalab", {
   email: text("email"),
   no_hp: text("no_hp"),
   photo: text("photo"),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
 });
 
 export const kelas_aslab = pgTable("kelas_aslab", {
@@ -79,7 +79,7 @@ export const kelas_praktikum = pgTable("kelas_praktikum", {
   lab: integer("lab").references(() => lab.id),
   jenis_praktikan: text("jenis_praktikan"),
   waktu: text("waktu"),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
   tahun_semester: integer("tahun_semester").references(() => tahun_semester.id),
 });
 
@@ -90,7 +90,7 @@ export const lab = pgTable("lab", {
   lantai: text("lantai"),
   kapasitas: integer("kapasitas"),
   kalab: integer("kalab").references(() => kalab.id),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
 });
 
 export const mata_kuliah_praktikum = pgTable("mata_kuliah_praktikum", {
@@ -99,7 +99,7 @@ export const mata_kuliah_praktikum = pgTable("mata_kuliah_praktikum", {
   nama: text("nama"),
   semester: text("semester"),
   jumlah_kelas: integer("jumlah_kelas"),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
   kode_mk: integer("kode_mk"),
 });
 
@@ -196,5 +196,5 @@ export const tahun_semester = pgTable("tahun_semester", {
   created_at: timestamp("created_at"),
   semester: text("semester"),
   tahun_ajaran: text("tahun_ajaran"),
-  slug: text("slug"),
+  slug: text("slug").unique().notNull(),
 });

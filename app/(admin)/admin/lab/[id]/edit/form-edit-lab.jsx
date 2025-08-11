@@ -83,7 +83,7 @@ export function FormEditLab({ lab, listKalab }) {
         description: `Laboratorium ${values.nama} telah berhasil diperbarui`,
       });
 
-      router.push("/lab");
+      router.push("/admin/lab");
       router.refresh();
     } catch (error) {
       toast({

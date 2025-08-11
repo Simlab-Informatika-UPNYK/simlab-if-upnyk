@@ -15,17 +15,14 @@ import { getAllLab } from "./actions.jsx";
 export default async function Page() {
   const data = await getAllLab();
 
-  // Fixed calculation to handle potential non-numeric values
   const totalCapacity = data.reduce((sum, lab) => {
-    // Parse the capacity to a number and add only if it's a valid number
     const kapasitas = parseInt(lab.kapasitas) || 0;
     return sum + kapasitas;
   }, 0);
 
-  // TODO: fungsi crud lab
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Jumlah Laboratorium</CardTitle>
@@ -50,7 +47,7 @@ export default async function Page() {
 
       <DataTable
         toolbar={
-          <Link href="/lab/new">
+          <Link href="/admin/lab/new">
             <Button>
               <PlusCircle />
               Add Data

@@ -1,117 +1,107 @@
 "use server";
+import { db } from "@/db";
+import { kalab } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import slugify from "react-slugify";
-import { createClient } from "@/utils/supabase/server";
 
 export async function getKalabData() {
-  const supabase = await createClient();
   try {
-    // Fetch kalab data from Supabase
-    const { data, error } = await supabase
-      .from("kalab") // Replace with your actual table name
-      .select("*");
+    const data = await db
+      .select({
+        nama: kalab.nama,
+        nip: kalab.nip,
+        email: kalab.email,
+        no_hp: kalab.no_hp,
+        slug: kalab.slug,
+        photo: kalab.photo,
+      })
+      .from(kalab);
 
-    if (error) {
-      console.error("Error fetching data from Supabase:", error);
-      return [];
-    }
-
-    // Map the Supabase data to match the expected format if needed
-    return data.map((item, index) => ({
+    return data.map((item) => ({
       "Nama Lengkap": item.nama,
       "NIDN/NIP": item.nip,
       Email: item.email,
-      "no_hp": item.no_hp,
+      no_hp: item.no_hp,
       Jabatan: "",
       slug: item.slug,
-      photo: `https://unsplash.it/200/200?random=${index}`,
+      photo: item.photo || "",
     }));
   } catch (error) {
-    console.error("Error in getData function:", error);
-    return [];
+    throw new Error("Gagal mengambil data kalab: " + error.message);
   }
 }
 
 export async function getKalabDetail(slug) {
-  const supabase = await createClient();
-
   try {
-    const { data: kalab, error } = await supabase
-      .from("kalab")
+    const [data] = await db
       .select()
-      .eq("slug", slug);
+      .from(kalab)
+      .where(eq(kalab.slug, slug))
+      .limit(1);
 
-    if (error) {
-      console.error("Error fetching kalab detail:", error);
-      return null;
+    if (!data) {
+      throw new Error("Data kalab tidak ditemukan");
     }
-
-    // Return the first matching record or null if none found
-    return kalab;
+    return data;
   } catch (error) {
-    console.error("Error in getKalabDetail function:", error);
-    return null;
+    throw new Error("Gagal mengambil detail kalab: " + error.message);
   }
 }
 
 export async function createKalab(data) {
-  const supabase = await createClient();
   try {
-    // Transform the form data to match the database schema
     const kalabData = {
       nama: data["Nama Lengkap"],
       nip: data["NIDN/NIP"],
       email: data["Email"],
       no_hp: data["No Telepon"],
-      //   jabatan: data["Jabatan"]
       slug: slugify(data["Nama Lengkap"]),
     };
 
-    // Insert data into the kalab table
-    const { data: insertedData, error } = await supabase
-      .from("kalab")
-      .insert(kalabData)
-      .select();
-
-    if (error) {
-      console.error("Error inserting kalab data:", error);
-      return { success: false, error: error.message };
-    }
-
-    return { success: true, data: insertedData };
+    const insertedData = await db.insert(kalab).values(kalabData).returning();
+    return insertedData[0];
   } catch (error) {
-    console.error("Error in createKalab function:", error);
-    return { success: false, error: error.message };
+    throw new Error("Gagal membuat kalab: " + error.message);
+  }
+}
+
+export async function deleteKalab(slug) {
+  try {
+    const deletedData = await db
+      .delete(kalab)
+      .where(eq(kalab.slug, slug))
+      .returning();
+
+    if (!deletedData.length) {
+      throw new Error("Data kalab tidak ditemukan");
+    }
+    return deletedData[0];
+  } catch (error) {
+    throw new Error("Gagal menghapus kalab: " + error.message);
   }
 }
 
 export async function editKalab(slug, data) {
-  const supabase = await createClient();
   try {
-    // Transform the form data to match the database schema
     const kalabData = {
       nama: data["Nama Lengkap"],
       nip: data["NIDN/NIP"],
       email: data["Email"],
       no_hp: data["No Telepon"],
-      // Update slug only if name changed
       slug: data["Nama Lengkap"] ? slugify(data["Nama Lengkap"]) : slug,
     };
 
-    // Update data in the kalab table
-    const { data: updatedData, error } = await supabase
-      .from("kalab")
-      .update(kalabData)
-      .eq("slug", slug)
-      .select();
+    const updatedData = await db
+      .update(kalab)
+      .set(kalabData)
+      .where(eq(kalab.slug, slug))
+      .returning();
 
-    if (error) {
-      console.error("Error updating kalab data:", error);
-      return { success: false, error: error.message };
+    if (!updatedData.length) {
+      throw new Error("Data kalab tidak ditemukan");
     }
-
-    return { success: true, data: updatedData };
+    return updatedData[0];
   } catch (error) {
-    console.error("Error in editKalab function:", error);
-    return { success: false, error: error.message };
+    throw new Error("Gagal mengupdate kalab: " + error.message);
   }
 }

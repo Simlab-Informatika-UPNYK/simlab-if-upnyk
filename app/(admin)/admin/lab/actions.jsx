@@ -1,84 +1,77 @@
 "use server";
 import slugify from "react-slugify";
-import { createClient } from "@/utils/supabase/server";
+import { db } from "@/db";
+import { lab, kalab } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
-export async function getAllLab() {
-  const supabase = await createClient();
+export async function getAllKalab() {
   try {
-    const { data, error } = await supabase.from("lab").select(`
-        nama, 
-        lantai, 
-        kapasitas, 
-        slug,
-        kalab (
-          nama
-        )`);
+    const data = await db.select({
+      id: kalab.id,
+      nama: kalab.nama
+    })
+    .from(kalab);
 
-    if (error) {
-      console.error("Error fetching data from Supabase:", error);
-      return [];
-    }
-    // Map the data to include the kalab's name directly
-    const mappedData = data.map(item => ({
-      ...item,
-      kalab: item.kalab?.nama || null,
-    }));
-    return mappedData;
+    return data;
   } catch (error) {
-    console.error("Error in getData function:", error);
+    console.error("Error fetching kalab data:", error);
     return [];
   }
 }
 
-export async function getAllKalab() {
-  const supabase = await createClient();
+export async function getAllLab() {
   try {
-    const { data, error } = await supabase.from("kalab").select("id, nama");
+    const data = await db.select({
+      nama: lab.nama,
+      lantai: lab.lantai,
+      kapasitas: lab.kapasitas,
+      slug: lab.slug,
+      kalab: kalab.nama
+    })
+    .from(lab)
+    .leftJoin(kalab, eq(lab.kalab, kalab.id));
 
-    if (error) {
-      console.error("Error fetching data from Supabase:", error);
-      return [];
-    }
-
-    return data;
+    return data.map(item => ({
+      ...item,
+      kalab: item.kalab || null
+    }));
   } catch (error) {
-    console.error("Error in getData function:", error);
+    console.error("Error fetching lab data:", error);
     return [];
   }
 }
 
 export async function getOneLab(slug) {
-  const supabase = await createClient();
-
   try {
-    const { data, error } = await supabase
-      .from("lab")
-      .select(`id, nama, lantai, slug, kapasitas, kalab (nama, id)`)
-      .eq("slug", slug)
-      .limit(1)
-      .single();
+    const [data] = await db.select({
+      id: lab.id,
+      nama: lab.nama,
+      lantai: lab.lantai,
+      slug: lab.slug,
+      kapasitas: lab.kapasitas,
+      kalab: kalab.nama,
+      kalab_id: kalab.id
+    })
+    .from(lab)
+    .leftJoin(kalab, eq(lab.kalab, kalab.id))
+    .where(eq(lab.slug, slug))
+    .limit(1);
 
-    if (error) {
-      console.error("Error fetching lab detail:", error);
-      return null;
-    }
+    if (!data) return null;
 
-    const mappedData = {
+    return {
       ...data,
-      kalab: data.kalab?.nama || null,
-      kalab_id: data.kalab?.id || null,
+      kalab: data.kalab || null,
+      kalab_id: data.kalab_id || null
     };
-    return mappedData;
   } catch (error) {
-    console.error("Error in detail lab function:", error);
+    console.error("Error fetching lab detail:", error);
     return null;
   }
 }
 
 export async function createLab(data) {
-  const supabase = await createClient();
   try {
-    // Transform the form data to match the database schema
     const labData = {
       nama: data.nama,
       lantai: data.lantai,
@@ -87,25 +80,21 @@ export async function createLab(data) {
       slug: slugify(data.nama),
     };
 
-    const { data: insertedData, error } = await supabase
-      .from("lab")
-      .insert(labData)
-      .select();
+    const insertedData = await db.insert(lab)
+      .values(labData)
+      .returning();
 
-    if (error) {
-      console.error("Error inserting lab data:", error);
-      return { success: false, error: error.message };
-    }
-
-    return { success: true, data: insertedData };
+    return { success: true, data: insertedData[0] };
   } catch (error) {
-    console.error("Error in createLab function:", error);
-    return { success: false, error: error.message };
+    console.error("Error creating lab:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
   }
 }
 
 export async function editLab(id, data) {
-  const supabase = await createClient();
   try {
     const labData = {
       nama: data.nama,
@@ -115,20 +104,17 @@ export async function editLab(id, data) {
       slug: slugify(data.nama),
     };
 
-    const { data: updatedData, error } = await supabase
-      .from("lab")
-      .update(labData)
-      .eq("id", id)
-      .select();
+    const updatedData = await db.update(lab)
+      .set(labData)
+      .where(eq(lab.id, id))
+      .returning();
 
-    if (error) {
-      console.error("Error updating lab data:", error);
-      return { success: false, error: error.message };
-    }
-
-    return { success: true, data: updatedData };
+    return { success: true, data: updatedData[0] };
   } catch (error) {
-    console.error("Error in edit lab function:", error);
-    return { success: false, error: error.message };
+    console.error("Error updating lab:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
   }
 }

@@ -1,112 +1,109 @@
 "use server";
+import { db } from "@/db";
+import { mata_kuliah_praktikum } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { mkPraktikumSchema } from "./_components/form-schema";
 import slugify from "react-slugify";
-import { createClient } from "@/utils/supabase/server";
+import { findAllOrdered, findOneBySlug, checkExists } from "./db-utils";
 
-/* 
-mata_kuliah_praktikum
+export const getAllMk = async () => {
+  const result = await findAllOrdered();
+  return result.map((item) => ({
+    "Kode Mata Kuliah": item.kode_mk,
+    Nama: item.nama,
+    Semester: item.semester,
+    "Jumlah Kelas": item.jumlah_kelas,
+    id: item.id,
+    slug: item.slug,
+  }));
+};
 
-id 
-created_at 
-nama 
-semester 
-jumlah_kelas 
-slug
-*/
+export const getOneMk = async (slug) => {
+  const item = await findOneBySlug(slug);
+  if (!item) return null;
 
-export async function getAllMk() {
-  const supabase = await createClient();
+  return {
+    "Kode Mata Kuliah": item.kode_mk,
+    Nama: item.nama,
+    Semester: item.semester,
+    "Jumlah Kelas": item.jumlah_kelas,
+    id: item.id,
+    slug: item.slug,
+  };
+};
+
+export const checkMkExists = checkExists;
+
+export async function createMk(formData) {
   try {
-    const { data, error } = await supabase.from("mata_kuliah_praktikum").select(`
-        created_at, nama, semester, jumlah_kelas, slug, kode_mk`);
-
-    if (error) {
-      console.error("Error fetching data from Supabase:", error);
-      return [];
-    }
-    
-    return data;
-  } catch (error) {
-    console.error("Error in getData function:", error);
-    return [];
-  }
-}
-
-export async function getOneMk(slug) {
-  const supabase = await createClient();
-
-  try {
-    const { data, error } = await supabase
-      .from("mata_kuliah_praktikum")
-      .select(`id, nama, semester, jumlah_kelas, kode_mk, slug`)
-      .eq("slug", slug)
-      .limit(1)
-      .single();
-
-    if (error) {
-      console.error("Error fetching lab detail:", error);
-      return null;
-    }
-
-    return data;
-  } catch (error) {
-    console.error("Error in detail lab function:", error);
-    return null;
-  }
-}
-
-export async function createMk(data) {
-  const supabase = await createClient();
-  try {
-    // Transform the form data to match the database schema
+    const validatedData = mkPraktikumSchema.parse(formData);
     const mkData = {
-      nama: data.nama,
-      semester: data.semester,
-      jumlah_kelas: data.jumlah_kelas,
-      kode_mk: data.kode_mk,
-      slug: slugify(data.nama),
+      kode_mk: validatedData["Kode Mata Kuliah"],
+      nama: validatedData.Nama,
+      semester: validatedData.Semester,
+      jumlah_kelas: validatedData["Jumlah Kelas"],
+      slug: slugify(validatedData.Nama),
     };
 
-    const { data: insertedData, error } = await supabase
-      .from("mata_kuliah_praktikum")
-      .insert(mkData)
-      .select();
+    const [data] = await db
+      .insert(mata_kuliah_praktikum)
+      .values(mkData)
+      .returning();
 
-    if (error) {
-      console.error("Error inserting lab data:", error);
-      return { success: false, error: error.message };
-    }
-
-    return { success: true, data: insertedData };
+    return data;
   } catch (error) {
-    console.error("Error in createLab function:", error);
-    return { success: false, error: error.message };
+    console.error("Error creating mata kuliah:", error.message);
+    return {
+      success: false,
+      error: error.message || "Gagal membuat mata kuliah",
+    };
   }
 }
 
-export async function editMk(id, data) {
-  const supabase = await createClient();
-  try {
-    const labData = {
-      nama: data.nama,
-      semester: data.semester,
-      jumlah_kelas: data.jumlah_kelas,
-      slug: slugify(data.nama),
-    };
+export async function editMk(id, formData) {
+  return await db.transaction(async (tx) => {
+    try {
+      const validatedData = mkPraktikumSchema.parse(formData);
+      const mkData = {
+        kode_mk: validatedData["Kode Mata Kuliah"],
+        nama: validatedData.Nama,
+        semester: validatedData.Semester,
+        jumlah_kelas: validatedData["Jumlah Kelas"],
+        slug: slugify(validatedData.Nama),
+      };
 
-    const { data: updatedData, error } = await supabase
-      .from("mata_kuliah_praktikum")
-      .update(labData)
-      .eq("id", id)
-      .select();
+      if (mkData.slug) {
+        const exists = await checkExists(mkData.slug);
+        if (exists) {
+          throw new Error("Slug sudah digunakan");
+        }
+      }
 
-    if (error) {
-      console.error("Error updating lab data:", error);
-      return { success: false, error: error.message };
+      const [data] = await tx
+        .update(mata_kuliah_praktikum)
+        .set(mkData)
+        .where(eq(mata_kuliah_praktikum.id, id))
+        .returning();
+
+      return { success: true, data };
+    } catch (error) {
+      console.error("Error updating mata kuliah:", error.message);
+      throw error;
     }
+  });
+}
 
-    return { success: true, data: updatedData };
+export async function deleteMk(id) {
+  try {
+    await db
+      .delete(mata_kuliah_praktikum)
+      .where(eq(mata_kuliah_praktikum.id, id));
+    return { success: true };
   } catch (error) {
-    console.error("Error in edit lab function:", error);
-    return { success: false, error: error.message };
+    console.error("Error deleting mata kuliah:", error.message);
+    return {
+      success: false,
+      error: error.message || "Gagal menghapus mata kuliah",
+    };
   }
 }

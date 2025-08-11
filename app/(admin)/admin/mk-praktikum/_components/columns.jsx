@@ -1,68 +1,58 @@
 "use client";
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Edit, Trash } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
+import Link from "next/link";
 
 export const columns = [
   {
-    id: "Kode Matkul",
-    accessorKey: "kode_mk",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kode Matkul" />
-    ),
+    accessorKey: "Kode Mata Kuliah",
+    header: "Kode Mata Kuliah",
   },
   {
-    id: "mata kuliah",
-    accessorKey: "nama",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Mata Kuliah" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original;
+    accessorKey: "Nama",
+    header: ({ column }) => {
       return (
-        <Link
-          href={`/mk-praktikum/${data.slug}`}
-          className="text-blue-600 font-medium"
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          {data.nama}
+          Nama
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const mk_praktikum = row.original;
+      return (
+        <Link href={`/admin/mk-praktikum/${mk_praktikum.slug}`}>
+          <span className="text-blue-600 hover:underline cursor-pointer">
+            {mk_praktikum["Nama"]}
+          </span>
         </Link>
       );
     },
   },
   {
-    accessorKey: "semester",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Semester" />
-    ),
+    accessorKey: "Semester",
+    header: "Semester",
   },
   {
-    id: "jumlah kelas",
-    accessorKey: "jumlah_kelas",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Jumlah Kelas" />
-    ),
+    accessorKey: "Jumlah Kelas",
+    header: "Jumlah Kelas",
   },
   {
-    id: "aksi",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" />
-    ),
+    id: "actions",
     cell: ({ row }) => {
-      const data = row.original;
+      const mk = row.original;
+
       return (
-        <div className="flex items-center space-x-2">
-          <Link href={`/mk-praktikum/${data.slug}/edit`}>
-            <Button variant="ghost" size="icon">
-              <Edit className="h-4 w-4" />
+        <div className="flex gap-2">
+          <Link href={`/admin/mk-praktikum/${mk.slug}/edit`}>
+            <Button variant="outline" size="sm">
+              Edit
             </Button>
           </Link>
-          <Button variant="ghost" size="icon" className="text-red-500">
-            <Trash className="h-4 w-4" />
-          </Button>
         </div>
       );
     },

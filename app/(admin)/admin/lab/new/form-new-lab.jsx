@@ -37,7 +37,7 @@ const formSchema = z.object({
   ),
   kalab: z.preprocess(
     (arg) => (arg === "" ? undefined : Number(arg)),
-    z.number({ invalid_type_error: "Kalab harus diisi" })
+    z.number({ invalid_type_error: "Kalab harus diisi" }).optional()
   ),
 });
 
@@ -59,7 +59,7 @@ export function FormNewLab({ listKalab }) {
           title: "Berhasil Menambahkan",
           description: `Laboratorium ${values.nama} telah berhasil ditambahkan`,
         });
-        router.push("/lab"); // Change this route as needed
+        router.push("/admin/lab"); // Change this route as needed
       } else {
         toast({
           title: "Gagal Menambahkan",
@@ -135,8 +135,8 @@ export function FormNewLab({ listKalab }) {
           render={({ field }) => (
             <FormItem>
               <FormLabel className="text-sm font-medium">Kalab</FormLabel>
-              <Select 
-                onValueChange={field.onChange} 
+              <Select
+                onValueChange={field.onChange}
                 value={field.value?.toString() || ""}
               >
                 <FormControl>

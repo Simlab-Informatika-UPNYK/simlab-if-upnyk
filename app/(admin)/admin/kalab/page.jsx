@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
 import { PlusCircle } from "lucide-react";
@@ -8,16 +5,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getKalabData } from "./actions";
 
-export default function Page() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    async function fetchData() {
-      const fetchedData = await getKalabData();
-      setData(fetchedData);
-    }
-    fetchData();
-  }, []);
+export default async function Page() {
+  const data = await getKalabData();
 
   return (
     <div className="container mx-auto px-4 py-2">
@@ -28,7 +17,7 @@ export default function Page() {
 
       <DataTable
         toolbar={
-          <Link href="/kalab/new">
+          <Link href="/admin/kalab/new">
             <Button>
               <PlusCircle className="h-4 w-4 mr-2" />
               Tambah Kalab

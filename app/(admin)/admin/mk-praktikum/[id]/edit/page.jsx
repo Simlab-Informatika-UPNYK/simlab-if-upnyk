@@ -1,27 +1,18 @@
-import { getOneMk } from "../../actions.jsx";
-import { FormEditMK } from "./form-edit-mk.jsx";
-import BackButton from "@/components/back-button";
+import { getOneMk } from "../../actions.jsx"
+import { notFound } from "next/navigation"
+import FormEdit from "./form-edit.jsx"
 
-export default async function EditMKPage({ params }) {
-  const slug = (await params).id;
-  const mk = await getOneMk(slug);
+export default async function Page({ params }) {
+  const mk = await getOneMk(params.id)
+
+  if (!mk) {
+    return notFound()
+  }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Edit Mata Kuliah Praktikum</h1>
-        <BackButton />
-      </div>
-
-      <div className="">
-        {mk ? (
-          <FormEditMK mk={mk} />
-        ) : (
-          <div className="text-center p-4">
-            <p className="text-red-500">Mata Kuliah Praktikum tidak ditemukan</p>
-          </div>
-        )}
-      </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Edit Mata Kuliah Praktikum</h1>
+      <FormEdit initialData={mk} />
     </div>
-  );
+  )
 }
