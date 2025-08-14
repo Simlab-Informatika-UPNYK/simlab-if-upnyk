@@ -22,6 +22,13 @@
       "when": 1754923557113,
       "tag": "0002_add_slug_unique_notnull",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1755146802482,
+      "tag": "0003_add inventaris table",
+      "breakpoints": true
     }
   ]
 }

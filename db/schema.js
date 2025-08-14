@@ -198,3 +198,21 @@ export const tahun_semester = pgTable("tahun_semester", {
   tahun_ajaran: text("tahun_ajaran"),
   slug: text("slug").unique().notNull(),
 });
+
+export const inventaris = pgTable("inventaris", {
+  id: serial("id").primaryKey(),
+  lab_id: integer("lab_id").references(() => lab.id),
+  no_meja: varchar("no_meja", { length: 20 }),
+  no_snbt: varchar("no_snbt", { length: 50 }),
+  merek_model: varchar("merek_model", { length: 100 }),
+  monitor: varchar("monitor", { length: 100 }),
+  processor: varchar("processor", { length: 100 }),
+  storage: varchar("storage", { length: 100 }),
+  ram: varchar("ram", { length: 50 }),
+  gpu: varchar("gpu", { length: 100 }),
+  lan_card: varchar("lan_card", { length: 50 }),
+  ups: boolean("ups"),
+  merk_ups: varchar("merk_ups", { length: 50 }),
+  keterangan: text("keterangan"),
+  created_at: timestamp("created_at").defaultNow(),
+});

@@ -3,11 +3,14 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, Pencil, ChevronLeft } from "lucide-react";
-import InventoryFormDialog from "./_components/inventory-form-dialog";
+import Link from "next/link";
 import DeleteInventoryButton from "./_components/delete-inventory-button";
 import { useParams } from "next/navigation";
 import { getInventarisByLabId } from "../actions";
 import { getLabDetail } from "./actions";
+
+// Fungsi konversi UPS
+const upsToString = (ups) => (ups === null ? "Tidak" : ups ? "Pakai" : "Tidak");
 
 // Menggunakan data dummy sebagai fallback jika database belum ada
 const dummyData = [
@@ -90,7 +93,7 @@ const dummyData = [
 
 const Page = () => {
   const params = useParams();
-  const labId = params.id;
+  const labSlug = params.id;
   const [isLoading, setIsLoading] = useState(true);
   const [inventarisData, setInventarisData] = useState([]);
   const [refreshFlag, setRefreshFlag] = useState(0);
@@ -107,61 +110,58 @@ const Page = () => {
         setIsLoading(true);
 
         // Fetch lab details
-        const labResult = await getLabDetail(labId);
-        if (labResult.success) {
-          setLabDetail(labResult.data);
+        const labResult = await getLabDetail(labSlug);
+        if (!labResult.success) {
+          console.error("Lab not found:", labResult.error);
+          setLabDetail(null);
+          return;
         }
 
-        // Fetch inventaris items
-        const result = await getInventarisByLabId(labId);
+        setLabDetail(labResult.data);
+
+        // Fetch inventaris items using the slug from URL params
+        const result = await getInventarisByLabId(labResult.data.id);
 
         if (result.success && result.data && result.data.length > 0) {
-          // Transform data from database format to component format
+          // Data sudah ditransform ke camelCase oleh actions.jsx
+          // Hanya perlu transformasi untuk field UPS
           const transformedData = result.data.map((item) => ({
-            id: item.id,
-            noMeja: item.no_meja,
-            noSNBT: item.no_snbt,
-            merekModel: item.merek_model,
-            monitor: item.monitor,
-            processor: item.processor,
-            storage: item.storage,
-            ram: item.ram,
-            gpu: item.gpu,
-            lanCard: item.lan_card,
-            ups: item.ups,
-            merkUps: item.merk_ups,
-            keterangan: item.keterangan,
+            ...item,
+            ups: upsToString(item.ups),
           }));
           setInventarisData(transformedData);
         } else {
           // Fallback to dummy data if no data from database
-          setInventarisData(dummyData);
+          // setInventarisData(dummyData);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        setInventarisData(dummyData);
+        setLabDetail(null);
+        setInventarisData([]);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchData();
-  }, [labId, refreshFlag]);
+  }, [labSlug, refreshFlag]);
 
   return (
     <>
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => window.history.back()}
-              className="mb-2"
-            >
-              <ChevronLeft />
-              Kembali
-            </Button>
+            <Link href={"/admin/inventaris-lab"}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="mb-2"
+              >
+                <ChevronLeft />
+                Kembali
+              </Button>
+            </Link>
+
             <h1 className="text-2xl font-bold">Detail Inventaris</h1>
             {labDetail && (
               <p className="text-gray-500">
@@ -170,12 +170,12 @@ const Page = () => {
               </p>
             )}
           </div>
-          <InventoryFormDialog mode="add" onSuccess={refreshData}>
+          <Link href={`/admin/inventaris-lab/${labSlug}/new`}>
             <Button>
               <PlusCircle className="h-4 w-4 mr-2" />
               Tambah Inventaris
             </Button>
-          </InventoryFormDialog>
+          </Link>
         </div>
 
         {isLoading ? (
@@ -257,15 +257,13 @@ const Page = () => {
                       <td className="px-2 py-2">
                         {" "}
                         <div className="flex">
-                          <InventoryFormDialog
-                            mode="edit"
-                            initialData={item}
-                            onSuccess={refreshData}
+                          <Link
+                            href={`/admin/inventaris-lab/${labSlug}/${item.id}`}
                           >
                             <Button size="icon" variant="ghost">
                               <Pencil className="h-4 w-4" />
                             </Button>
-                          </InventoryFormDialog>
+                          </Link>
                           <DeleteInventoryButton
                             inventoryId={item.id}
                             inventoryName={item.merekModel}

@@ -1,59 +1,55 @@
 "use client";
-
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Edit, Trash } from "lucide-react";
+import Link from "next/link";
+import { Pencil } from "lucide-react";
+import { DeleteButton } from "./delete-button";
 
 export const columns = [
-  
+  {
+    accessorKey: "no",
+    header: "No",
+    cell: ({ row }) => row.index + 1,
+  },
   {
     accessorKey: "nama",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama" />
-    ),
+    header: "Nama Lab",
     cell: ({ row }) => {
-      const data = row.original;
-      return <Link className="text-blue-600" href={`/inventaris-lab/${data.id}`}>{data.nama}</Link>;
-    },
-  },
-  {
-    accessorKey: "jumlah",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Jumlah" />
-    ),
-  },
-  {
-    accessorKey: "tahun",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Tahun" />
-    ),
-  },
-  {
-    accessorKey: "kondisi",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Kondisi" />
-    ),
-  },
-  {
-    id: "aksi",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original;
+      const lab = row.original;
       return (
-        <div className="flex items-center space-x-2">
-          <Button variant="ghost" size="icon">
-            <Edit className="h-4 w-4" />
-          </Button>
-          <Button variant="ghost" size="icon" className="text-red-500">
-            <Trash className="h-4 w-4" />
-          </Button>
-        </div>
+        <Link href={`/admin/inventaris-lab/${lab.slug}`}>
+          <span className="text-blue-600 hover:underline cursor-pointer">
+            {lab.nama}
+          </span>
+        </Link>
       );
     },
   },
+  {
+    accessorKey: "lantai",
+    header: "Lantai",
+  },
+  {
+    accessorKey: "kapasitas",
+    header: "Kapasitas",
+  },
+  {
+    accessorKey: "kalab",
+    header: "Kepala Lab",
+  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => {
+  //     const lab = row.original;
+  //     return (
+  //       <div className="flex gap-2">
+  //         <Link href={`/admin/inventaris-lab/${lab.slug}/edit`}>
+  //           <Button variant="ghost" size="sm">
+  //             <Pencil className="h-4 w-4" />
+  //           </Button>
+  //         </Link>
+  //         <DeleteButton id={lab.id} labId={lab.id} />
+  //       </div>
+  //     );
+  //   },
+  // },
 ];
