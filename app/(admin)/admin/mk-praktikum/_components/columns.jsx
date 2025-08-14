@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
+import { DeleteButton } from "./delete-button";
 
 export const columns = [
   {
@@ -53,6 +54,7 @@ export const columns = [
               Edit
             </Button>
           </Link>
+          <DeleteButton id={mk.id} />
         </div>
       );
     },

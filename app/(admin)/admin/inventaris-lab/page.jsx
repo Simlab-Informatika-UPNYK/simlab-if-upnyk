@@ -11,51 +11,51 @@ import DeleteFolderButton from "./_components/delete-folder-button";
 const defaultFolderData = [
   {
     title: "Komputasi",
-    url: "/komputasi",
+    url: "/admin/komputasi",
   },
   {
     title: "Jaringan",
-    url: "/jaringan",
+    url: "/admin/jaringan",
   },
   {
     title: "IoT",
-    url: "/iot",
+    url: "/admin/iot",
   },
   {
     title: "Basis Data",
-    url: "/basis-data",
+    url: "/admin/basis-data",
   },
   {
     title: "Multimedia",
-    url: "/multimedia",
+    url: "/admin/multimedia",
   },
   {
     title: "Geoinformatika",
-    url: "/geoinformatika",
+    url: "/admin/geoinformatika",
   },
   {
     title: "Pemrograman",
-    url: "/pemrograman",
+    url: "/admin/pemrograman",
   },
   {
     title: "RBPL",
-    url: "/rbpl",
+    url: "/admin/rbpl",
   },
   {
     title: "PPSI",
-    url: "/ppsi",
+    url: "/admin/ppsi",
   },
   {
     title: "LAB 10 (TI Komputasi)",
-    url: "/lab-10-ti-komputasi",
+    url: "/admin/lab-10-ti-komputasi",
   },
   {
     title: "LAB 11 (TI Studio Desain)",
-    url: "/lab-11-ti-studio-desain",
+    url: "/admin/lab-11-ti-studio-desain",
   },
   {
     title: "Perangkat Jaringan",
-    url: "/perangkat-jaringan",
+    url: "/admin/perangkat-jaringan",
   },
 ];
 
@@ -99,7 +99,7 @@ const Page = () => {
               className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
             >
               <Link
-                href={`/inventaris-lab${folder.url}`}
+                href={`/admin/inventaris-lab${folder.url}`}
                 className="flex items-center flex-grow"
               >
                 <Folder className="w-5 h-5 mr-3 text-blue-500" />

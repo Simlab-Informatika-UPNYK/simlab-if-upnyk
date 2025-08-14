@@ -1,54 +1,46 @@
 "use client";
-
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { Checkbox } from "@/components/ui/checkbox";
-import Link from "next/link";
+import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Edit, Trash } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
+import Link from "next/link";
+import { DeleteButton } from "./delete-button";
 
 export const columns = [
   {
     accessorKey: "nama",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nama" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original;
-
-      return <Link href={`/dosen-pengampu/${data.slug}`} className="text-blue-600">{data.nama}</Link>;
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nama
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
     },
   },
   {
-    id: "NIP",
     accessorKey: "nip",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="NIP" />
-    ),
+    header: "NIP",
   },
   {
     accessorKey: "email",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
-    ),
+    header: "Email",
   },
   {
-    id: "aksi",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" />
-    ),
+    id: "actions",
     cell: ({ row }) => {
-      const data = row.original;
+      const dosen = row.original;
+
       return (
-        <div className="flex items-center space-x-2">
-          <Link href={`dosen-pengampu/${data.slug}/edit`}>
-            <Button variant="ghost" size="icon">
-              <Edit className="h-4 w-4" />
+        <div className="flex gap-2">
+          <Link href={`/admin/dosen-pengampu/${dosen.slug}/edit`}>
+            <Button variant="ghost" size="sm">
+              <Pencil className="h-4 w-4" />
             </Button>
           </Link>
-          <Button variant="ghost" size="icon" className="text-red-500">
-            <Trash className="h-4 w-4" />
-          </Button>
+          <DeleteButton slug={dosen.slug} />
         </div>
       );
     },

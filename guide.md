@@ -43,6 +43,7 @@ f) _components:
 - form-schema.js (validasi zod)
 - columns.jsx (kolom datatable)
 - action-cell.jsx (aksi row table)
+- delete-button.jsx (gunakan konfirmasi dialog)
 
 1. Best Practices:
 - Pisahkan logic dan UI
