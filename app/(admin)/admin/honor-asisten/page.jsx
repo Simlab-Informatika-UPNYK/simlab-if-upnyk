@@ -28,7 +28,7 @@ export default async function Page() {
   return (
     <DataTable
       toolbar={
-        <Link href="/honor-asisten/new">
+        <Link href="/admin/honor-asisten/new">
           <Button>
             <PlusCircle />
             Add Data

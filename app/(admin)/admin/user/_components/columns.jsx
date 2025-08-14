@@ -5,7 +5,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { ActionCell } from "./action-cell";
 
-export const columns = [  
+export const columns = [
+  {
+    id: "no",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="No" />
+    ),
+    cell: ({ row }) => {
+      return row.index + 1;
+    },
+  },
   {
     accessorKey: "nama",
     header: ({ column }) => (
@@ -13,7 +22,7 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const data = row.original;
-      return <Link href={`user/${data.slug}`} className="text-blue-600">{data.nama}</Link>;
+      return <Link href={`/admin/user/${data.slug}`} className="text-blue-600">{data.nama}</Link>;
     },
   },
   {

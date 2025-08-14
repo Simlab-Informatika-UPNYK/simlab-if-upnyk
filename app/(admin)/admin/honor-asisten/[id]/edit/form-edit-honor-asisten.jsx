@@ -52,7 +52,7 @@ export function FormEditHonorAsisten({ honor }) {
         biaya: values.biaya,
         jenis: values.jenis,
       });
-      router.push("/honor-asisten");
+      router.push("/admin/honor-asisten");
       router.refresh();
       toast({
         title: "Berhasil Mengubah",

@@ -10,6 +10,12 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 
+export const programStudiEnum = pgEnum("program_studi", [
+  "Sistem Informasi",
+  "Informatika",
+]);
+export const statusAslabEnum = pgEnum("status_aslab", ["Aktif", "Tidak Aktif"]);
+
 export const aslab = pgTable("aslab", {
   id_aslab: serial("id_aslab").primaryKey(),
   nama: text("nama"),
@@ -17,8 +23,8 @@ export const aslab = pgTable("aslab", {
   email: text("email"),
   no_hp: varchar("no_hp", { length: 15 }),
   angkatan: varchar("angkatan", { length: 4 }),
-  program_studi: text("program_studi"),
-  status: varchar("status", { length: 20 }),
+  program_studi: programStudiEnum("program_studi"),
+  status: statusAslabEnum("status"),
   profile_picture: text("profile_picture"),
 });
 

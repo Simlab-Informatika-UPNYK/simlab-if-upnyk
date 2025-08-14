@@ -39,7 +39,7 @@ export function FormNewHonorAsisten() {
         title: "Berhasil Menambahkan",
         description: `Data honor asisten telah berhasil ditambahkan`,
       });
-      router.push("/honor-asisten"); // Change this route as needed
+      router.push("/admin/honor-asisten");
     } catch (error) {
       toast({
         variant: "destructive",

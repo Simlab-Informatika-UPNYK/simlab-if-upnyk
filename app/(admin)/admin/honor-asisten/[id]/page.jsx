@@ -1,14 +1,8 @@
 import { getHonorJenisByJenis } from "../actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { Pencil } from "lucide-react";
 import BackButton from "@/components/back-button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { DeleteButton } from "../_components/delete-button.jsx";
 
 export default async function HonorAsistenDetail({ params }) {
@@ -35,7 +29,7 @@ export default async function HonorAsistenDetail({ params }) {
           Honor Asisten - {dataHonor.jenis}
         </h1>
         <div className="flex gap-2">
-          <Link href={`/honor-asisten/${dataHonor.jenis}/edit`}>
+          <Link href={`/admin/honor-asisten/${dataHonor.jenis}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>

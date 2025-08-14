@@ -8,7 +8,7 @@ import { DeleteButton } from "./delete-button";
 export const ActionCell = ({ data }) => {
   return (
     <div className="flex items-center space-x-2">
-      <Link href={`/honor-asisten/${data.slug}/edit`}>
+      <Link href={`/admin/honor-asisten/${data.slug}/edit`}>
         <Button variant="ghost" size="icon">
           <Edit className="h-4 w-4" />
         </Button>

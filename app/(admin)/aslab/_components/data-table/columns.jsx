@@ -1,11 +1,15 @@
-"use client"
+"use client";
 
-import { DataTableColumnHeader } from "./data-table-column-header"
-import { ActionCell } from "./action-cell"
-import Link from "next/link"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
+import { ActionCell } from "./action-cell";
+import Link from "next/link";
 
 export const columns = [
-  
+  {
+    accessorKey: "no",
+    header: () => "No",
+    cell: ({ row }) => row.index + 1,
+  },
   {
     accessorKey: "nama",
     header: ({ column }) => (
@@ -35,7 +39,7 @@ export const columns = [
             </div>
           )}
           <span className="text-blue-600">{user.nama}</span>
-        </Link >
+        </Link>
       );
     },
   },
@@ -64,7 +68,7 @@ export const columns = [
       <DataTableColumnHeader column={column} title="Program Studi" />
     ),
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
   },
   {
@@ -73,7 +77,7 @@ export const columns = [
       <DataTableColumnHeader column={column} title="Status" />
     ),
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return value.includes(row.getValue(id));
     },
     enableGlobalFilter: false,
     enableSorting: false,
@@ -83,7 +87,7 @@ export const columns = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      return <ActionCell row={row.original} />
+      return <ActionCell row={row.original} />;
     },
   },
   // {
@@ -103,4 +107,4 @@ export const columns = [
   //     return <div className="text-right font-medium">{formatted}</div>
   //   },
   // },
-]
+];

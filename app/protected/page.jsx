@@ -1,4 +1,3 @@
-import { authClient } from "@/lib/auth-client";
 import LogoutButton from "../(auth)/logout-button";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";

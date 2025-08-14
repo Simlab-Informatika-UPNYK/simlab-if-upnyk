@@ -1,8 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import LogoutButton from "@/app/(auth)/logout-button";
 
 export default async function Page() {
   return (

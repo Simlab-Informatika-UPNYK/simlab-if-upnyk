@@ -1,64 +1,20 @@
-import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Trash2 } from "lucide-react";
 import BackButton from "@/components/back-button";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Copy, UserCheck } from "lucide-react";
-
-async function fetchAslabIds() {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("aslab").select("nim");
-  
-  if (error) {
-    console.error("Error fetching aslab IDs:", error);
-    return [];
-  }
-  
-  return data.map(item => item.nim);
-}
-
-export const dynamicParams = true; 
-
-export async function generateStaticParams() {
-  try {
-    const aslabIds = await fetchAslabIds();
-    return aslabIds.map((nim) => ({
-      id: nim.toString(),
-    }));
-  } catch (error) {
-    console.error("Error in generateStaticParams:", error);
-    return [];
-  }
-}
-
-async function getData(nim) {
-  const supabase = await createClient();
-
-  try {
-    const { data: aslab, error } = await supabase.from("aslab").select().eq("nim", nim).single();
-    
-    if (error) {
-      throw error;
-    }
-    
-    return aslab;
-  } catch (error) {
-    console.error("Error fetching aslab data:", error);
-    return [];
-  }
-}
+import { MoreHorizontal } from "lucide-react";
+import { getAslabById } from "../actions";
 
 export default async function Page({ params }) {
   const nim = params.id;
-  const data = (await getData(nim));
-  
+  const data = await getAslabById(nim);
+
   if (!data) {
     return <div className="container mx-auto p-6">Aslab not found</div>;
   }
@@ -80,14 +36,6 @@ export default async function Page({ params }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <Copy className="mr-2 h-4 w-4" />
-                Clone Item
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <UserCheck className="mr-2 h-4 w-4" />
-                Mark as Active
-              </DropdownMenuItem>
               <DropdownMenuItem className="text-red-600">
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete
