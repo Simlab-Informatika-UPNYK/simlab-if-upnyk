@@ -1,7 +1,6 @@
 "use client";
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { ActionCell } from "./action-cell";
 
@@ -13,44 +12,68 @@ export const columns = [
     ),
     cell: ({ row }) => {
       const data = row.original;
-      return <Link href={`jadwal-praktikum/${data.slug}`} className="text-blue-600">{data.kelas}</Link>;
+      return (
+        <Link
+          href={`/jadwal-praktikum/${data.id}`}
+          className="text-blue-600 hover:underline"
+        >
+          {data.kelas}
+        </Link>
+      );
     },
+    enableSorting: true,
+    enableHiding: false,
   },
   {
     accessorKey: "mata_kuliah",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Mata Kuliah" />
     ),
+    enableSorting: true,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "dosen",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Dosen" />
     ),
+    enableSorting: true,
   },
   {
     accessorKey: "jumlah_praktikan",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jumlah Praktikan" />
     ),
+    enableSorting: true,
   },
   {
     accessorKey: "hari",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Hari" />
     ),
+    enableSorting: true,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "waktu",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Waktu" />
     ),
+    enableSorting: true,
   },
   {
     accessorKey: "lab",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Lab" />
     ),
+    enableSorting: true,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     accessorKey: "asisten",
@@ -61,12 +84,10 @@ export const columns = [
       const data = row.original;
       return (
         <ul className="list-disc pl-4">
-          {Array.isArray(data.asisten) ? (
-            data.asisten.map((asisten, index) => (
-              <li key={index}>{asisten}</li>
-            ))
+          {Array.isArray(data.asisten) && data.asisten.length > 0 ? (
+            data.asisten.map((asisten, index) => <li key={index}>{asisten}</li>)
           ) : (
-            <li>{data.asisten}</li>
+            <li>-</li>
           )}
         </ul>
       );
@@ -77,6 +98,10 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jenis Praktikan" />
     ),
+    enableSorting: true,
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
   },
   {
     id: "aksi",
@@ -87,5 +112,6 @@ export const columns = [
       const data = row.original;
       return <ActionCell data={data} />;
     },
+    enableHiding: false,
   },
 ];

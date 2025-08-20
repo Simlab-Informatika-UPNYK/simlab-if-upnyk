@@ -1,37 +1,39 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
 import { PlusCircle } from "lucide-react";
-import { getAllJadwal } from "./actions";
+import { findAllJadwal } from "./actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 const filters = [];
 
 export default async function Page() {
-  const data = await getAllJadwal();
-
-  const transformedData = data.map((item) => {
-    return {
+  let data = [];
+  try {
+    const jadwalData = await findAllJadwal();
+    data = jadwalData.map((item) => ({
       ...item,
       kelas: item.kelas,
-      mata_kuliah: item.mata_kuliah.nama,
-      dosen: item.dosen_pengampu.nama,
+      mata_kuliah: item.mataKuliah?.nama || "-",
+      dosen: item.dosenPengampu?.nama || "-",
       jumlah_praktikan: item.jumlah_praktikan,
       hari: item.hari,
       waktu: item.waktu,
-      lab: item.lab.nama,
+      lab: item.lab?.nama || "-",
       jenis_praktikan: item.jenis_praktikan,
-      asisten: item.aslab.map((a) => a.aslab.nama),
-    };
-  });
+      asisten: item.kelasAslab?.map((a) => a.aslab?.nama).filter(Boolean) || [],
+    }));
+  } catch (error) {
+    console.error("Failed to load jadwal data:", error);
+  }
 
   return (
     <DataTable
       toolbar={
         <Link href="/jadwal-praktikum/new">
           <Button>
-            <PlusCircle />
-            Add Data
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Tambah Jadwal
           </Button>
         </Link>
       }
@@ -40,7 +42,8 @@ export default async function Page() {
       filters={filters}
       pagination={true}
       columns={columns}
-      data={transformedData}
+      data={data}
+      emptyMessage="Data jadwal praktikum tidak ditemukan"
     />
   );
 }

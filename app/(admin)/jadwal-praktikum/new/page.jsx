@@ -1,10 +1,27 @@
-import React from 'react'
-import { FormNewJadwal } from './form-new-jadwal'
+import { FormJadwalPraktikum } from "../_components/form-jadwal-praktikum";
+import {
+  getMataKuliahOptions,
+  getDosenOptions,
+  getLabOptions,
+  getAslabOptions,
+} from "../actions";
 
-const page = () => {
+export default async function Page() {
+  const [mkOptions, dosenOptions, labOptions, aslabOptions] = await Promise.all(
+    [
+      getMataKuliahOptions(),
+      getDosenOptions(),
+      getLabOptions(),
+      getAslabOptions(),
+    ]
+  );
+
   return (
-    <FormNewJadwal />
-  )
+    <FormJadwalPraktikum
+      mataKuliahOptions={mkOptions}
+      dosenOptions={dosenOptions}
+      labOptions={labOptions}
+      aslabOptions={aslabOptions}
+    />
+  );
 }
-
-export default page

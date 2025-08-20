@@ -25,7 +25,7 @@ export const columns = [
 
       return (
         <Link href={`/aslab/${user.nim}`} className="flex items-center gap-3">
-          {user.profile_picture ? (
+        {/*   {user.profile_picture ? (
             <img
               src={user.profile_picture}
               alt={user.nama}
@@ -37,7 +37,7 @@ export const columns = [
                 {initials}
               </span>
             </div>
-          )}
+          )} */}
           <span className="text-blue-600">{user.nama}</span>
         </Link>
       );

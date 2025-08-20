@@ -8,52 +8,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { createClient } from "@/utils/supabase/server";
-
-// Server action to get jadwal by ID
-async function getJadwalDetail(slug) {
-  const supabase = await createClient();
-
-  try {
-    // Get basic jadwal data
-    const { data: jadwal, error } = await supabase
-      .from("kelas_praktikum")
-      .select(
-        `
-        id,
-        created_at,
-        kelas,
-        jumlah_praktikan,
-        hari,
-        waktu,
-        jenis_praktikan,
-        slug,
-        aslab:kelas_aslab(aslab(nama, nim)),
-        mata_kuliah:mata_kuliah_praktikum(id, nama),
-        dosen:dosen_pengampu!kelas_praktikum_id_dosen_fkey(id, nama),
-        laboratorium:lab!kelas_praktikum_lab_fkey(id, nama)
-      `
-      )
-      .eq("slug", slug)
-      .single();
-
-    console.log(jadwal);
-
-    if (error) {
-      console.error("Error fetching jadwal:", error);
-      return null;
-    }
-
-    return jadwal;
-  } catch (error) {
-    console.error("Exception when fetching jadwal:", error);
-    return null;
-  }
-}
+import { deleteJadwal, findOneById } from "../actions";
+import { redirect } from "next/navigation";
 
 export default async function JadwalDetailPage({ params }) {
-  const slug = (await params).id; // params is not a Promise, no need to await
-  const jadwal = await getJadwalDetail(slug);
+  const id = params.id;
+  const jadwal = await findOneById(id);
 
   if (!jadwal) {
     return (
@@ -68,7 +28,6 @@ export default async function JadwalDetailPage({ params }) {
     );
   }
 
-  // Format dates if they exist
   const formattedCreatedAt = jadwal.created_at
     ? new Date(jadwal.created_at).toLocaleDateString("id-ID", {
         day: "numeric",
@@ -83,24 +42,11 @@ export default async function JadwalDetailPage({ params }) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Detail Jadwal Praktikum</h1>
         <div className="flex gap-2">
-          <Link href={`/jadwal-praktikum/${jadwal.slug}/edit`}>
+          <Link href={`/admin/jadwal-praktikum/${jadwal.id}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
           </Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                More <MoreHorizontal className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-red-600">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <BackButton />
         </div>
       </div>
@@ -116,9 +62,9 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Mata Kuliah</h3>
                 <p className="font-medium">
-                  {jadwal.mata_kuliah?.nama || "Tidak tersedia"}
+                  {jadwal.mataKuliah?.nama || "Tidak tersedia"}
                 </p>
-                {jadwal.mata_kuliah?.id && (
+                {jadwal.mataKuliah?.id && (
                   <p className="text-sm text-gray-500">
                     id: {jadwal.mata_kuliah.id}
                   </p>
@@ -127,7 +73,7 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Dosen Pengampu</h3>
                 <p className="font-medium">
-                  {jadwal.dosen?.nama || "Tidak tersedia"}
+                  {jadwal.dosenPengampu?.nama || "Tidak tersedia"}
                 </p>
               </div>
               <div>
@@ -155,14 +101,14 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Laboratorium</h3>
                 <p className="font-medium">
-                  {jadwal.laboratorium?.nama || "Tidak tersedia"}
+                  {jadwal.lab?.nama || "Tidak tersedia"}
                 </p>
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Asisten</h3>
-                {jadwal.aslab && jadwal.aslab.length > 0 ? (
+                {jadwal.kelasAslab && jadwal.kelasAslab.length > 0 ? (
                   <ul className="font-medium list-disc pl-5">
-                    {jadwal.aslab.map((item, index) => (
+                    {jadwal.kelasAslab.map((item, index) => (
                       <li key={index}>
                         {item.aslab?.nama || "Tidak tersedia"}
                         {item.aslab?.nim && ` (${item.aslab.nim})`}

@@ -1,21 +1,7 @@
-import { AppSidebar } from "@/components/app-sidebar";
 import { NavUser } from "@/components/nav-user";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { auth } from "@/lib/auth";
-import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 
 export default async function NavbarLayout({ children, title = "SIMLAB" }) {

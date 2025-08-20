@@ -36,6 +36,13 @@
       "when": 1755158733586,
       "tag": "0004_change_aslab_prodi_and_status_to_enum",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1755498981988,
+      "tag": "0005_drop_jadwal_slug",
+      "breakpoints": true
     }
   ]
 }

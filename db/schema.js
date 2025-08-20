@@ -85,7 +85,6 @@ export const kelas_praktikum = pgTable("kelas_praktikum", {
   lab: integer("lab").references(() => lab.id),
   jenis_praktikan: text("jenis_praktikan"),
   waktu: text("waktu"),
-  slug: text("slug").unique().notNull(),
   tahun_semester: integer("tahun_semester").references(() => tahun_semester.id),
 });
 
