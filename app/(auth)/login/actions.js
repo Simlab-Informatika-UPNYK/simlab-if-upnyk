@@ -14,6 +14,7 @@ export async function login(formData) {
   try {
     const data = await auth.api.signInUsername({
       body: {
+        rememberMe: true,
         username,
         password,
       },

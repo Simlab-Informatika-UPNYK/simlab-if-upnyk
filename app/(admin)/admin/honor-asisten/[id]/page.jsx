@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 import BackButton from "@/components/back-button";
-import { DeleteButton } from "../_components/delete-button.jsx";
 
 export default async function HonorAsistenDetail({ params }) {
   const slug = (await params).id;
@@ -29,12 +28,12 @@ export default async function HonorAsistenDetail({ params }) {
           Honor Asisten - {dataHonor.jenis}
         </h1>
         <div className="flex gap-2">
-          <Link href={`/admin/honor-asisten/${dataHonor.jenis}/edit`}>
+          <Link href={`/admin/honor-asisten/${dataHonor.slug}/edit`}>
             <Button variant="outline" size="icon">
               <Pencil className="h-4 w-4" />
             </Button>
           </Link>
-          <DeleteButton variant="outline" id={dataHonor.id} />
+          {/* <DeleteButton variant="outline" id={dataHonor.id} /> */}
           <BackButton />
         </div>
       </div>

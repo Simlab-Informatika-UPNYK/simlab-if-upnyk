@@ -109,14 +109,6 @@ export function FormEditHonorAsisten({ honor }) {
           )}
         />
         <div className="flex justify-end gap-3 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-            disabled={isSubmitting}
-          >
-            Batal
-          </Button>
           <Button type="submit" className="px-6" disabled={isSubmitting}>
             {isSubmitting ? "Menyimpan..." : "Simpan"}
           </Button>

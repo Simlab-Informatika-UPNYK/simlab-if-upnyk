@@ -18,8 +18,7 @@ export default async function EditPage({ params }) {
       getLabOptions(),
       getAslabOptions(),
     ]);
-  console.log(jadwal);
-
+    
   if (!jadwal) {
     return notFound();
   }
@@ -33,7 +32,6 @@ export default async function EditPage({ params }) {
     waktu: jadwal.waktu ?? "",
     labId: jadwal.lab?.id.toString() ?? "",
     jenisPraktikan: jadwal.jenis_praktikan ?? "",
-    // aslabIds: jadwal.kelasAslab?.map((aslab) => aslab.id.toString()) || [],
     aslabIds:
       jadwal.kelasAslab?.map((ka) => ({
         value: ka.aslab.id_aslab,

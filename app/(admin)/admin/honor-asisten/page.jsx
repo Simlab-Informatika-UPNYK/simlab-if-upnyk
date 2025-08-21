@@ -20,6 +20,8 @@ const filters = [
   //       },
   //     ],
   //   },
+  // Honorarium Responsi Koreksi Naskah
+  // 40000 35000 6000 37999
 ];
 
 export default async function Page() {
@@ -27,14 +29,14 @@ export default async function Page() {
 
   return (
     <DataTable
-      toolbar={
-        <Link href="/admin/honor-asisten/new">
-          <Button>
-            <PlusCircle />
-            Add Data
-          </Button>
-        </Link>
-      }
+      // toolbar={
+      //   <Link href="/admin/honor-asisten/new">
+      //     <Button>
+      //       <PlusCircle />
+      //       Add Data
+      //     </Button>
+      //   </Link>
+      // }
       viewOptions={true}
       globalSearch={true}
       filters={filters}

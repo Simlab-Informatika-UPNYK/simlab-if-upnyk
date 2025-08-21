@@ -36,3 +36,25 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 First Deploy to Cloudflare Worker
+
+## Database Connection Pool Configuration
+
+This project uses connection pooling to prevent "too many clients" errors in PostgreSQL. The following environment variables can be used to configure the connection pool:
+
+- `DB_POOL_MAX`: Maximum number of connections in the pool (default: 20)
+- `DB_POOL_IDLE_TIMEOUT`: Close idle connections after N seconds (default: 30)
+- `DB_POOL_CONNECT_TIMEOUT`: Connection timeout after N seconds (default: 10)
+- `DB_POOL_MAX_LIFETIME`: Maximum lifetime of a connection in seconds (default: 3600)
+- `DB_POOL_PREPARE`: Enable/disable prepared statements (default: false)
+
+Example `.env` configuration:
+```bash
+DATABASE_URL="postgres://user:password@localhost:5432/database"
+DB_POOL_MAX=25
+DB_POOL_IDLE_TIMEOUT=60
+DB_POOL_CONNECT_TIMEOUT=15
+DB_POOL_MAX_LIFETIME=7200
+DB_POOL_PREPARE=false
+```
+
+For production environments, adjust these values based on your server capacity and expected traffic.

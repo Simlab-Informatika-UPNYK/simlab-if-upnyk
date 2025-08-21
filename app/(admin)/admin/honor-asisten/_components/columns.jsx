@@ -2,7 +2,6 @@
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
 import Link from "next/link";
-import { ActionCell } from "./action-cell";
 
 export const columns = [
   {
@@ -22,7 +21,10 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
       return (
-        <Link href={`/admin/honor-asisten/${data.slug}`} className="text-blue-600">
+        <Link
+          href={`/admin/honor-asisten/${data.slug}`}
+          className="text-blue-600"
+        >
           {data.jenis}
         </Link>
       );
@@ -33,15 +35,5 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Biaya" />
     ),
-  },
-  {
-    id: "aksi",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" />
-    ),
-    cell: ({ row }) => {
-      const data = row.original;
-      return <ActionCell data={data} />;
-    },
   },
 ];

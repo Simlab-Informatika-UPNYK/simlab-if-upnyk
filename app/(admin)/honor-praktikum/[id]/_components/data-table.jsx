@@ -19,22 +19,16 @@ import {
 import React from "react";
 import { Input } from "@/components/ui/input";
 import { DataTablePagination } from "@/components/data-table/data-table-pagination";
-import { PeriodeSelector } from "./periode-selector";
-import { useRouter } from "next/navigation";
 
 export function DataTable({
   columns,
   data,
-  pagination,
-  periodeOptions,
-  onPeriodeChange,
-  defaultValue,
   isLoading = false,
+  currentPeriod,
 }) {
   const [sorting, setSorting] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState([]);
   const [rowSelection, setRowSelection] = React.useState({});
-  const router = useRouter();
 
   const table = useReactTable({
     data,
@@ -53,13 +47,6 @@ export function DataTable({
     },
   });
 
-  // Use the passed in handler instead of pushing to a new route
-  const handlePeriodeChange = (selectedValue) => {
-    if (onPeriodeChange) {
-      onPeriodeChange(selectedValue);
-    }
-  };
-
   return (
     <>
       <div className="flex items-center justify-between py-4">
@@ -70,12 +57,12 @@ export function DataTable({
             placeholder="Search..."
             className="max-w-sm"
           />
-          <PeriodeSelector
-            options={periodeOptions}
-            defaultValue={defaultValue}
-            onPeriodeChange={handlePeriodeChange}
-          />
         </div>
+        {currentPeriod && (
+          <div className="text-sm text-muted-foreground">
+            Periode: {currentPeriod}
+          </div>
+        )}
       </div>
       <div className="rounded-md border relative w-[0] min-w-full overflow-x-auto">
         {isLoading ? (
@@ -106,9 +93,6 @@ export function DataTable({
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    onClick={() =>
-                      router.push(`/honor-praktikum/${row.original.nim}?periode=${defaultValue}`)
-                    }
                     key={row.id}
                     className="cursor-pointer"
                     data-state={row.getIsSelected() && "selected"}

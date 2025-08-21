@@ -34,7 +34,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { updateHonor } from "../actions";
-import { useHonor } from "../_components/honor-context";
+import { useHonor } from "./honor-context";
 
 const FormSchema = z.object({
   tanggal_diambil: z.date({
@@ -64,10 +64,13 @@ export const UpdateDialog = ({ idAslabHonor, aslabId, tahunSemesterId }) => {
         tahunSemesterId
       );
 
-      console.log(result);
+      console.log(
+        "result",
+        aslabId,
+        tahunSemesterId
+      );
 
       if (result.success) {
-
         toast({
           title: "Berhasil",
           description: "Honor berhasil ditandai sudah diambil",

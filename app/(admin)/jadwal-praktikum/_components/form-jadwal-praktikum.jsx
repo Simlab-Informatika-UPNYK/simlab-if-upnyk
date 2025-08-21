@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { createJadwal, updateJadwal } from "../actions";
 import { jadwalPraktikumSchema } from "./form-schema";
+import { useRouter } from "next/navigation";
 import {
   Select,
   SelectContent,
@@ -34,6 +35,7 @@ export function FormJadwalPraktikum({
   aslabOptions = [],
 }) {
   const { toast } = useToast();
+  const router = useRouter();
 
   const resolver = async (values, context, options) => {
     const mapped = {
@@ -77,6 +79,7 @@ export function FormJadwalPraktikum({
         title: "Berhasil",
         description: "Data jadwal berhasil disimpan",
       });
+      router.push("/jadwal-praktikum");
     } catch (error) {
       toast({
         title: "Gagal",

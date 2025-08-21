@@ -138,7 +138,7 @@ export async function updateJadwal(id, formData) {
       return updated;
     });
 
-    revalidatePath("/admin/jadwal-praktikum");
+    revalidatePath("/jadwal-praktikum");
     return result;
   } catch (error) {
     console.error("Database Error:", error);

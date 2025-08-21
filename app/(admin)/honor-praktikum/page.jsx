@@ -1,89 +1,35 @@
-"use client";
-
-import { useSearchParams, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { getAllData, getAllPeriode } from "./actions";
+import { getTahunSemester } from "./actions";
 import { columns } from "./_components/columns";
-import { DataTable } from "./_components/data-table";
+import { DataTable } from "@/components/data-table/data-table";
 
-export default function HonorPraktikumPage() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const currentPeriod = searchParams.get("periode");
-
-  const [data, setData] = useState([]);
-  const [periodeOptions, setPeriodeOptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [tableLoading, setTableLoading] = useState(true);
-
-  // Fetch period options only once
-  useEffect(() => {
-    const fetchPeriodes = async () => {
-      try {
-        const periode = await getAllPeriode();
-        const options = periode.map((p) => ({
-          value: p.slug,
-          label: p.tahun_ajaran + " " + p.semester,
-        }));
-        setPeriodeOptions(options);
-
-        // If no period is selected yet, select the first one
-        if (!currentPeriod && options.length > 0) {
-          const params = new URLSearchParams(searchParams.toString());
-          params.set("periode", options[0].value);
-          router.replace(`?${params.toString()}`);
-        }
-      } catch (error) {
-        console.error("Error fetching periods:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPeriodes();
-  }, []);
-
-  // Fetch table data whenever the period changes
-  useEffect(() => {
-    const fetchTableData = async () => {
-      if (!currentPeriod) return;
-
-      setTableLoading(true);
-      try {
-        const honorData = await getAllData(currentPeriod);
-        setData(honorData);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setTableLoading(false);
-      }
-    };
-
-    fetchTableData();
-  }, [currentPeriod]);
-
-  // Handle period change
-  const handlePeriodeChange = (value) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("periode", value);
-    router.replace(`?${params.toString()}`);
-  };
+export default async function HonorPraktikumPage() {
+  const tahunSemester = await getTahunSemester();
 
   return (
-    <div className="max-w-screen-xl mx-auto">
-      {loading ? (
-        <div>Loading periods...</div>
+    <div className="container mx-auto px-4 py-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Honor Praktikum</h1>
+        <p className="text-muted-foreground">
+          Pilih tahun semester untuk melihat detail honor
+        </p>
+      </div>
+
+      {tahunSemester.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-muted-foreground">
+            Belum ada tahun semester yang tersedia
+          </p>
+        </div>
       ) : (
-        <>
+        // gunakan DataTable untuk menampilkan daftar tahun/semester
+        <div className="max-w-screen-xl mx-auto">
           <DataTable
-            periodeOptions={periodeOptions}
             columns={columns}
-            defaultValue={currentPeriod}
-            data={data}
-            isLoading={tableLoading}
-            onPeriodeChange={handlePeriodeChange}
+            data={tahunSemester}
+            pagination={true}
+            // opsional: jika DataTable butuh prop tambahan, tambahkan di sini
           />
-        </>
+        </div>
       )}
     </div>
   );
