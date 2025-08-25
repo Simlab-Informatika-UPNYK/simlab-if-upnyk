@@ -1,67 +1,83 @@
 "use client";
 
 import Link from "next/link";
-
-// import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-// import Link from "next/link";
-// import { ActionCell } from "./action-cell";
-
-/* 
-table
-
-sertifikat
-id_aslab
-tanggal_pengajuan
-status
-
-*/
+import { Button } from "@/components/ui/button";
+import { Eye, Printer } from "lucide-react";
 
 export const columns = [
-  /*   {
-    accessorKey: "jenis",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Jenis" />
-    ),
+  {
+    header: "NIM",
+    id: "NIM",
+    accessorKey: "nim",
+  },
+  {
+    header: "Nama",
+    id: "Nama",
+    accessorKey: "nama",
     cell: ({ row }) => {
       const data = row.original;
       return (
-        <Link href={`/honor-asisten/${data.jenis}`} className="hover:underline">
-          {data.jenis}
+        <Link
+          href={`/sertifikat/${data.nim}`}
+          className="text-blue-600 hover:underline"
+        >
+          {data.nama}
         </Link>
       );
     },
   },
   {
-    accessorKey: "biaya",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Biaya" />
-    ),
+    header: "Program Studi",
+    id: "Program Studi",
+    accessorKey: "program_studi",
   },
   {
-    id: "aksi",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Aksi" />
-    ),
+    header: "Status",
+    id: "Status",
+    accessorKey: "status",
     cell: ({ row }) => {
       const data = row.original;
-      return <ActionCell data={data} />;
+      return (
+        <span
+          className={`px-2 py-1 rounded-full text-xs ${
+            data.status === "Aktif"
+              ? "bg-green-100 text-green-800"
+              : "bg-gray-100 text-gray-800"
+          }`}
+        >
+          {data.status}
+        </span>
+      );
+    },
+  },
+  {
+    header: "Jumlah Kelas",
+    id: "Jumlah Kelas",
+    accessorKey: "total_courses",
+    cell: ({ row }) => {
+      const data = row.original;
+      return <span className="font-medium">{data.total_courses} kelas</span>;
+    },
+  },
+  /*   {
+    header: "Aksi",
+    id: "Aksi",
+    cell: ({ row }) => {
+      const data = row.original;
+      return (
+        <div className="flex gap-2">
+          <Link href={`/sertifikat/${data.nim}`}>
+            <Button variant="outline" size="sm">
+              <Eye className="h-4 w-4 mr-1" />
+              Detail
+            </Button>
+          </Link>
+          { <Button size="sm">
+            <Printer className="h-4 w-4 mr-1" />
+            Cetak
+          </Button> *
+        </div>
+      );
     },
   }, */
-
-  { header: "NIM", id: "NIM", accessorKey: "nim" },
-  {
-    header: "Nama",
-    id: "Nama",
-    accessorKey: "nama_asisten",
-    cell: ({ row }) => {
-      const data = row.original;
-      return <span className="text-blue-600">{data.nama_asisten}</span>;
-    },
-  },
-  {
-    header: "Tanggal Pengajuan",
-    id: "Tanggal Pengajuan",
-    accessorKey: "tanggal_pengajuan",
-  },
-  { header: "Status", id: "Status", accessorKey: "status" },
 ];

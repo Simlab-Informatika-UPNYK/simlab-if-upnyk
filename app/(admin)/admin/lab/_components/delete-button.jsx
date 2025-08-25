@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-react";
-import { createClient } from "@/utils/supabase/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,31 +15,27 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
+import { deleteLab } from "../actions";
 
 export function DeleteButton({ slug, variant = "ghost" }) {
   const router = useRouter();
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    const supabase = createClient();
-    const { data: deletedData, error } = await supabase
-      .from("lab")
-      .delete()
-      .eq("slug", slug)
-      .select();
+    const result = await deleteLab(slug);
 
-    if (!error) {
+    if (result.success) {
       router.refresh();
       toast({
         title: "Berhasil Menghapus",
-        description: `Laboratorium ${deletedData[0].nama} telah berhasil dihapus`,
+        description: `Laboratorium ${result.data.nama} telah berhasil dihapus`,
       });
       return;
     }
 
     toast({
       title: "Gagal Menghapus",
-      description: "Laboratorium gagal dihapus",
+      description: result.error || "Laboratorium gagal dihapus",
       variant: "destructive",
     });
   };

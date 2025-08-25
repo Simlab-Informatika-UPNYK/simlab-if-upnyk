@@ -118,3 +118,26 @@ export async function editLab(id, data) {
     };
   }
 }
+
+export async function deleteLab(slug) {
+  try {
+    const deletedData = await db.delete(lab)
+      .where(eq(lab.slug, slug))
+      .returning();
+
+    if (deletedData.length === 0) {
+      return { 
+        success: false, 
+        error: 'Laboratorium tidak ditemukan' 
+      };
+    }
+
+    return { success: true, data: deletedData[0] };
+  } catch (error) {
+    console.error("Error deleting lab:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Unknown error' 
+    };
+  }
+}

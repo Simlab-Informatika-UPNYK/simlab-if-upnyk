@@ -1,5 +1,4 @@
 import { FormEditLab } from "./form-edit-lab";
-import { createClient } from "@/utils/supabase/server";
 import BackButton from "@/components/back-button";
 import { getOneLab, getAllKalab } from "../../actions.jsx";
 

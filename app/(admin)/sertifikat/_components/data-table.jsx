@@ -77,9 +77,7 @@ export function DataTable({
             );
           })}
         </div>
-        <div className="flex gap-2">
-          {toolbar ?? ""}
-        </div>
+        <div className="flex gap-2">{toolbar ?? ""}</div>
       </div>
       <div className="rounded-md border relative w-[0] min-w-full overflow-x-auto">
         <Table>
@@ -107,7 +105,6 @@ export function DataTable({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  onClick={() => router.push(`/sertifikat/${row.original.nim}`)}
                   className="cursor-pointer hover:bg-muted/50"
                 >
                   {row.getVisibleCells().map((cell) => (

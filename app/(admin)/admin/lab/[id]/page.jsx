@@ -1,4 +1,3 @@
-import { createClient } from "@/utils/supabase/server";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
