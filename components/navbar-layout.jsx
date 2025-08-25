@@ -5,7 +5,6 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 
 export default async function NavbarLayout({ children, title = "SIMLAB" }) {
-  // const supabase = await createClient();
   const session = await auth.api.getSession({
     headers: await headers(), // some endpoint might require headers
   });

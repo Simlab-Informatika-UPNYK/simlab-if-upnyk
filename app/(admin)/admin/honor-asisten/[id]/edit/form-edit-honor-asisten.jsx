@@ -16,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 import { updateHonorJenis } from "../../actions";
 
 // Schema for honor asisten data
