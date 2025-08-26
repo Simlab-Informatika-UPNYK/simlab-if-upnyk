@@ -1,9 +1,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getServerSession } from "@/lib/auth-server";
 
 export default async function Page() {
+  const session = await getServerSession();
+  const userRole = session?.user?.role || "Unknown";
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Jumlah Kepala Laboratorium</CardTitle>
@@ -22,6 +26,17 @@ export default async function Page() {
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">{50}</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Role Anda</CardTitle>
+            <CardDescription>
+              Status akses saat ini
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-4xl font-bold capitalize">{userRole}</p>
           </CardContent>
         </Card>
       </div>

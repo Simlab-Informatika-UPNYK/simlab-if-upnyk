@@ -43,6 +43,13 @@
       "when": 1755498981988,
       "tag": "0005_drop_jadwal_slug",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1756173948687,
+      "tag": "0006_add_role_enum",
+      "breakpoints": true
     }
   ]
 }

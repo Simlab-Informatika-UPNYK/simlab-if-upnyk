@@ -15,6 +15,7 @@ export const programStudiEnum = pgEnum("program_studi", [
   "Informatika",
 ]);
 export const statusAslabEnum = pgEnum("status_aslab", ["Aktif", "Tidak Aktif"]);
+export const userRoleEnum = pgEnum("user_role", ["admin", "aslab"]);
 
 export const aslab = pgTable("aslab", {
   id_aslab: serial("id_aslab").primaryKey(),
@@ -133,7 +134,7 @@ export const admin = pgTable("admin", {
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
-  role: text("role"),
+  role: userRoleEnum("role").default("aslab"),
   aslab_id: integer("aslab_id").references(() => aslab.id_aslab),
   admin_id: integer("admin_id").references(() => admin.id),
   name: text("name").notNull(),
