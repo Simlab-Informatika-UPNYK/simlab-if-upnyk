@@ -4,8 +4,9 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getTahunSemester } from "./actions";
+import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
-export default async function Page() {
+async function TahunSemesterPage() {
   const data = await getTahunSemester();
 
   return (
@@ -29,3 +30,5 @@ export default async function Page() {
     </>
   );
 }
+
+export default withAdminAuth(TahunSemesterPage);

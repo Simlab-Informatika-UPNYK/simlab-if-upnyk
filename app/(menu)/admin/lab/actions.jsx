@@ -3,6 +3,7 @@ import slugify from "react-slugify";
 import { db } from "@/db";
 import { lab, kalab } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function getAllKalab() {
   try {
@@ -72,6 +73,7 @@ export async function getOneLab(slug) {
 
 export async function createLab(data) {
   try {
+    await requireAdmin();
     const labData = {
       nama: data.nama,
       lantai: data.lantai,
@@ -96,6 +98,7 @@ export async function createLab(data) {
 
 export async function editLab(id, data) {
   try {
+    await requireAdmin();
     const labData = {
       nama: data.nama,
       lantai: data.lantai,
@@ -121,6 +124,7 @@ export async function editLab(id, data) {
 
 export async function deleteLab(slug) {
   try {
+    await requireAdmin();
     const deletedData = await db.delete(lab)
       .where(eq(lab.slug, slug))
       .returning();

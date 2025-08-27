@@ -5,6 +5,7 @@ import { honor_jenis } from "@/db/schema";
 import { revalidatePath } from "next/cache";
 import slugify from "react-slugify";
 import { desc, eq } from "drizzle-orm";
+import { requireAdmin } from "@/lib/admin-auth";
 
 /**
  * Fetch all honor jenis records
@@ -27,6 +28,7 @@ export async function getAllHonorJenis() {
  */
 export async function createHonorJenis({ jenis, biaya }) {
   try {
+    await requireAdmin();
     const data = await db
       .insert(honor_jenis)
       .values({
@@ -50,6 +52,7 @@ export async function createHonorJenis({ jenis, biaya }) {
  */
 export async function updateHonorJenis({ id, jenis, biaya }) {
   try {
+    await requireAdmin();
     const data = await db
       .update(honor_jenis)
       .set({
@@ -73,6 +76,7 @@ export async function updateHonorJenis({ id, jenis, biaya }) {
  */
 export async function deleteHonorJenis(id) {
   try {
+    await requireAdmin();
     await db
       .delete(honor_jenis)
       .where(eq(honor_jenis.id, id));

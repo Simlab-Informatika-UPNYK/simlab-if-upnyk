@@ -1,9 +1,7 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { getAllHonorJenis } from "./actions";
+import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
 const filters = [
   //   {
@@ -20,23 +18,13 @@ const filters = [
   //       },
   //     ],
   //   },
-  // Honorarium Responsi Koreksi Naskah
-  // 40000 35000 6000 37999
 ];
 
-export default async function Page() {
+async function HonorAsistenPage() {
   const data = await getAllHonorJenis();
 
   return (
     <DataTable
-      // toolbar={
-      //   <Link href="/admin/honor-asisten/new">
-      //     <Button>
-      //       <PlusCircle />
-      //       Add Data
-      //     </Button>
-      //   </Link>
-      // }
       viewOptions={true}
       globalSearch={true}
       filters={filters}
@@ -46,3 +34,5 @@ export default async function Page() {
     />
   );
 }
+
+export default withAdminAuth(HonorAsistenPage);

@@ -4,6 +4,7 @@ import { PlusCircle } from "lucide-react";
 import { getAllUsers } from "./actions";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
 const filters = [
   //   {
@@ -22,7 +23,7 @@ const filters = [
   //   },
 ];
 
-export default async function Page() {
+async function UserPage() {
   const data = await getAllUsers();
 
   return (
@@ -47,3 +48,5 @@ export default async function Page() {
     </div>
   );
 }
+
+export default withAdminAuth(UserPage);

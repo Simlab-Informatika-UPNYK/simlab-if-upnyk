@@ -4,6 +4,7 @@ import slugify from "react-slugify";
 import { db } from "@/db/index";
 import { user as userTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function getAllUsers() {
   try {
@@ -44,6 +45,7 @@ export async function getOneUser(slug) {
 
 export async function createUser(data) {
   try {
+    await requireAdmin();
     const userData = {
       id: crypto.randomUUID(),
       name: data.nama,
@@ -63,6 +65,7 @@ export async function createUser(data) {
 
 export async function editUser(id, data) {
   try {
+    await requireAdmin();
     const userData = {
       name: data.nama,
       email: data.email,
@@ -83,6 +86,7 @@ export async function editUser(id, data) {
 
 export async function deleteUser(id) {
   try {
+    await requireAdmin();
     const deleted = await db.delete(userTable)
       .where(eq(userTable.id, id))
       .returning();

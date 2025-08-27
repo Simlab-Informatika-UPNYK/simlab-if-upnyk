@@ -2,9 +2,9 @@
 
 import { db } from "@/db";
 import { lab, inventaris } from "@/db/schema";
+import { requireAdmin } from "@/lib/admin-auth";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-
 
 // Fungsi untuk mendapatkan semua data inventaris berdasarkan ID lab
 export async function getInventarisByLabId(labId) {
@@ -24,14 +24,14 @@ export async function getInventarisByLabId(labId) {
         ups: inventaris.ups,
         merk_ups: inventaris.merk_ups,
         keterangan: inventaris.keterangan,
-        lab_nama: lab.nama
+        lab_nama: lab.nama,
       })
       .from(inventaris)
       .leftJoin(lab, eq(inventaris.lab_id, lab.id))
       .where(eq(inventaris.lab_id, labId));
 
     // Transform manual ke camelCase
-    const transformedData = data.map(item => ({
+    const transformedData = data.map((item) => ({
       id: item.id,
       noMeja: item.no_meja,
       noSNBT: item.no_snbt,
@@ -45,7 +45,7 @@ export async function getInventarisByLabId(labId) {
       ups: item.ups,
       merkUps: item.merk_ups,
       keterangan: item.keterangan,
-      labNama: item.lab_nama
+      labNama: item.lab_nama,
     }));
     return { success: true, data: transformedData };
   } catch (error) {
@@ -73,7 +73,7 @@ export async function getInventarisById(id) {
         merk_ups: inventaris.merk_ups,
         keterangan: inventaris.keterangan,
         lab_id: inventaris.lab_id,
-        lab_nama: lab.nama
+        lab_nama: lab.nama,
       })
       .from(inventaris)
       .leftJoin(lab, eq(inventaris.lab_id, lab.id))
@@ -85,23 +85,26 @@ export async function getInventarisById(id) {
     }
 
     // Transform manual ke camelCase
-    return { success: true, data: {
-      id: data.id,
-      noMeja: data.no_meja,
-      noSNBT: data.no_snbt,
-      merekModel: data.merek_model,
-      monitor: data.monitor,
-      processor: data.processor,
-      storage: data.storage,
-      ram: data.ram,
-      gpu: data.gpu,
-      lanCard: data.lan_card,
-      ups: data.ups,
-      merkUps: data.merk_ups,
-      keterangan: data.keterangan,
-      labId: data.lab_id,
-      labNama: data.lab_nama
-    }};
+    return {
+      success: true,
+      data: {
+        id: data.id,
+        noMeja: data.no_meja,
+        noSNBT: data.no_snbt,
+        merekModel: data.merek_model,
+        monitor: data.monitor,
+        processor: data.processor,
+        storage: data.storage,
+        ram: data.ram,
+        gpu: data.gpu,
+        lanCard: data.lan_card,
+        ups: data.ups,
+        merkUps: data.merk_ups,
+        keterangan: data.keterangan,
+        labId: data.lab_id,
+        labNama: data.lab_nama,
+      },
+    };
   } catch (error) {
     console.error("Error fetching inventaris detail:", error);
     return { success: false, error: error.message };
@@ -111,6 +114,7 @@ export async function getInventarisById(id) {
 // Fungsi untuk menambah inventaris baru
 export async function addInventaris(data) {
   try {
+    await requireAdmin();
     // Transform manual ke snake_case
     const snakeData = {
       no_meja: data.noMeja,
@@ -125,27 +129,30 @@ export async function addInventaris(data) {
       ups: data.ups,
       merk_ups: data.merkUps,
       keterangan: data.keterangan,
-      lab_id: data.labId
+      lab_id: data.labId,
     };
     const [result] = await db.insert(inventaris).values(snakeData).returning();
 
     revalidatePath(`/inventaris-lab/${data.labId}`);
-    return { success: true, data: {
-      id: result.id,
-      noMeja: result.no_meja,
-      noSNBT: result.no_snbt,
-      merekModel: result.merek_model,
-      monitor: result.monitor,
-      processor: result.processor,
-      storage: result.storage,
-      ram: result.ram,
-      gpu: result.gpu,
-      lanCard: result.lan_card,
-      ups: result.ups,
-      merkUps: result.merk_ups,
-      keterangan: result.keterangan,
-      labId: result.lab_id
-    }};
+    return {
+      success: true,
+      data: {
+        id: result.id,
+        noMeja: result.no_meja,
+        noSNBT: result.no_snbt,
+        merekModel: result.merek_model,
+        monitor: result.monitor,
+        processor: result.processor,
+        storage: result.storage,
+        ram: result.ram,
+        gpu: result.gpu,
+        lanCard: result.lan_card,
+        ups: result.ups,
+        merkUps: result.merk_ups,
+        keterangan: result.keterangan,
+        labId: result.lab_id,
+      },
+    };
   } catch (error) {
     console.error("Error adding inventaris:", error);
     return { success: false, error: error.message };
@@ -155,7 +162,7 @@ export async function addInventaris(data) {
 // Fungsi untuk mengupdate data inventaris
 export async function updateInventaris(id, data) {
   try {
-    // Transform manual ke snake_case
+    await requireAdmin();
     const snakeData = {
       no_meja: data.noMeja,
       no_snbt: data.noSNBT,
@@ -169,7 +176,7 @@ export async function updateInventaris(id, data) {
       ups: data.ups,
       merk_ups: data.merkUps,
       keterangan: data.keterangan,
-      lab_id: data.labId
+      lab_id: data.labId,
     };
     const [result] = await db
       .update(inventaris)
@@ -178,22 +185,25 @@ export async function updateInventaris(id, data) {
       .returning();
 
     revalidatePath(`/inventaris-lab/${data.labId}`);
-    return { success: true, data: {
-      id: result.id,
-      noMeja: result.no_meja,
-      noSNBT: result.no_snbt,
-      merekModel: result.merek_model,
-      monitor: result.monitor,
-      processor: result.processor,
-      storage: result.storage,
-      ram: result.ram,
-      gpu: result.gpu,
-      lanCard: result.lan_card,
-      ups: result.ups,
-      merkUps: result.merk_ups,
-      keterangan: result.keterangan,
-      labId: result.lab_id
-    }};
+    return {
+      success: true,
+      data: {
+        id: result.id,
+        noMeja: result.no_meja,
+        noSNBT: result.no_snbt,
+        merekModel: result.merek_model,
+        monitor: result.monitor,
+        processor: result.processor,
+        storage: result.storage,
+        ram: result.ram,
+        gpu: result.gpu,
+        lanCard: result.lan_card,
+        ups: result.ups,
+        merkUps: result.merk_ups,
+        keterangan: result.keterangan,
+        labId: result.lab_id,
+      },
+    };
   } catch (error) {
     console.error("Error updating inventaris:", error);
     return { success: false, error: error.message };
@@ -203,6 +213,7 @@ export async function updateInventaris(id, data) {
 // Fungsi untuk menghapus inventaris
 export async function deleteInventaris(id, labId) {
   try {
+    await requireAdmin();
     await db.delete(inventaris).where(eq(inventaris.id, id));
 
     revalidatePath(`/inventaris-lab/${labId}`);

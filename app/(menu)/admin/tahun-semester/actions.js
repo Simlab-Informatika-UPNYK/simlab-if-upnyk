@@ -3,23 +3,23 @@
 import { db } from "@/db";
 import { tahun_semester } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { 
-  findOneBySlug,
-  findAllOrdered,
-  checkExists
-} from "./db-utils";
+import { findOneBySlug, findAllOrdered, checkExists } from "./db-utils";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export const getTahunSemester = findAllOrdered;
 
 export const checkTahunSemesterExists = checkExists;
 
 export async function createTahunSemester(data) {
+  await requireAdmin();
   return await db.insert(tahun_semester).values(data).returning();
 }
 
 export const getTahunSemesterBySlug = findOneBySlug;
 
 export async function updateTahunSemester(slug, data) {
+  await requireAdmin();
+
   return await db.transaction(async (tx) => {
     if (data.slug && data.slug !== slug) {
       const exists = await checkExists(data.slug);
@@ -38,6 +38,7 @@ export async function updateTahunSemester(slug, data) {
 
 export async function deleteTahunSemester(slug) {
   try {
+    await requireAdmin();
     return await db
       .delete(tahun_semester)
       .where(eq(tahun_semester.slug, slug))

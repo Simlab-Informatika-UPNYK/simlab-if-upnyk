@@ -4,6 +4,7 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAllMk } from "./actions.jsx";
 import Link from "next/link";
+import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
 const filters = [
   //   {
@@ -22,7 +23,7 @@ const filters = [
   //   },
 ];
 
-export default async function Page() {
+async function MKPraktikumPage() {
   const data = await getAllMk();
 
   return (
@@ -46,3 +47,5 @@ export default async function Page() {
     </div>
   );
 }
+
+export default withAdminAuth(MKPraktikumPage);

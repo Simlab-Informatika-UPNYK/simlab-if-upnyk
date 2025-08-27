@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { mkPraktikumSchema } from "./_components/form-schema";
 import slugify from "react-slugify";
 import { findAllOrdered, findOneBySlug, checkExists } from "./db-utils";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export const getAllMk = async () => {
   const result = await findAllOrdered();
@@ -36,6 +37,7 @@ export const checkMkExists = checkExists;
 
 export async function createMk(formData) {
   try {
+    await requireAdmin();
     const validatedData = mkPraktikumSchema.parse(formData);
     const mkData = {
       kode_mk: validatedData["Kode Mata Kuliah"],
@@ -63,6 +65,7 @@ export async function createMk(formData) {
 export async function editMk(id, formData) {
   return await db.transaction(async (tx) => {
     try {
+      await requireAdmin();
       const validatedData = mkPraktikumSchema.parse(formData);
       const mkData = {
         kode_mk: validatedData["Kode Mata Kuliah"],
@@ -71,13 +74,6 @@ export async function editMk(id, formData) {
         jumlah_kelas: validatedData["Jumlah Kelas"],
         slug: slugify(validatedData.Nama),
       };
-
-      if (mkData.slug) {
-        const exists = await checkExists(mkData.slug);
-        if (exists) {
-          throw new Error("Slug sudah digunakan");
-        }
-      }
 
       const [data] = await tx
         .update(mata_kuliah_praktikum)
@@ -95,6 +91,7 @@ export async function editMk(id, formData) {
 
 export async function deleteMk(id) {
   try {
+    await requireAdmin();
     await db
       .delete(mata_kuliah_praktikum)
       .where(eq(mata_kuliah_praktikum.id, id));

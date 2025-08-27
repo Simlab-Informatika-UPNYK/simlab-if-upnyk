@@ -4,8 +4,9 @@ import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { getAllLab } from "../lab/actions";
+import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
-export default async function Page() {
+async function InventarisLabPage() {
   const data = await getAllLab();
 
   return (
@@ -32,3 +33,5 @@ export default async function Page() {
     </div>
   );
 }
+
+export default withAdminAuth(InventarisLabPage);

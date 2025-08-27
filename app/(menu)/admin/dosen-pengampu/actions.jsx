@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { eq } from "drizzle-orm";
 import { dosen_pengampu } from "@/db/schema";
 import slugify from "react-slugify";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function getAllDosen() {
   try {
@@ -29,6 +30,7 @@ export async function getOneDosen(slug) {
 
 export async function createDosen(data) {
   try {
+    await requireAdmin();
     const dosen = {
       nama: data.nama,
       nip: data.nip,
@@ -50,6 +52,7 @@ export async function createDosen(data) {
 
 export async function editDosen(id, data) {
   try {
+    await requireAdmin();
     const dosenData = {
       nama: data.nama,
       nip: data.nip,
@@ -72,6 +75,7 @@ export async function editDosen(id, data) {
 
 export async function deleteDosen(slug) {
   try {
+    await requireAdmin();
     await db
       .delete(dosen_pengampu)
       .where(eq(dosen_pengampu.slug, slug));

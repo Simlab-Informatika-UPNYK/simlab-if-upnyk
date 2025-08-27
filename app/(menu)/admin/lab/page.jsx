@@ -11,8 +11,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getAllLab } from "./actions.jsx";
+import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
-export default async function Page() {
+async function LabPage() {
   const data = await getAllLab();
 
   const totalCapacity = data.reduce((sum, lab) => {
@@ -64,3 +65,5 @@ export default async function Page() {
     </div>
   );
 }
+
+export default withAdminAuth(LabPage);
