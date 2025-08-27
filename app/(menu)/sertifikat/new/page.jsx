@@ -12,7 +12,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import { getAllAslab } from "../actions";
-import { MahasiswaCombobox } from "@/app/(admin)/sertifikat/_components/mahasiswa-combobox";
+import { MahasiswaCombobox } from "@/app/(menu)/sertifikat/_components/mahasiswa-combobox";
 
 Font.register({
   family: "CenturyGothic",

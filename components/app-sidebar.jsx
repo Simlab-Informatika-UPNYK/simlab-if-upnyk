@@ -118,7 +118,14 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }) {
+export function AppSidebar({ userRole, ...props }) {
+  const filteredNavMain = data.navMain.filter((item) => {
+    if (item.title === "Master Setup" && userRole === "aslab") {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader className="h-16 border-b border-sidebar-border">
@@ -126,7 +133,7 @@ export function AppSidebar({ ...props }) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link href="/">
+              <Link href="/dashboard">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-white text-sidebar-primary-foreground">
                   <Image src={favicon} alt="Favicon" className="size-4" />
                 </div>
@@ -141,7 +148,7 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={filteredNavMain} />
         {/* <NavProjects projects={data.projects} /> */}
       </SidebarContent>
 

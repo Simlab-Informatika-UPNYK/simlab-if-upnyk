@@ -1,20 +1,26 @@
 import { NextResponse } from "next/server";
 import { getSessionCookie } from "better-auth/cookies";
+import { getServerSession } from "./lib/auth-server";
 
 export async function middleware(request) {
   const sessionCookie = getSessionCookie(request);
   const { pathname } = request.nextUrl;
 
-  // Redirect logged-in users away from auth pages
-  if ((pathname.startsWith("/login") || pathname.startsWith("/register")) && sessionCookie) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (
+    (pathname.startsWith("/login") || pathname.startsWith("/register")) &&
+    sessionCookie
+  ) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // Only protect routes starting with /protected
-  if (pathname.startsWith("/protected")) {
-    if (!sessionCookie) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
+  const publicRoutes = ["/", "/login", "/register"];
+
+  const isPublicRoute = publicRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
+  );
+
+  if (!isPublicRoute && !sessionCookie) {
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   return NextResponse.next();

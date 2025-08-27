@@ -1,7 +1,7 @@
 "use client";
 
 import { createMk } from "../actions.jsx";
-import MkPraktikumForm from "../_components/form";
+import MkPraktikumForm from "../_components/form.jsx";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast.js";
 

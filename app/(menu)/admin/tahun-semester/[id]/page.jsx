@@ -5,8 +5,8 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DeleteButton } from "../_components/delete-button.jsx";
 import BackButton from "@/components/back-button";
-import { deleteTahunSemester } from "../actions";
-import { getTahunSemesterBySlug } from "../actions";
+import { deleteTahunSemester } from "../actions.js";
+import { getTahunSemesterBySlug } from "../actions.js";
 
 export default async function Page({ params }) {
   const slug = (await params).id;

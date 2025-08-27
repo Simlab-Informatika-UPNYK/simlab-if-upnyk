@@ -1,6 +1,6 @@
 "use server";
 
-import { LoginFormSchema } from "@/app/_lib/definitions";
+import { LoginFormSchema } from "@/app/(auth)/definitions";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 

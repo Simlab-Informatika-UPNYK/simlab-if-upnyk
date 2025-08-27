@@ -1,6 +1,6 @@
 import { getOneHonor, getTahunSemesterId } from "../actions.js";
 import { HonorProvider } from "../_components/honor-context.jsx";
-import DetailPageContent from "./detail-page-content";
+import DetailPageContent from "./detail-page-content.jsx";
 
 export default async function DetailPage({ params, searchParams }) {
   const nim = (await params).subid;
