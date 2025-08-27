@@ -25,6 +25,41 @@ export async function findAllJadwal() {
   }
 }
 
+// Find all jadwal filtered by aslab ID using Drizzle ORM filtering
+export async function findAllJadwalByAslab(aslabId) {
+  try {
+    // First get all kelas_aslab relations for the specified aslab
+    const kelasAslabRelations = await db.query.kelas_aslab.findMany({
+      where: eq(kelas_aslab.aslab, aslabId),
+      columns: { kelas: true },
+    });
+
+    // Extract the kelas IDs
+    const kelasIds = kelasAslabRelations.map(relation => relation.kelas);
+
+    if (kelasIds.length === 0) {
+      return []; // No jadwal found for this aslab
+    }
+
+    // Find all jadwal that have matching kelas IDs
+    return await db.query.kelas_praktikum.findMany({
+      where: (jadwal, { inArray }) => inArray(jadwal.id, kelasIds),
+      with: {
+        dosenPengampu: { columns: { nama: true } },
+        mataKuliah: { columns: { nama: true } },
+        lab: { columns: { nama: true } },
+        kelasAslab: {
+          with: { aslab: { columns: { nama: true } } },
+        },
+      },
+      orderBy: [desc(kelas_praktikum.id)],
+    });
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
+}
+
 export async function findOneById(id) {
   try {
     return await db.query.kelas_praktikum.findFirst({

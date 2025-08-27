@@ -1,4 +1,4 @@
-"use client"
+'use client';
 
 import {
   flexRender,
@@ -7,8 +7,8 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-import DataTablePagination from "./data-table-pagination"
+} from '@tanstack/react-table';
+import DataTablePagination from './data-table-pagination';
 import {
   Table,
   TableBody,
@@ -16,48 +16,52 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import React from "react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Check, CheckCircle2, PlusCircle, XCircle } from "lucide-react"
-import Link from "next/link"
-import { DataTableFacetedFilter } from "./data-table-faceted-filter"
-import { useRouter } from "next/navigation"
+} from '@/components/ui/table';
+import React from 'react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Check, CheckCircle2, PlusCircle, XCircle } from 'lucide-react';
+import Link from 'next/link';
+import { DataTableFacetedFilter } from './data-table-faceted-filter';
+import { useRouter } from 'next/navigation';
 
-export function DataTable({
-  columns,
-  data,
-}) {
-  const [sorting, setSorting] = React.useState([])
-  const [globalFilter, setGlobalFilter] = React.useState([])
-  const [rowSelection, setRowSelection] = React.useState({})
+export function DataTable({ columns, data, role }) {
+  const [sorting, setSorting] = React.useState([]);
+  const [globalFilter, setGlobalFilter] = React.useState([]);
+  const [rowSelection, setRowSelection] = React.useState({});
+
+  // Filter columns based on role
+  const filteredColumns = role === 'admin' 
+    ? columns 
+    : columns.filter(column => column.id !== 'actions');
 
   const statuses = [
     {
-      value: "Aktif",
-      label: "Aktif",
+      value: 'Aktif',
+      label: 'Aktif',
       icon: CheckCircle2,
     },
     {
-      value: "Tidak Aktif",
-      label: "Tidak Aktif",
+      value: 'Tidak Aktif',
+      label: 'Tidak Aktif',
       icon: XCircle,
     },
-  ]
+  ];
 
-  const prodi = [{
-    value: "Informatika",
-    label: "Informatika",
-  }, {
-    value: "Sistem Informasi",
-    label: "Sistem Informasi"
-  }]
-
+  const prodi = [
+    {
+      value: 'Informatika',
+      label: 'Informatika',
+    },
+    {
+      value: 'Sistem Informasi',
+      label: 'Sistem Informasi',
+    },
+  ];
 
   const table = useReactTable({
     data,
-    columns,
+    columns: filteredColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -70,37 +74,42 @@ export function DataTable({
       globalFilter,
       rowSelection,
     },
-  })
+  });
 
   return (
     <>
       <div className="flex items-center justify-between py-4">
         <div className="flex gap-2">
           <Input
-            value={(table.getState().globalFilter) ?? ""}
-            onChange={e => table.setGlobalFilter(String(e.target.value))}
+            value={table.getState().globalFilter ?? ''}
+            onChange={(e) => table.setGlobalFilter(String(e.target.value))}
             placeholder="Search..."
             className="max-w-sm"
           />
-          {table.getColumn("status") && (
+          {table.getColumn('status') && (
             <DataTableFacetedFilter
-              column={table.getColumn("status")}
+              column={table.getColumn('status')}
               title="Status"
               options={statuses}
             />
           )}
-          {table.getColumn("program studi") && (
+          {table.getColumn('program studi') && (
             <DataTableFacetedFilter
-              column={table.getColumn("program studi")}
+              column={table.getColumn('program studi')}
               title="Program Studi"
               options={prodi}
             />
           )}
         </div>
         <div className="flex gap-2">
-          <Link href="/aslab/new">
-            <Button><PlusCircle />Add Data</Button>
-          </Link>
+          {role === 'admin' && (
+            <Link href="/aslab/new">
+              <Button>
+                <PlusCircle />
+                Add Data
+              </Button>
+            </Link>
+          )}
         </div>
       </div>
       <div className="rounded-md border">
@@ -114,11 +123,11 @@ export function DataTable({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -128,18 +137,24 @@ export function DataTable({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -150,5 +165,5 @@ export function DataTable({
       <div className="h-4"></div>
       <DataTablePagination table={table} />
     </>
-  )
+  );
 }

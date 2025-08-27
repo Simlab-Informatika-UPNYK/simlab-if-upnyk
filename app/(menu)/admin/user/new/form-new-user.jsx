@@ -50,7 +50,7 @@ export function FormNewUser() {
         title: "Berhasil Menambahkan",
         description: `${values.nama} telah berhasil ditambahkan`,
       });
-      router.push("/user");
+      router.push("/admin/user");
       router.refresh();
     } else {
       toast({

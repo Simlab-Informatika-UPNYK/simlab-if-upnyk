@@ -7,6 +7,8 @@ import { DeleteButton } from "./delete-button";
 import { deleteJadwal } from "../actions";
 
 export const ActionCell = ({ data }) => {
+  // For client-side components, we'll rely on server-side access control
+  // The action buttons will be shown but the server will block unauthorized access
   return (
     <div className="flex items-center space-x-2">
       <Link href={`/jadwal-praktikum/${data.id}/edit`}>

@@ -85,7 +85,7 @@ const data = {
           url: "/admin/inventaris-lab",
         },
         {
-          title: "User Pengguna",
+          title: "User",
           url: "/admin/user",
         },
         {

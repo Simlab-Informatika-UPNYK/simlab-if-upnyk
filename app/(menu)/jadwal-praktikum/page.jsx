@@ -1,16 +1,31 @@
 import { DataTable } from '@/components/data-table/data-table';
 import { columns } from './_components/columns';
 import { PlusCircle } from 'lucide-react';
-import { findAllJadwal } from './actions';
+import { findAllJadwal, findAllJadwalByAslab } from './actions';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { getServerSession } from '@/lib/auth-server';
 
 const filters = [];
 
 export default async function Page() {
   let data = [];
   try {
-    const jadwalData = await findAllJadwal();
+    const session = await getServerSession();
+    console.log(session);
+    const userRole = session?.user?.role;
+    const aslabId = session?.user?.aslab_id;
+
+    // Fetch data based on user role
+    let jadwalData;
+    if (userRole === 'admin') {
+      jadwalData = await findAllJadwal(); // Admin sees all
+    } else if (userRole === 'aslab' && aslabId) {
+      jadwalData = await findAllJadwalByAslab(aslabId); // Aslab sees only their assigned schedules
+    } else {
+      jadwalData = []; // No access for other roles
+    }
+
     data = jadwalData.map((item) => ({
       ...item,
       kelas: item.kelas,
