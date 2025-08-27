@@ -1,10 +1,11 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { lab, inventaris } from "@/db/schema";
-import { requireAdmin } from "@/lib/admin-auth";
-import { eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { db } from '@/db';
+import { lab, inventaris } from '@/db/schema';
+import { requireAdmin } from '@/lib/admin-auth';
+import translatePostgresError from '@/lib/postgres-error-translator';
+import { eq } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
 
 // Fungsi untuk mendapatkan semua data inventaris berdasarkan ID lab
 export async function getInventarisByLabId(labId) {
@@ -49,8 +50,8 @@ export async function getInventarisByLabId(labId) {
     }));
     return { success: true, data: transformedData };
   } catch (error) {
-    console.error("Error fetching inventaris data:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -81,7 +82,7 @@ export async function getInventarisById(id) {
       .limit(1);
 
     if (!data) {
-      return { success: false, error: "Inventaris not found" };
+      return { success: false, error: 'Inventaris not found' };
     }
 
     // Transform manual ke camelCase
@@ -106,8 +107,8 @@ export async function getInventarisById(id) {
       },
     };
   } catch (error) {
-    console.error("Error fetching inventaris detail:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -154,8 +155,8 @@ export async function addInventaris(data) {
       },
     };
   } catch (error) {
-    console.error("Error adding inventaris:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -205,8 +206,8 @@ export async function updateInventaris(id, data) {
       },
     };
   } catch (error) {
-    console.error("Error updating inventaris:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -219,7 +220,7 @@ export async function deleteInventaris(id, labId) {
     revalidatePath(`/inventaris-lab/${labId}`);
     return { success: true };
   } catch (error) {
-    console.error("Error deleting inventaris:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

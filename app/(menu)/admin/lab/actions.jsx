@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { lab, kalab } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin-auth";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getAllKalab() {
   try {
@@ -15,8 +16,8 @@ export async function getAllKalab() {
 
     return data;
   } catch (error) {
-    console.error("Error fetching kalab data:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -37,8 +38,8 @@ export async function getAllLab() {
       kalab: item.kalab || null
     }));
   } catch (error) {
-    console.error("Error fetching lab data:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -66,8 +67,8 @@ export async function getOneLab(slug) {
       kalab_id: data.kalab_id || null
     };
   } catch (error) {
-    console.error("Error fetching lab detail:", error);
-    return null;
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -88,11 +89,8 @@ export async function createLab(data) {
 
     return { success: true, data: insertedData[0] };
   } catch (error) {
-    console.error("Error creating lab:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -114,11 +112,8 @@ export async function editLab(id, data) {
 
     return { success: true, data: updatedData[0] };
   } catch (error) {
-    console.error("Error updating lab:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -138,10 +133,7 @@ export async function deleteLab(slug) {
 
     return { success: true, data: deletedData[0] };
   } catch (error) {
-    console.error("Error deleting lab:", error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

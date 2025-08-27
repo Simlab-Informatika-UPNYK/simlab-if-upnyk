@@ -5,6 +5,7 @@ import { db } from "@/db/index";
 import { user as userTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin-auth";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getAllUsers() {
   try {
@@ -18,8 +19,8 @@ export async function getAllUsers() {
     }).from(userTable);
     return data;
   } catch (error) {
-    console.error("Error in getAllUsers function:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -38,8 +39,8 @@ export async function getOneUser(slug) {
     if (!data || data.length === 0) return null;
     return data[0];
   } catch (error) {
-    console.error("Error in getOneUser function:", error);
-    return null;
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -58,8 +59,8 @@ export async function createUser(data) {
     const inserted = await db.insert(userTable).values(userData).returning();
     return { success: true, data: inserted };
   } catch (error) {
-    console.error("Error in createUser function:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -79,8 +80,8 @@ export async function editUser(id, data) {
       .returning();
     return { success: true, data: updated };
   } catch (error) {
-    console.error("Error in editUser function:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -92,7 +93,7 @@ export async function deleteUser(id) {
       .returning();
     return { success: true, data: deleted };
   } catch (error) {
-    console.error("Error in deleteUser function:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

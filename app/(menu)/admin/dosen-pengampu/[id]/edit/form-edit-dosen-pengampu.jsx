@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -10,19 +10,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { editDosen } from "../../actions";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { editDosen } from '../../actions';
 
 // Updated schema for dosen pengampu
 const formSchema = z.object({
-  nama: z.string().min(2, { message: "Nama minimal 2 karakter" }),
-  nip: z.string().min(1, { message: "NIP harus diisi" }),
-  email: z.string().min(2, { message: "Mata kuliah harus diisi" }),
+  nama: z.string().min(2, { message: 'Nama minimal 2 karakter' }),
+  nip: z.string().min(1, { message: 'NIP harus diisi' }),
+  email: z.string().min(2, { message: 'Mata kuliah harus diisi' }),
 });
 
 export function FormEditDosenPengampu({ dosen }) {
@@ -33,9 +33,9 @@ export function FormEditDosenPengampu({ dosen }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nama: dosen.nama || "",
-      nip: dosen.nip || "",
-      email: dosen.email || "",
+      nama: dosen.nama || '',
+      nip: dosen.nip || '',
+      email: dosen.email || '',
     },
   });
 
@@ -47,24 +47,23 @@ export function FormEditDosenPengampu({ dosen }) {
 
       if (result.success) {
         toast({
-          title: "Berhasil Mengubah",
+          title: 'Berhasil Mengubah',
           description: `Data dosen ${values.nama} telah berhasil diperbarui`,
         });
-        router.push("/dosen-pengampu");
+        router.push('/dosen-pengampu');
         router.refresh();
       } else {
         toast({
-          title: "Gagal Mengubah",
+          title: 'Gagal Mengubah',
           description: `Terjadi kesalahan saat diperbarui`,
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: `Gagal memperbarui data: ${error.message}`,
-        variant: "destructive",
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
       });
-      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -122,7 +121,7 @@ export function FormEditDosenPengampu({ dosen }) {
             Batal
           </Button>
           <Button type="submit" className="px-6" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan"}
+            {isSubmitting ? 'Menyimpan...' : 'Simpan'}
           </Button>
         </div>
       </form>

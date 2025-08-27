@@ -1,93 +1,93 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { PlusCircle, Pencil, ChevronLeft } from "lucide-react";
-import Link from "next/link";
-import DeleteInventoryButton from "./_components/delete-inventory-button";
-import { useParams } from "next/navigation";
-import { getInventarisByLabId } from "../actions";
-import { getLabDetail } from "./actions";
+import React, { useEffect, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { PlusCircle, Pencil, ChevronLeft } from 'lucide-react';
+import Link from 'next/link';
+import DeleteInventoryButton from './_components/delete-inventory-button';
+import { useParams } from 'next/navigation';
+import { getInventarisByLabId } from '../actions';
+import { getLabDetail } from './actions';
 
 // Fungsi konversi UPS
-const upsToString = (ups) => (ups === null ? "Tidak" : ups ? "Pakai" : "Tidak");
+const upsToString = (ups) => (ups === null ? 'Tidak' : ups ? 'Pakai' : 'Tidak');
 
 // Menggunakan data dummy sebagai fallback jika database belum ada
 const dummyData = [
   {
-    id: "1",
-    noMeja: "Asisten",
-    noSNBT: "Pengawas",
-    merekModel: "Axioo MyPC One Pro H5",
-    monitor: "-",
-    processor: "i5-6500 @3.20GHz (4CPUs)",
-    storage: "1TB HDD",
-    ram: "4GB DDR4",
-    gpu: "Intel UHD Graphic 530 2GB",
-    lanCard: "Normal",
-    ups: "Pakai",
-    merkUps: "ICA Baru",
-    keterangan: "",
+    id: '1',
+    noMeja: 'Asisten',
+    noSNBT: 'Pengawas',
+    merekModel: 'Axioo MyPC One Pro H5',
+    monitor: '-',
+    processor: 'i5-6500 @3.20GHz (4CPUs)',
+    storage: '1TB HDD',
+    ram: '4GB DDR4',
+    gpu: 'Intel UHD Graphic 530 2GB',
+    lanCard: 'Normal',
+    ups: 'Pakai',
+    merkUps: 'ICA Baru',
+    keterangan: '',
   },
   {
-    id: "2",
-    noMeja: "1",
-    noSNBT: "30",
-    merekModel: "HP 280 G2 SFF",
-    monitor: "HP Pavilion 20fi",
-    processor: "i5-9400 @2.90GHz (6CPUs)",
-    storage: "1TB HDD",
-    ram: "4GB DDR4",
-    gpu: "Intel UHD Graphic 630 2GB",
-    lanCard: "Normal",
-    ups: "Pakai",
-    merkUps: "ICA Baru",
-    keterangan: "",
+    id: '2',
+    noMeja: '1',
+    noSNBT: '30',
+    merekModel: 'HP 280 G2 SFF',
+    monitor: 'HP Pavilion 20fi',
+    processor: 'i5-9400 @2.90GHz (6CPUs)',
+    storage: '1TB HDD',
+    ram: '4GB DDR4',
+    gpu: 'Intel UHD Graphic 630 2GB',
+    lanCard: 'Normal',
+    ups: 'Pakai',
+    merkUps: 'ICA Baru',
+    keterangan: '',
   },
   {
-    id: "3",
-    noMeja: "2",
-    noSNBT: "31",
-    merekModel: "Lenovo ThinkCentre",
-    monitor: "Lenovo L24e-20",
-    processor: "i7-10700 @3.80GHz (8CPUs)",
-    storage: "512GB SSD",
-    ram: "8GB DDR4",
-    gpu: "Intel UHD Graphics 750",
-    lanCard: "Normal",
-    ups: "Pakai",
-    merkUps: "APC",
-    keterangan: "",
+    id: '3',
+    noMeja: '2',
+    noSNBT: '31',
+    merekModel: 'Lenovo ThinkCentre',
+    monitor: 'Lenovo L24e-20',
+    processor: 'i7-10700 @3.80GHz (8CPUs)',
+    storage: '512GB SSD',
+    ram: '8GB DDR4',
+    gpu: 'Intel UHD Graphics 750',
+    lanCard: 'Normal',
+    ups: 'Pakai',
+    merkUps: 'APC',
+    keterangan: '',
   },
   {
-    id: "4",
-    noMeja: "3",
-    noSNBT: "32",
-    merekModel: "Dell OptiPlex 3080",
-    monitor: "Dell P2419H",
-    processor: "i5-10500 @3.10GHz (6CPUs)",
-    storage: "256GB SSD + 1TB HDD",
-    ram: "16GB DDR4",
-    gpu: "Intel UHD Graphics 630",
-    lanCard: "Normal",
-    ups: "Tidak",
-    merkUps: "-",
-    keterangan: "Perlu perbaikan UPS",
+    id: '4',
+    noMeja: '3',
+    noSNBT: '32',
+    merekModel: 'Dell OptiPlex 3080',
+    monitor: 'Dell P2419H',
+    processor: 'i5-10500 @3.10GHz (6CPUs)',
+    storage: '256GB SSD + 1TB HDD',
+    ram: '16GB DDR4',
+    gpu: 'Intel UHD Graphics 630',
+    lanCard: 'Normal',
+    ups: 'Tidak',
+    merkUps: '-',
+    keterangan: 'Perlu perbaikan UPS',
   },
   {
-    id: "5",
-    noMeja: "4",
-    noSNBT: "33",
-    merekModel: "ASUS ExpertCenter D5",
-    monitor: "ASUS VA24EHE",
-    processor: "i3-10100 @3.60GHz (4CPUs)",
-    storage: "512GB SSD",
-    ram: "8GB DDR4",
-    gpu: "Intel UHD Graphics 630",
-    lanCard: "Normal",
-    ups: "Pakai",
-    merkUps: "ICA Baru",
-    keterangan: "",
+    id: '5',
+    noMeja: '4',
+    noSNBT: '33',
+    merekModel: 'ASUS ExpertCenter D5',
+    monitor: 'ASUS VA24EHE',
+    processor: 'i3-10100 @3.60GHz (4CPUs)',
+    storage: '512GB SSD',
+    ram: '8GB DDR4',
+    gpu: 'Intel UHD Graphics 630',
+    lanCard: 'Normal',
+    ups: 'Pakai',
+    merkUps: 'ICA Baru',
+    keterangan: '',
   },
 ];
 
@@ -112,7 +112,6 @@ const Page = () => {
         // Fetch lab details
         const labResult = await getLabDetail(labSlug);
         if (!labResult.success) {
-          console.error("Lab not found:", labResult.error);
           setLabDetail(null);
           return;
         }
@@ -135,7 +134,6 @@ const Page = () => {
           // setInventarisData(dummyData);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLabDetail(null);
         setInventarisData([]);
       } finally {
@@ -151,12 +149,8 @@ const Page = () => {
       <div className="p-6">
         <div className="flex justify-between items-center mb-4">
           <div>
-            <Link href={"/admin/inventaris-lab"}>
-              <Button
-                variant="outline"
-                size="sm"
-                className="mb-2"
-              >
+            <Link href={'/admin/inventaris-lab'}>
+              <Button variant="outline" size="sm" className="mb-2">
                 <ChevronLeft />
                 Kembali
               </Button>
@@ -165,8 +159,8 @@ const Page = () => {
             <h1 className="text-2xl font-bold">Detail Inventaris</h1>
             {labDetail && (
               <p className="text-gray-500">
-                Laboratorium: {labDetail.nama}{" "}
-                {labDetail.lantai ? `- Lantai ${labDetail.lantai}` : ""}
+                Laboratorium: {labDetail.nama}{' '}
+                {labDetail.lantai ? `- Lantai ${labDetail.lantai}` : ''}
               </p>
             )}
           </div>
@@ -247,7 +241,7 @@ const Page = () => {
                       <td className="px-2 py-2">{item.lanCard}</td>
                       <td
                         className={`px-2 py-2 ${
-                          item.ups === "Pakai" ? "bg-green-200" : ""
+                          item.ups === 'Pakai' ? 'bg-green-200' : ''
                         }`}
                       >
                         {item.ups}
@@ -255,7 +249,7 @@ const Page = () => {
                       <td className="px-2 py-2">{item.merkUps}</td>
                       <td className="px-2 py-2">{item.keterangan}</td>
                       <td className="px-2 py-2">
-                        {" "}
+                        {' '}
                         <div className="flex">
                           <Link
                             href={`/admin/inventaris-lab/${labSlug}/${item.id}`}

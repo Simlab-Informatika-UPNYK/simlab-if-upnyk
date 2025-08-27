@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 import slugify from "react-slugify";
 import { desc, eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin-auth";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 /**
  * Fetch all honor jenis records
@@ -18,8 +19,8 @@ export async function getAllHonorJenis() {
       .orderBy(desc(honor_jenis.id));
     return data;
   } catch (error) {
-    console.error("Error fetching honor jenis:", error);
-    throw new Error(error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -42,8 +43,8 @@ export async function createHonorJenis({ jenis, biaya }) {
     revalidatePath("/admin/honor-asisten");
     return data[0];
   } catch (error) {
-    console.error("Error creating honor jenis:", error);
-    throw new Error(error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -66,8 +67,8 @@ export async function updateHonorJenis({ id, jenis, biaya }) {
     revalidatePath("/admin/honor-asisten");
     return data[0];
   } catch (error) {
-    console.error("Error updating honor jenis:", error);
-    throw new Error(error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -84,8 +85,8 @@ export async function deleteHonorJenis(id) {
     revalidatePath("/admin/honor-asisten");
     return { success: true };
   } catch (error) {
-    console.error("Error deleting honor jenis:", error);
-    throw new Error(error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -102,6 +103,7 @@ export async function getHonorJenisByJenis(slug) {
 
     return data || null;
   } catch (error) {
-    return null;
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

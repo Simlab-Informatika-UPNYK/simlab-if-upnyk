@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useToast } from '@/hooks/use-toast';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog';
 import {
   Form,
   FormControl,
@@ -19,21 +19,24 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 // Schema validasi untuk form folder
 const formSchema = z.object({
-  title: z.string().min(1, { message: "Nama folder harus diisi" }),
-  url: z.string()
-    .min(1, { message: "URL folder harus diisi" })
-    .regex(/^\/[a-z0-9-]+$/, { message: "Format URL tidak valid, gunakan format '/nama-url'" }),
+  title: z.string().min(1, { message: 'Nama folder harus diisi' }),
+  url: z
+    .string()
+    .min(1, { message: 'URL folder harus diisi' })
+    .regex(/^\/[a-z0-9-]+$/, {
+      message: "Format URL tidak valid, gunakan format '/nama-url'",
+    }),
 });
 
 export default function FolderFormDialog({
   children,
-  mode = "add",
+  mode = 'add',
   initialData = {},
   onSuccess,
 }) {
@@ -43,46 +46,53 @@ export default function FolderFormDialog({
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: mode === "edit"
-      ? { ...initialData }
-      : {
-          title: "",
-          url: "",
-        },
+    defaultValues:
+      mode === 'edit'
+        ? { ...initialData }
+        : {
+            title: '',
+            url: '',
+          },
   });
 
   async function onSubmit(values) {
     setIsSubmitting(true);
-    
+
     try {
       // Simpan data ke localStorage untuk sementara
       // Di implementasi nyata, ini akan menggunakan API call
-      const folders = JSON.parse(localStorage.getItem("lab-folders") || "[]");
-      
-      if (mode === "add") {
+      const folders = JSON.parse(localStorage.getItem('lab-folders') || '[]');
+
+      if (mode === 'add') {
         folders.push(values);
       } else {
-        const index = folders.findIndex(folder => folder.url === initialData.url);
+        const index = folders.findIndex(
+          (folder) => folder.url === initialData.url
+        );
         if (index !== -1) {
           folders[index] = values;
         }
       }
-      
-      localStorage.setItem("lab-folders", JSON.stringify(folders));
-      
+
+      localStorage.setItem('lab-folders', JSON.stringify(folders));
+
       toast({
-        title: mode === "add" ? "Folder berhasil ditambahkan" : "Folder berhasil diperbarui",
-        description: `Folder ${values.title} berhasil ${mode === "add" ? "ditambahkan" : "diperbarui"}`,
+        title:
+          mode === 'add'
+            ? 'Folder berhasil ditambahkan'
+            : 'Folder berhasil diperbarui',
+        description: `Folder ${values.title} berhasil ${
+          mode === 'add' ? 'ditambahkan' : 'diperbarui'
+        }`,
       });
-      
+
       setOpen(false);
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error(error);
       toast({
-        title: "Error",
-        description: `Terjadi kesalahan: ${error.message}`,
-        variant: "destructive",
+        title: 'Gagal',
+        description: error.message,
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -95,7 +105,7 @@ export default function FolderFormDialog({
       <DialogContent className="sm:max-w-[500px] rounded-md">
         <DialogHeader>
           <DialogTitle>
-            {mode === "add" ? "Tambah Folder Baru" : "Edit Folder"}
+            {mode === 'add' ? 'Tambah Folder Baru' : 'Edit Folder'}
           </DialogTitle>
         </DialogHeader>
 
@@ -122,9 +132,9 @@ export default function FolderFormDialog({
                 <FormItem>
                   <FormLabel>URL Folder</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="/nama-url" 
-                      {...field} 
+                    <Input
+                      placeholder="/nama-url"
+                      {...field}
                       onChange={(e) => {
                         // Pastikan URL selalu diawali dengan /
                         let value = e.target.value;
@@ -151,10 +161,10 @@ export default function FolderFormDialog({
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting
-                  ? "Menyimpan..."
-                  : mode === "add"
-                  ? "Tambah"
-                  : "Simpan"}
+                  ? 'Menyimpan...'
+                  : mode === 'add'
+                  ? 'Tambah'
+                  : 'Simpan'}
               </Button>
             </div>
           </form>

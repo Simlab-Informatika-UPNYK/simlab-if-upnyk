@@ -35,7 +35,6 @@ export default function AslabDetail({ params }) {
         const aslabData = await getAslabDetailByNim(nim);
         setData(aslabData);
       } catch (error) {
-        console.error("Error fetching aslab data:", error);
         toast({
           title: "Error",
           description: "Terjadi kesalahan saat mengambil data mahasiswa",
@@ -80,7 +79,6 @@ export default function AslabDetail({ params }) {
       });
       
     } catch (error) {
-      console.error("Error generating PDF:", error);
       toast({
         title: "Error",
         description: "Terjadi kesalahan saat membuat sertifikat",

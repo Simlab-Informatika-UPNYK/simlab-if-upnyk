@@ -57,7 +57,6 @@ export function FormNewUser() {
         title: "Gagal Menambahkan",
         description: `Terjadi kesalahan saat menambahkan`,
       });
-      console.error(error);
     }
   }
 

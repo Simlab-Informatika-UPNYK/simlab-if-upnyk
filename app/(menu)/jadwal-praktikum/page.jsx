@@ -1,9 +1,9 @@
-import { DataTable } from "@/components/data-table/data-table";
-import { columns } from "./_components/columns";
-import { PlusCircle } from "lucide-react";
-import { findAllJadwal } from "./actions";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { DataTable } from '@/components/data-table/data-table';
+import { columns } from './_components/columns';
+import { PlusCircle } from 'lucide-react';
+import { findAllJadwal } from './actions';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const filters = [];
 
@@ -14,18 +14,16 @@ export default async function Page() {
     data = jadwalData.map((item) => ({
       ...item,
       kelas: item.kelas,
-      mata_kuliah: item.mataKuliah?.nama || "-",
-      dosen: item.dosenPengampu?.nama || "-",
+      mata_kuliah: item.mataKuliah?.nama || '-',
+      dosen: item.dosenPengampu?.nama || '-',
       jumlah_praktikan: item.jumlah_praktikan,
       hari: item.hari,
       waktu: item.waktu,
-      lab: item.lab?.nama || "-",
+      lab: item.lab?.nama || '-',
       jenis_praktikan: item.jenis_praktikan,
       asisten: item.kelasAslab?.map((a) => a.aslab?.nama).filter(Boolean) || [],
     }));
-  } catch (error) {
-    console.error("Failed to load jadwal data:", error);
-  }
+  } catch (error) {}
 
   return (
     <DataTable

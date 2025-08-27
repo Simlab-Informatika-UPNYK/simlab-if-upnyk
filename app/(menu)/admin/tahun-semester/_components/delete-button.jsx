@@ -24,26 +24,18 @@ export function DeleteButton({ slug, variant = "outline" }) {
   const handleDelete = async () => {
     try {
       const deletedData = await deleteTahunSemester(slug);
-      
+
       router.replace("/admin/tahun-semester");
       toast({
         title: "Berhasil Menghapus",
         description: `Semester ${deletedData.slug} telah berhasil dihapus`,
       });
     } catch (error) {
-      if (error.code == "23503") {
-        toast({
-          title: "Gagal Menghapus",
-          description: error.details,
-          variant: "destructive",
-        });
-      } else {
-        toast({
-          title: "Gagal Menghapus",
-          description: "Tahun Semester gagal dihapus",
-          variant: "destructive",
-        });
-      }
+      toast({
+        title: "Gagal Menghapus",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 

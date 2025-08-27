@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from "react";
-import { Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useParams } from "next/navigation";
+import React, { useState } from 'react';
+import { Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useParams } from 'next/navigation';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,11 +14,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
-import { deleteInventaris } from "../../actions";
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { deleteInventaris } from '../../actions';
 
-export default function DeleteInventoryButton({ inventoryId, inventoryName, onSuccess }) {
+export default function DeleteInventoryButton({
+  inventoryId,
+  inventoryName,
+  onSuccess,
+}) {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
   const params = useParams();
@@ -26,26 +30,25 @@ export default function DeleteInventoryButton({ inventoryId, inventoryName, onSu
 
   async function handleDelete() {
     setIsDeleting(true);
-    
+
     try {
       const result = await deleteInventaris(inventoryId, labId);
-      
+
       if (!result.success) {
         throw new Error(result.error);
       }
-      
+
       toast({
-        title: "Berhasil Menghapus",
+        title: 'Berhasil Menghapus',
         description: `Inventaris telah berhasil dihapus`,
       });
-      
+
       if (onSuccess) onSuccess();
     } catch (error) {
-      console.error(error);
       toast({
-        title: "Error",
-        description: `Gagal menghapus inventaris: ${error.message}`,
-        variant: "destructive",
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
       });
     } finally {
       setIsDeleting(false);
@@ -63,17 +66,18 @@ export default function DeleteInventoryButton({ inventoryId, inventoryName, onSu
         <AlertDialogHeader>
           <AlertDialogTitle>Konfirmasi Hapus</AlertDialogTitle>
           <AlertDialogDescription>
-            Apakah Anda yakin ingin menghapus inventaris ini? Tindakan ini tidak dapat dibatalkan.
+            Apakah Anda yakin ingin menghapus inventaris ini? Tindakan ini tidak
+            dapat dibatalkan.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Batal</AlertDialogCancel>
-          <AlertDialogAction 
+          <AlertDialogAction
             onClick={handleDelete}
             disabled={isDeleting}
             className="bg-red-600 hover:bg-red-700"
           >
-            {isDeleting ? "Menghapus..." : "Hapus"}
+            {isDeleting ? 'Menghapus...' : 'Hapus'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

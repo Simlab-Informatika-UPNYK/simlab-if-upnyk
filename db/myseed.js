@@ -11,7 +11,7 @@ async function seedAslab() {
       angkatan: '2022',
       program_studi: 'Informatika',
       status: 'Aktif',
-      profile_picture: ''
+      profile_picture: '',
     },
     {
       nama: 'Jane Smith',
@@ -21,7 +21,7 @@ async function seedAslab() {
       angkatan: '2021',
       program_studi: 'Sistem Informasi',
       status: 'Aktif',
-      profile_picture: ''
+      profile_picture: '',
     },
     {
       nama: 'Bob Johnson',
@@ -31,14 +31,13 @@ async function seedAslab() {
       angkatan: '2023',
       program_studi: 'Teknik Komputer',
       status: 'Tidak Aktif',
-      profile_picture: ''
-    }
+      profile_picture: '',
+    },
   ]);
 
   console.log('Seed data aslab berhasil ditambahkan');
 }
 
 seedAslab().catch((err) => {
-  console.error('Error seeding data:', err);
   process.exit(1);
 });

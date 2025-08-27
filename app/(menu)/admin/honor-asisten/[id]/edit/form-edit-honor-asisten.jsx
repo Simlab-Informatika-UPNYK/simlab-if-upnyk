@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -10,22 +10,22 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { updateHonorJenis } from "../../actions";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { updateHonorJenis } from '../../actions';
 
 // Schema for honor asisten data
 const formSchema = z.object({
-  jenis: z.string().min(1, { message: "Jenis honor harus diisi" }),
+  jenis: z.string().min(1, { message: 'Jenis honor harus diisi' }),
   biaya: z.preprocess(
-    (arg) => (arg === "" ? undefined : Number(arg)),
+    (arg) => (arg === '' ? undefined : Number(arg)),
     z
-      .number({ invalid_type_error: "Biaya harus berupa angka" })
-      .min(1, { message: "Biaya minimal 1" })
+      .number({ invalid_type_error: 'Biaya harus berupa angka' })
+      .min(1, { message: 'Biaya minimal 1' })
   ),
 });
 
@@ -37,8 +37,8 @@ export function FormEditHonorAsisten({ honor }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      jenis: honor.jenis || "",
-      biaya: honor.biaya || "",
+      jenis: honor.jenis || '',
+      biaya: honor.biaya || '',
     },
   });
 
@@ -51,19 +51,18 @@ export function FormEditHonorAsisten({ honor }) {
         biaya: values.biaya,
         jenis: values.jenis,
       });
-      router.push("/admin/honor-asisten");
+      router.push('/admin/honor-asisten');
       router.refresh();
       toast({
-        title: "Berhasil Mengubah",
+        title: 'Berhasil Mengubah',
         description: `Honor ${values.jenis} telah berhasil diperbarui`,
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: `Gagal memperbarui data: ${error.message}`,
-        variant: "destructive",
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
       });
-      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -109,7 +108,7 @@ export function FormEditHonorAsisten({ honor }) {
         />
         <div className="flex justify-end gap-3 pt-4">
           <Button type="submit" className="px-6" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan"}
+            {isSubmitting ? 'Menyimpan...' : 'Simpan'}
           </Button>
         </div>
       </form>

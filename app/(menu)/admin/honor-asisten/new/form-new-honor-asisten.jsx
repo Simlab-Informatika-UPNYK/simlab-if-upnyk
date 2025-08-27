@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -10,17 +10,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { createHonorJenis } from "../actions";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { createHonorJenis } from '../actions';
 
 const formSchema = z.object({
-  jenis: z.string().min(1, { message: "Jenis minimal 1 karakter" }),
-  biaya: z.string().min(1, { message: "Biaya minimal 1" }),
+  jenis: z.string().min(1, { message: 'Jenis minimal 1 karakter' }),
+  biaya: z.string().min(1, { message: 'Biaya minimal 1' }),
 });
 
 export function FormNewHonorAsisten() {
@@ -29,24 +29,23 @@ export function FormNewHonorAsisten() {
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { jenis: "", biaya: "" },
+    defaultValues: { jenis: '', biaya: '' },
   });
 
   async function onSubmit(values) {
     try {
       await createHonorJenis({ jenis: values.jenis, biaya: values.biaya });
       toast({
-        title: "Berhasil Menambahkan",
+        title: 'Berhasil Menambahkan',
         description: `Data honor asisten telah berhasil ditambahkan`,
       });
-      router.push("/admin/honor-asisten");
+      router.push('/admin/honor-asisten');
     } catch (error) {
       toast({
-        variant: "destructive",
-        title: "Gagal Menambahkan",
+        variant: 'destructive',
+        title: 'Gagal Menambahkan',
         description: `${error.message}`,
       });
-      console.error(error);
     }
   }
 

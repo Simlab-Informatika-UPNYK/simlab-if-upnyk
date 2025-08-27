@@ -4,6 +4,7 @@ import { kalab } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import slugify from "react-slugify";
 import { requireAdmin } from "@/lib/admin-auth";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getKalabData() {
   try {
@@ -28,7 +29,8 @@ export async function getKalabData() {
       photo: item.photo || "",
     }));
   } catch (error) {
-    throw new Error("Gagal mengambil data kalab: " + error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -45,7 +47,8 @@ export async function getKalabDetail(slug) {
     }
     return data;
   } catch (error) {
-    throw new Error("Gagal mengambil detail kalab: " + error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -63,7 +66,8 @@ export async function createKalab(data) {
     const insertedData = await db.insert(kalab).values(kalabData).returning();
     return insertedData[0];
   } catch (error) {
-    throw new Error("Gagal membuat kalab: " + error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -80,7 +84,8 @@ export async function deleteKalab(slug) {
     }
     return deletedData[0];
   } catch (error) {
-    throw new Error("Gagal menghapus kalab: " + error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -106,6 +111,7 @@ export async function editKalab(slug, data) {
     }
     return updatedData[0];
   } catch (error) {
-    throw new Error("Gagal mengupdate kalab: " + error.message);
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

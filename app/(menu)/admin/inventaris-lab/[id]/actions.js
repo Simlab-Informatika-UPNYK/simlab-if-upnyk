@@ -2,6 +2,7 @@
 import { db } from "@/db";
 import { lab } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 // Fungsi untuk mendapatkan ID lab berdasarkan slug
 export async function getLabIdBySlug(slug) {
@@ -15,7 +16,8 @@ export async function getLabIdBySlug(slug) {
     if (!data) return { success: false, error: "Lab not found" };
     return { success: true, data: data.id };
   } catch (error) {
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -36,6 +38,7 @@ export async function getLabDetail(slug) {
     if (!data) return { success: false, error: "Lab not found" };
     return { success: true, data };
   } catch (error) {
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

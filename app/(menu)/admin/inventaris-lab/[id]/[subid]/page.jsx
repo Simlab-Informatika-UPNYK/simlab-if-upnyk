@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { getInventarisById } from "../../actions";
-import InventoryForm, { upsToString } from "../_components/inventory-form";
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getInventarisById } from '../../actions';
+import InventoryForm, { upsToString } from '../_components/inventory-form';
 // import { upsToString } from "../../_components/inventory-form";
 
 export default function EditInventarisPage() {
@@ -26,7 +26,7 @@ export default function EditInventarisPage() {
           });
         }
       } catch (error) {
-        console.error("Error fetching inventaris:", error);
+        setInventarisData(null);
       } finally {
         setLoading(false);
       }

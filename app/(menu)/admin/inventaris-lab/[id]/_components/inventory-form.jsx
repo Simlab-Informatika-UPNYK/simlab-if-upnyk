@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useToast } from "@/hooks/use-toast";
-import { useParams, useRouter } from "next/navigation";
+import React, { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useToast } from '@/hooks/use-toast';
+import { useParams, useRouter } from 'next/navigation';
 import {
   Form,
   FormControl,
@@ -13,43 +13,43 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { addInventaris, updateInventaris } from "../../actions";
-import { getLabIdBySlug } from "../actions";
+} from '@/components/ui/select';
+import { addInventaris, updateInventaris } from '../../actions';
+import { getLabIdBySlug } from '../actions';
 
 // Fungsi konversi UPS
-export const upsToString = (ups) => (ups ? "Pakai" : "Tidak");
-const stringToUps = (str) => str === "Pakai";
+export const upsToString = (ups) => (ups ? 'Pakai' : 'Tidak');
+const stringToUps = (str) => str === 'Pakai';
 
 // Schema validasi untuk form inventaris
 const formSchema = z.object({
-  noMeja: z.string().min(1, { message: "Nomor meja harus diisi" }),
-  noSNBT: z.string().min(1, { message: "Nomor SNBT harus diisi" }),
+  noMeja: z.string().min(1, { message: 'Nomor meja harus diisi' }),
+  noSNBT: z.string().min(1, { message: 'Nomor SNBT harus diisi' }),
   merekModel: z
     .string()
-    .min(2, { message: "Merek & model minimal 2 karakter" }),
+    .min(2, { message: 'Merek & model minimal 2 karakter' }),
   monitor: z.string().optional(),
-  processor: z.string().min(1, { message: "Processor harus diisi" }),
-  storage: z.string().min(1, { message: "Storage harus diisi" }),
-  ram: z.string().min(1, { message: "RAM harus diisi" }),
-  gpu: z.string().min(1, { message: "GPU harus diisi" }),
-  lanCard: z.string().min(1, { message: "LAN Card harus diisi" }),
-  ups: z.string().min(1, { message: "Status UPS harus diisi" }),
+  processor: z.string().min(1, { message: 'Processor harus diisi' }),
+  storage: z.string().min(1, { message: 'Storage harus diisi' }),
+  ram: z.string().min(1, { message: 'RAM harus diisi' }),
+  gpu: z.string().min(1, { message: 'GPU harus diisi' }),
+  lanCard: z.string().min(1, { message: 'LAN Card harus diisi' }),
+  ups: z.string().min(1, { message: 'Status UPS harus diisi' }),
   merkUps: z.string().optional(),
   keterangan: z.string().optional(),
 });
 
 export default function InventoryForm({
-  mode = "add",
+  mode = 'add',
   initialData = {},
   onSuccess,
 }) {
@@ -61,34 +61,34 @@ export default function InventoryForm({
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues:
-      mode === "edit"
+      mode === 'edit'
         ? {
-            noMeja: initialData.noMeja || "",
-            noSNBT: initialData.noSNBT || "",
-            merekModel: initialData.merekModel || "",
-            monitor: initialData.monitor || "",
-            processor: initialData.processor || "",
-            storage: initialData.storage || "",
-            ram: initialData.ram || "",
-            gpu: initialData.gpu || "",
-            lanCard: initialData.lanCard || "Normal",
+            noMeja: initialData.noMeja || '',
+            noSNBT: initialData.noSNBT || '',
+            merekModel: initialData.merekModel || '',
+            monitor: initialData.monitor || '',
+            processor: initialData.processor || '',
+            storage: initialData.storage || '',
+            ram: initialData.ram || '',
+            gpu: initialData.gpu || '',
+            lanCard: initialData.lanCard || 'Normal',
             ups: upsToString(initialData.ups),
-            merkUps: initialData.merkUps || "",
-            keterangan: initialData.keterangan || "",
+            merkUps: initialData.merkUps || '',
+            keterangan: initialData.keterangan || '',
           }
         : {
-            noMeja: "",
-            noSNBT: "",
-            merekModel: "",
-            monitor: "",
-            processor: "",
-            storage: "",
-            ram: "",
-            gpu: "",
-            lanCard: "Normal",
-            ups: "Pakai",
-            merkUps: "",
-            keterangan: "",
+            noMeja: '',
+            noSNBT: '',
+            merekModel: '',
+            monitor: '',
+            processor: '',
+            storage: '',
+            ram: '',
+            gpu: '',
+            lanCard: 'Normal',
+            ups: 'Pakai',
+            merkUps: '',
+            keterangan: '',
           },
   });
 
@@ -105,18 +105,18 @@ export default function InventoryForm({
         labId: labResult.data,
       };
 
-      if (mode === "add") {
+      if (mode === 'add') {
         const result = await addInventaris(payload);
         if (!result.success) throw new Error(result.error);
         toast({
-          title: "Berhasil Menambahkan",
+          title: 'Berhasil Menambahkan',
           description: `Inventaris baru berhasil ditambahkan`,
         });
       } else {
         const result = await updateInventaris(initialData.id, payload);
         if (!result.success) throw new Error(result.error);
         toast({
-          title: "Berhasil Mengubah",
+          title: 'Berhasil Mengubah',
           description: `Inventaris berhasil diperbarui`,
         });
       }
@@ -124,11 +124,10 @@ export default function InventoryForm({
       onSuccess?.();
       router.push(`/admin/inventaris-lab/${params.id}`);
     } catch (error) {
-      console.error(error);
       toast({
-        title: "Error",
-        description: `Terjadi kesalahan: ${error.message}`,
-        variant: "destructive",
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
       });
     } finally {
       setIsSubmitting(false);
@@ -138,7 +137,7 @@ export default function InventoryForm({
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">
-        {mode === "add" ? "Tambah Inventaris Baru" : "Edit Inventaris"}
+        {mode === 'add' ? 'Tambah Inventaris Baru' : 'Edit Inventaris'}
       </h1>
 
       <Form {...form}>
@@ -346,10 +345,10 @@ export default function InventoryForm({
             </Button>
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting
-                ? "Menyimpan..."
-                : mode === "add"
-                ? "Tambah"
-                : "Simpan"}
+                ? 'Menyimpan...'
+                : mode === 'add'
+                ? 'Tambah'
+                : 'Simpan'}
             </Button>
           </div>
         </form>

@@ -4,13 +4,14 @@ import { eq } from "drizzle-orm";
 import { dosen_pengampu } from "@/db/schema";
 import slugify from "react-slugify";
 import { requireAdmin } from "@/lib/admin-auth";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getAllDosen() {
   try {
     return await db.select().from(dosen_pengampu);
   } catch (error) {
-    console.error("Error fetching dosen:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -23,8 +24,8 @@ export async function getOneDosen(slug) {
       .limit(1);
     return dosen || null;
   } catch (error) {
-    console.error("Error fetching dosen:", error);
-    return null;
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -45,8 +46,8 @@ export async function createDosen(data) {
 
     return { success: true, data: insertedDosen };
   } catch (error) {
-    console.error("Error creating dosen:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -68,8 +69,8 @@ export async function editDosen(id, data) {
 
     return { success: true, data: updatedDosen };
   } catch (error) {
-    console.error("Error updating dosen:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -81,7 +82,7 @@ export async function deleteDosen(slug) {
       .where(eq(dosen_pengampu.slug, slug));
     return { error: null };
   } catch (error) {
-    console.error("Error deleting dosen:", error);
-    return { error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

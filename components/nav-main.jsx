@@ -17,16 +17,23 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { cn } from "@/lib/utils"; // Pastikan Anda memiliki fungsi cn untuk conditional classnames
+import { cn } from "@/lib/utils";
 
 export function NavMain({ items }) {
-  const pathname = usePathname(); // Mendapatkan path URL saat ini
+  const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
-  // Fungsi untuk mengecek apakah URL aktif
   const isActive = (url) => {
     return pathname.startsWith(url);
+  };
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   return (
@@ -34,12 +41,11 @@ export function NavMain({ items }) {
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          // Cek apakah item ini aktif
           const active = isActive(item.url);
 
           return !item.items ? (
             <SidebarMenuItem className="border-none" key={item.title}>
-              <Link href={item.url}>
+              <Link href={item.url} onClick={handleLinkClick}>
                 <SidebarMenuButton
                   className={cn(
                     active &&
@@ -68,7 +74,7 @@ export function NavMain({ items }) {
                     )}
                   >
                     {item.icon && <item.icon />}
-                      <span>{item.title}</span>
+                    <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
                   </SidebarMenuButton>
                 </CollapsibleTrigger>
@@ -87,7 +93,7 @@ export function NavMain({ items }) {
                                 "bg-primary text-primary-foreground hover:text-white hover:bg-primary/90"
                             )}
                           >
-                            <Link href={subItem.url}>
+                            <Link href={subItem.url} onClick={handleLinkClick}>
                               <span>{subItem.title}</span>
                             </Link>
                           </SidebarMenuSubButton>

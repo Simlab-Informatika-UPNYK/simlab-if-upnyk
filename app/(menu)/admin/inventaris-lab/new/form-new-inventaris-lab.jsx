@@ -1,41 +1,60 @@
-"use client"
+'use client';
 
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
-import { useToast } from "@/hooks/use-toast"
-import { useState } from "react"
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 const formSchema = z.object({
-  nama: z.string().min(2, { message: "Nama minimal 2 karakter" }),
-  jumlah: z.number().min(1, { message: "Jumlah minimal 1" }),
-  tahun: z.number().min(2000, { message: "Tahun minimal 2000" }).max(new Date().getFullYear(), { message: "Tahun tidak valid" }),
-  kondisi: z.string().min(2, { message: "Kondisi minimal 2 karakter" }),
-})
+  nama: z.string().min(2, { message: 'Nama minimal 2 karakter' }),
+  jumlah: z.number().min(1, { message: 'Jumlah minimal 1' }),
+  tahun: z
+    .number()
+    .min(2000, { message: 'Tahun minimal 2000' })
+    .max(new Date().getFullYear(), { message: 'Tahun tidak valid' }),
+  kondisi: z.string().min(2, { message: 'Kondisi minimal 2 karakter' }),
+});
 
 export function FormNewInventarisLab() {
-  const { toast } = useToast()
-  const router = useRouter()
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
-    defaultValues: { nama: "Komputer", jumlah: 30, tahun: 2020, kondisi: "Baik" },
-  })
+    defaultValues: {
+      nama: 'Komputer',
+      jumlah: 30,
+      tahun: 2020,
+      kondisi: 'Baik',
+    },
+  });
 
   async function onSubmit(values) {
     try {
       // ...submission logic for inventaris lab...
       toast({
-        title: "Berhasil Menambahkan",
+        title: 'Berhasil Menambahkan',
         description: `Inventaris ${values.nama} telah berhasil ditambahkan`,
-      })
-      router.push('/inventaris-lab') // Change this route as needed
+      });
+      router.push('/inventaris-lab'); // Change this route as needed
     } catch (error) {
-      console.error(error)
+      toast({
+        title: 'Gagal',
+        description: error.message,
+        variant: 'destructive',
+      });
     }
   }
 
@@ -62,7 +81,12 @@ export function FormNewInventarisLab() {
             <FormItem>
               <FormLabel className="text-sm font-medium">Jumlah</FormLabel>
               <FormControl>
-                <Input type="number" className="w-full" placeholder="Jumlah" {...field} />
+                <Input
+                  type="number"
+                  className="w-full"
+                  placeholder="Jumlah"
+                  {...field}
+                />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
@@ -75,7 +99,12 @@ export function FormNewInventarisLab() {
             <FormItem>
               <FormLabel className="text-sm font-medium">Tahun</FormLabel>
               <FormControl>
-                <Input type="number" className="w-full" placeholder="Tahun" {...field} />
+                <Input
+                  type="number"
+                  className="w-full"
+                  placeholder="Tahun"
+                  {...field}
+                />
               </FormControl>
               <FormMessage className="text-sm text-red-500" />
             </FormItem>
@@ -95,9 +124,11 @@ export function FormNewInventarisLab() {
           )}
         />
         <div className="flex justify-end pt-4">
-          <Button type="submit" className="px-6">Submit</Button>
+          <Button type="submit" className="px-6">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

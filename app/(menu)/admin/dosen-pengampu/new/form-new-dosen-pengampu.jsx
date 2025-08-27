@@ -53,7 +53,6 @@ export function FormNewDosenPengampu() {
         title: "Error",
         description: `Dosen Pengampu gagal ditambahkan`,
       });
-      console.error(error);
     }
   }
 

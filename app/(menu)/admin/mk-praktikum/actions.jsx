@@ -6,31 +6,42 @@ import { mkPraktikumSchema } from "./_components/form-schema";
 import slugify from "react-slugify";
 import { findAllOrdered, findOneBySlug, checkExists } from "./db-utils";
 import { requireAdmin } from "@/lib/admin-auth";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export const getAllMk = async () => {
-  const result = await findAllOrdered();
-  return result.map((item) => ({
-    "Kode Mata Kuliah": item.kode_mk,
-    Nama: item.nama,
-    Semester: item.semester,
-    "Jumlah Kelas": item.jumlah_kelas,
-    id: item.id,
-    slug: item.slug,
-  }));
+  try {
+    const result = await findAllOrdered();
+    return result.map((item) => ({
+      "Kode Mata Kuliah": item.kode_mk,
+      Nama: item.nama,
+      Semester: item.semester,
+      "Jumlah Kelas": item.jumlah_kelas,
+      id: item.id,
+      slug: item.slug,
+    }));
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
 };
 
 export const getOneMk = async (slug) => {
-  const item = await findOneBySlug(slug);
-  if (!item) return null;
+  try {
+    const item = await findOneBySlug(slug);
+    if (!item) return null;
 
-  return {
-    "Kode Mata Kuliah": item.kode_mk,
-    Nama: item.nama,
-    Semester: item.semester,
-    "Jumlah Kelas": item.jumlah_kelas,
-    id: item.id,
-    slug: item.slug,
-  };
+    return {
+      "Kode Mata Kuliah": item.kode_mk,
+      Nama: item.nama,
+      Semester: item.semester,
+      "Jumlah Kelas": item.jumlah_kelas,
+      id: item.id,
+      slug: item.slug,
+    };
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
 };
 
 export const checkMkExists = checkExists;
@@ -54,11 +65,8 @@ export async function createMk(formData) {
 
     return data;
   } catch (error) {
-    console.error("Error creating mata kuliah:", error.message);
-    return {
-      success: false,
-      error: error.message || "Gagal membuat mata kuliah",
-    };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -83,8 +91,8 @@ export async function editMk(id, formData) {
 
       return { success: true, data };
     } catch (error) {
-      console.error("Error updating mata kuliah:", error.message);
-      throw error;
+      const errorMessage = translatePostgresError(error);
+      throw new Error(errorMessage);
     }
   });
 }
@@ -97,10 +105,7 @@ export async function deleteMk(id) {
       .where(eq(mata_kuliah_praktikum.id, id));
     return { success: true };
   } catch (error) {
-    console.error("Error deleting mata kuliah:", error.message);
-    return {
-      success: false,
-      error: error.message || "Gagal menghapus mata kuliah",
-    };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

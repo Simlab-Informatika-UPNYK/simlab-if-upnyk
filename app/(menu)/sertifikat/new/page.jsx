@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   PDFViewer,
   Document,
@@ -10,33 +10,33 @@ import {
   View,
   StyleSheet,
   Font,
-} from "@react-pdf/renderer";
-import { getAllAslab } from "../actions";
-import { MahasiswaCombobox } from "@/app/(menu)/sertifikat/_components/mahasiswa-combobox";
+} from '@react-pdf/renderer';
+import { getAllAslab } from '../actions';
+import { MahasiswaCombobox } from '@/app/(menu)/sertifikat/_components/mahasiswa-combobox';
 
 Font.register({
-  family: "CenturyGothic",
+  family: 'CenturyGothic',
   fonts: [
-    { src: "/fonts/centurygothic.ttf" },
-    { src: "/fonts/centurygothic_bold.ttf", fontWeight: "bold" },
+    { src: '/fonts/centurygothic.ttf' },
+    { src: '/fonts/centurygothic_bold.ttf', fontWeight: 'bold' },
   ],
 });
 // Definisi style untuk PDF
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "column",
-    color: "#30337A",
-    backgroundColor: "#FFFFFF",
+    flexDirection: 'column',
+    color: '#30337A',
+    backgroundColor: '#FFFFFF',
     padding: 40, // Beri padding di sekitar halaman
-    fontFamily: "CenturyGothic", // Contoh font, pastikan font terdaftar jika custom
+    fontFamily: 'CenturyGothic', // Contoh font, pastikan font terdaftar jika custom
   },
   header: {
-    textAlign: "left",
+    textAlign: 'left',
     marginTop: 20,
     marginBottom: 20,
   },
   flex: {
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   logo: {
     // Ganti dengan gaya logo Anda jika ada
@@ -47,14 +47,14 @@ const styles = StyleSheet.create({
   headerText: {
     // fontWeight: "bold",
     fontSize: 12,
-    textAlign: "left",
+    textAlign: 'left',
   },
   headerTextBold: {
     fontSize: 16,
     letterSpacing: 3,
-    textAlign: "left",
-    fontWeight: "bold", // Tidak semua font mendukung ini, CenturyGothic mungkin lebih baik
-    fontFamily: "CenturyGothic",
+    textAlign: 'left',
+    fontWeight: 'bold', // Tidak semua font mendukung ini, CenturyGothic mungkin lebih baik
+    fontFamily: 'CenturyGothic',
   },
   titleSection: {
     marginTop: 30,
@@ -62,17 +62,17 @@ const styles = StyleSheet.create({
   },
   mainTitle: {
     fontSize: 60,
-    fontWeight: "bold",
-    fontFamily: "CenturyGothic",
+    fontWeight: 'bold',
+    fontFamily: 'CenturyGothic',
     marginBottom: 5,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   subTitle: {
     fontSize: 38,
     // fontWeight: "bold",
-    fontFamily: "CenturyGothic",
+    fontFamily: 'CenturyGothic',
     // textAlign: "center",
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   body: {
     // flexGrow: 1, // Agar bagian ini mengisi ruang tersisa sebelum footer/signature
@@ -83,17 +83,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     // textAlign: "center",
     marginBottom: 15,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   recipientName: {
     borderBottom: 1,
     paddingBottom: 15,
     fontSize: 38,
-    fontWeight: "bold",
-    fontFamily: "CenturyGothic",
+    fontWeight: 'bold',
+    fontFamily: 'CenturyGothic',
     // textAlign: "center",
     marginBottom: 15,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   reason: {
     fontSize: 14,
@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
   signatureBlock: {
     marginTop: 10, // Jarak dari atas
     paddingRight: 20, // Sesuaikan posisi
-    alignSelf: "flex-start", // Posisikan block ke kanan
+    alignSelf: 'flex-start', // Posisikan block ke kanan
   },
   signatureName: {
     fontSize: 14,
-    fontFamily: "CenturyGothic",
+    fontFamily: 'CenturyGothic',
     paddingBottom: 2,
     borderBottom: 1,
     marginBottom: 2,
@@ -119,20 +119,20 @@ const styles = StyleSheet.create({
   detailsSection: {
     marginTop: 20,
     marginBottom: 20,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   detailRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginBottom: 5,
     fontSize: 12,
   },
   detailLabel: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     width: 150, // Lebar tetap untuk label
   },
   detailValue: {
     flexGrow: 1, // Isi sisa ruang
-    fontFamily: "CenturyGothic",
+    fontFamily: 'CenturyGothic',
   },
   roleSection: {
     marginTop: 8,
@@ -140,71 +140,71 @@ const styles = StyleSheet.create({
   },
   roleText: {
     fontSize: 13,
-    fontWeight: "bold",
-    fontFamily: "CenturyGothic",
-    textTransform: "uppercase",
+    fontWeight: 'bold',
+    fontFamily: 'CenturyGothic',
+    textTransform: 'uppercase',
     marginBottom: 5,
   },
   table: {
     // display: "table", // react-pdf belum sepenuhnya mendukung display: table
-    width: "auto",
+    width: 'auto',
     marginTop: 20,
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#bfbfbf",
+    borderColor: '#bfbfbf',
     borderRightWidth: 0,
     borderBottomWidth: 0,
   },
   tableRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     minHeight: 20,
   },
   tableHeader: {
-    backgroundColor: "#004AAD",
-    color: "#fff",
-    fontWeight: "bold",
-    fontFamily: "CenturyGothic",
+    backgroundColor: '#004AAD',
+    color: '#fff',
+    fontWeight: 'bold',
+    fontFamily: 'CenturyGothic',
   },
   tableColHeader: {
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#bfbfbf",
+    borderColor: '#bfbfbf',
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 5,
     fontSize: 12,
-    textAlign: "center",
-    fontWeight: "bold",
-    fontFamily: "CenturyGothic",
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontFamily: 'CenturyGothic',
   },
   tableCol: {
-    borderStyle: "solid",
+    borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: "#bfbfbf",
+    borderColor: '#bfbfbf',
     borderLeftWidth: 0,
     borderTopWidth: 0,
     padding: 5,
     fontSize: 12,
   },
   colNo: {
-    width: "10%",
-    textAlign: "center",
+    width: '10%',
+    textAlign: 'center',
   },
   colSubject: {
-    width: "60%",
+    width: '60%',
   },
   colYear: {
-    width: "30%",
-    textAlign: "center",
+    width: '30%',
+    textAlign: 'center',
   },
   pageHeader: {
-    position: "absolute",
+    position: 'absolute',
     top: -60,
     left: 0,
     right: 0,
   },
   pageFooter: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 50,
     left: 0,
     right: 0,
@@ -215,15 +215,15 @@ const styles = StyleSheet.create({
 const SertifikatPDF = ({ data }) => {
   // Transform data aslab ke format yang dibutuhkan template sertifikat
   const certificateData = {
-    recipientName: data.nama || "NAMA MAHASISWA",
-    nim: data.nim || "NIM",
-    programStudi: data.program_studi || "PROGRAM STUDI",
+    recipientName: data.nama || 'NAMA MAHASISWA',
+    nim: data.nim || 'NIM',
+    programStudi: data.program_studi || 'PROGRAM STUDI',
     activity:
       'PRAKTIKUM DI JURUSAN INFORMATIKA \nUNIVERSITAS PEMBANGUNAN NASIONAL "VETERAN" YOGYAKARTA',
-    period: data.periode_ajaran || "GENAP 2021/2022 - GENAP 2023/2024",
-    role: "ASISTEN",
-    chairmanName: "Dr. Heriyanto, A.Md, S.Kom., M.Cs.",
-    chairmanNIP: "19770608 202121 1004",
+    period: data.periode_ajaran || 'GENAP 2021/2022 - GENAP 2023/2024',
+    role: 'ASISTEN',
+    chairmanName: 'Dr. Heriyanto, A.Md, S.Kom., M.Cs.',
+    chairmanNIP: '19770608 202121 1004',
     // Gunakan data courses dari aslab atau array kosong jika tidak ada
     courses: data.courses || [],
   };
@@ -236,7 +236,7 @@ const SertifikatPDF = ({ data }) => {
           <Image src="/footer.png" />
         </View>
         <View style={[styles.header, styles.flex]}>
-          <View style={{ flexDirection: "row", marginRight: 10 }}>
+          <View style={{ flexDirection: 'row', marginRight: 10 }}>
             <Image style={styles.logo} src="/logo/logo-if.png" />
             <Image style={styles.logo} src="/logo/logo-upn.png" />
           </View>
@@ -283,7 +283,7 @@ const SertifikatPDF = ({ data }) => {
           <Image src="/footer.png" />
         </View>
         <View style={[styles.header, styles.flex]}>
-          <View style={{ flexDirection: "row", marginRight: 10 }}>
+          <View style={{ flexDirection: 'row', marginRight: 10 }}>
             <Image style={styles.logo} src="/logo/logo-if.png" />
             <Image style={styles.logo} src="/logo/logo-upn.png" />
           </View>
@@ -361,8 +361,8 @@ const NewPage = () => {
   const [aslabData, setAslabData] = useState([]);
   const [selectedAslab, setSelectedAslab] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [viewer] = useState({ width: "100%", height: "50rem" });
-  const [searchQuery, setSearchQuery] = useState("");
+  const [viewer] = useState({ width: '100%', height: '50rem' });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -371,7 +371,6 @@ const NewPage = () => {
         setAslabData(data);
         setLoading(false);
       } catch (error) {
-        console.error("Error fetching data:", error);
         setLoading(false);
       }
     };
@@ -398,7 +397,7 @@ const NewPage = () => {
         <label className="block text-sm font-medium mb-1">
           Pilih Mahasiswa:
         </label>
-        <MahasiswaCombobox 
+        <MahasiswaCombobox
           data={filteredAslab}
           value={selectedAslab}
           onSelect={handleSelectAslab}

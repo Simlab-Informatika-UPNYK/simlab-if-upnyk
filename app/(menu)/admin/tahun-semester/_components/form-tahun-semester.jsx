@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -10,52 +10,52 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { tahunSemesterSchema, defaultValues } from "./form-schema";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/select';
+import { tahunSemesterSchema, defaultValues } from './form-schema';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
 
-export function FormTahunSemester({ 
+export function FormTahunSemester({
   initialData,
   onSubmitHandler,
   successMessage,
-  successRedirect
+  successRedirect,
 }) {
   const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(tahunSemesterSchema),
-    defaultValues: initialData || defaultValues
+    defaultValues: initialData || defaultValues,
   });
 
   async function onSubmit(values) {
     try {
       await onSubmitHandler(values);
-      
+
       toast({
-        title: "Berhasil",
+        title: 'Berhasil',
         description: successMessage,
-        variant: "default",
+        variant: 'success',
       });
-      
+
       if (successRedirect) {
         router.push(successRedirect);
         router.refresh();
       }
     } catch (error) {
       toast({
-        title: "Error",
+        title: 'Gagal',
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
     }
   }
@@ -84,7 +84,10 @@ export function FormTahunSemester({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Semester</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih semester" />

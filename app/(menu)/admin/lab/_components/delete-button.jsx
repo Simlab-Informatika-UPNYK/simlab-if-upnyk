@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-react";
+import { Button } from '@/components/ui/button';
+import { Trash } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,32 +12,40 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
-import { deleteLab } from "../actions";
+} from '@/components/ui/alert-dialog';
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+import { deleteLab } from '../actions';
 
-export function DeleteButton({ slug, variant = "ghost" }) {
+export function DeleteButton({ slug, variant = 'ghost' }) {
   const router = useRouter();
   const { toast } = useToast();
 
   const handleDelete = async () => {
-    const result = await deleteLab(slug);
+    try {
+      const result = await deleteLab(slug);
 
-    if (result.success) {
-      router.refresh();
+      if (result.success) {
+        router.refresh();
+        toast({
+          title: 'Berhasil Menghapus',
+          description: `Laboratorium ${result.data.nama} telah berhasil dihapus`,
+        });
+        return;
+      }
+
       toast({
-        title: "Berhasil Menghapus",
-        description: `Laboratorium ${result.data.nama} telah berhasil dihapus`,
+        title: 'Gagal Menghapus',
+        description: result.error || 'Laboratorium gagal dihapus',
+        variant: 'destructive',
       });
-      return;
+    } catch (error) {
+      toast({
+        title: 'Terjadi Kesalahan',
+        description: error.message,
+        variant: 'destructive',
+      });
     }
-
-    toast({
-      title: "Gagal Menghapus",
-      description: result.error || "Laboratorium gagal dihapus",
-      variant: "destructive",
-    });
   };
 
   return (

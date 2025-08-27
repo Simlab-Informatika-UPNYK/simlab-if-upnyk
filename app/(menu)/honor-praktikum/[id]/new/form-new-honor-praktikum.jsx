@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { useEffect, useState } from "react";
-import { FormHonorPraktikum } from "../_components/form-honor-praktikum";
-import { getAslab } from "../../../aslab/actions";
-import { getAllPeriode } from "../actions";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from 'react';
+import { FormHonorPraktikum } from '../_components/form-honor-praktikum';
+import { getAslab } from '../../../aslab/actions';
+import { getAllPeriode } from '../actions';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 export default function FormNewHonorPraktikum({ onSubmit, onCalculate }) {
   const [periodeOptions, setPeriodeOptions] = useState([]);
@@ -19,23 +19,22 @@ export default function FormNewHonorPraktikum({ onSubmit, onCalculate }) {
       try {
         const [aslabData, periodeData] = await Promise.all([
           getAslab(),
-          getAllPeriode()
+          getAllPeriode(),
         ]);
-        
-        const aslabOptions = aslabData.map(aslab => ({
+
+        const aslabOptions = aslabData.map((aslab) => ({
           value: aslab.id_aslab.toString(),
-          label: `${aslab.nim} - ${aslab.nama}`
+          label: `${aslab.nim} - ${aslab.nama}`,
         }));
-        
-        const periodeOptions = periodeData.map(p => ({
+
+        const periodeOptions = periodeData.map((p) => ({
           value: p.slug,
-          label: `${p.tahun_ajaran} ${p.semester}`
+          label: `${p.tahun_ajaran} ${p.semester}`,
         }));
-        
+
         setAslabOptions(aslabOptions);
         setPeriodeOptions(periodeOptions);
       } catch (error) {
-        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
@@ -50,7 +49,7 @@ export default function FormNewHonorPraktikum({ onSubmit, onCalculate }) {
       const submitData = {
         ...values,
         aslab_id: parseInt(values.aslab_id),
-        status_honor: values.status_honor || "Belum Diambil"
+        status_honor: values.status_honor || 'Belum Diambil',
       };
       await onSubmit(submitData);
     } catch (error) {
@@ -69,21 +68,23 @@ export default function FormNewHonorPraktikum({ onSubmit, onCalculate }) {
         aslabOptions={aslabOptions}
         onFormInstance={setFormInstance}
       />
-      
+
       <div className="flex justify-end gap-4 pt-4">
-        <Button 
-          type="button" 
+        <Button
+          type="button"
           variant="outline"
-          onClick={() => onCalculate && formInstance && onCalculate(formInstance.getValues())}
-          disabled={!formInstance || !formInstance.getValues().aslab_id || !formInstance.getValues().periode}
+          onClick={() =>
+            onCalculate && formInstance && onCalculate(formInstance.getValues())
+          }
+          disabled={
+            !formInstance ||
+            !formInstance.getValues().aslab_id ||
+            !formInstance.getValues().periode
+          }
         >
           Hitung Honor
         </Button>
-        <Button 
-          type="button" 
-          variant="outline"
-          onClick={() => router.back()}
-        >
+        <Button type="button" variant="outline" onClick={() => router.back()}>
           Batal
         </Button>
       </div>

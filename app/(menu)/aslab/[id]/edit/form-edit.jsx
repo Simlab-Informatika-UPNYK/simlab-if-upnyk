@@ -28,7 +28,6 @@ export function FormEdit({ data }) {
 
       router.push(`/aslab`);
     } catch (error) {
-      console.error("Error:", error);
       toast({
         title: "Gagal mengupdate data",
         description: error.message || "Terjadi kesalahan saat mengupdate data asisten",

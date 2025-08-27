@@ -7,6 +7,7 @@ import {
   findAllOrdered,
   checkExists
 } from "./db-utils";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export const getAllAslabWithCourses = async () => {
   try {
@@ -64,8 +65,8 @@ export const getAllAslabWithCourses = async () => {
 
     return Array.from(aslabMap.values());
   } catch (error) {
-    console.error("Error fetching aslab data:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -168,8 +169,8 @@ export async function getCertificateRequestByNim(nim) {
       mata_kuliah_praktikum: uniqueMataKuliah,
     };
   } catch (error) {
-    console.error("Error fetching certificate request:", error);
-    throw new Error("Failed to fetch certificate request");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -189,8 +190,8 @@ export const approveCertificateRequest = async (requestId) => {
 
     return { success: true, data: result[0] };
   } catch (error) {
-    console.error("Error approving certificate request:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -210,8 +211,8 @@ export const rejectCertificateRequest = async (requestId, reason) => {
 
     return { success: true, data: result[0] };
   } catch (error) {
-    console.error("Error rejecting certificate request:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -231,8 +232,8 @@ export const cancelCertificateStatus = async (requestId) => {
 
     return { success: true, data: result[0] };
   } catch (error) {
-    console.error("Error canceling certificate status:", error);
-    return { success: false, error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -298,8 +299,8 @@ export const getAslabDetailByNim = async (nim) => {
 
     return aslabData;
   } catch (error) {
-    console.error("Error fetching aslab detail:", error);
-    return null;
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 };
 
@@ -354,7 +355,7 @@ export const getAllAslab = async () => {
       }))
     }));
   } catch (error) {
-    console.error("Error fetching aslab data:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 };

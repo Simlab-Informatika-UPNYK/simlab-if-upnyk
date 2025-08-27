@@ -4,9 +4,15 @@ import { db } from "@/db";
 import { aslab } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getAslab() {
-  return await db.select().from(aslab);
+  try {
+    return await db.select().from(aslab);
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
 }
 
 export async function getAslabById(nim) {
@@ -22,8 +28,8 @@ export async function getAslabById(nim) {
     }
     return result[0];
   } catch (error) {
-    console.error("Error fetching aslab:", error);
-    return { error: "Database error occurred while fetching aslab" };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -32,8 +38,8 @@ export async function getAslabIds() {
     const result = await db.select({ nim: aslab.nim }).from(aslab);
     return result.map((item) => item.nim);
   } catch (error) {
-    console.error("Error fetching aslab IDs:", error);
-    return [];
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -43,8 +49,8 @@ export async function createAslab(data) {
     revalidatePath("/aslab");
     return { success: true };
   } catch (error) {
-    console.error("Error creating aslab:", error);
-    return { error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -54,8 +60,8 @@ export async function updateAslab(id, data) {
     revalidatePath("/aslab");
     return { success: true };
   } catch (error) {
-    console.error("Error updating aslab:", error);
-    return { error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -65,7 +71,7 @@ export async function deleteAslab(id) {
     revalidatePath("/aslab");
     return { success: true, data };
   } catch (error) {
-    console.error("Error deleting aslab:", error);
-    return { error: error.message };
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }

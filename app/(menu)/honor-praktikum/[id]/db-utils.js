@@ -1,8 +1,8 @@
-"use server";
+'use server';
 
-import { db } from "@/db";
-import { tahun_semester } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { db } from '@/db';
+import { tahun_semester } from '@/db/schema';
+import { eq } from 'drizzle-orm';
 
 export const findOneBySlug = async (slug) => {
   try {
@@ -14,7 +14,6 @@ export const findOneBySlug = async (slug) => {
 
     return result[0] || null;
   } catch (error) {
-    console.error("Error finding tahun semester by slug:", error);
     return null;
   }
 };
@@ -28,7 +27,6 @@ export const findAllOrdered = async () => {
 
     return result;
   } catch (error) {
-    console.error("Error fetching all tahun semester:", error);
     return [];
   }
 };
@@ -43,7 +41,6 @@ export const checkExists = async (slug) => {
 
     return result.length > 0;
   } catch (error) {
-    console.error("Error checking if tahun semester exists:", error);
     return false;
   }
 };

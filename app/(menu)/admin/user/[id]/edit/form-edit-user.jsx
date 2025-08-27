@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from 'zod';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormControl,
@@ -10,19 +10,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
-import { editUser } from "../../actions";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { editUser } from '../../actions';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const formSchema = z.object({
-  nama: z.string().min(2, { message: "Nama lengkap minimal 2 karakter" }),
-  email: z.string().email({ message: "Email tidak valid" }),
-  role: z.string().min(1, { message: "Peran harus diisi" }),
+  nama: z.string().min(2, { message: 'Nama lengkap minimal 2 karakter' }),
+  email: z.string().email({ message: 'Email tidak valid' }),
+  role: z.string().min(1, { message: 'Peran harus diisi' }),
 });
 
 export function FormEditUser({ user }) {
@@ -33,9 +39,9 @@ export function FormEditUser({ user }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nama: user.nama || "",
-      email: user.email || "",
-      role: user.role || "",
+      nama: user.nama || '',
+      email: user.email || '',
+      role: user.role || '',
     },
   });
 
@@ -45,25 +51,24 @@ export function FormEditUser({ user }) {
       const result = await editUser(user.id, values);
       if (result.success) {
         toast({
-          title: "Berhasil Mengubah",
+          title: 'Berhasil Mengubah',
           description: `Data pengguna ${values.nama} telah berhasil diperbarui`,
         });
-        router.push("/user");
+        router.push('/user');
         router.refresh();
       } else {
         toast({
-          title: "Error",
-          description: `Gagal memperbarui data: ${error.message}`,
-          variant: "destructive",
+          title: 'Gagal',
+          description: error.message,
+          variant: 'destructive',
         });
       }
     } catch (error) {
       toast({
-        title: "Error",
-        description: `Gagal memperbarui data: ${error.message}`,
-        variant: "destructive",
+        title: 'Error',
+        description: error.message,
+        variant: 'destructive',
       });
-      console.error(error);
     } finally {
       setIsSubmitting(false);
     }
@@ -143,7 +148,7 @@ export function FormEditUser({ user }) {
             Batal
           </Button>
           <Button type="submit" className="px-6" disabled={isSubmitting}>
-            {isSubmitting ? "Menyimpan..." : "Simpan"}
+            {isSubmitting ? 'Menyimpan...' : 'Simpan'}
           </Button>
         </div>
       </form>

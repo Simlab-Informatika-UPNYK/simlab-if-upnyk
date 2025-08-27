@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { kelas_praktikum, kelas_aslab } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 // Reusable query functions
 export async function findAllJadwal() {
@@ -19,8 +20,8 @@ export async function findAllJadwal() {
       orderBy: [desc(kelas_praktikum.id)],
     });
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch jadwal data");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -36,8 +37,8 @@ export async function findOneById(id) {
       },
     });
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to fetch jadwal by id");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -51,8 +52,8 @@ export async function checkExists(kelas, mataKuliahId) {
     });
     return !!existing;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to check jadwal existence");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -94,8 +95,8 @@ export async function createJadwal(formData) {
     revalidatePath("/jadwal-praktikum");
     return result;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to create jadwal");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -141,8 +142,8 @@ export async function updateJadwal(id, formData) {
     revalidatePath("/jadwal-praktikum");
     return result;
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to update jadwal");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 
@@ -157,8 +158,8 @@ export async function deleteJadwal(id) {
     revalidatePath("/admin/jadwal-praktikum");
     return { success: true };
   } catch (error) {
-    console.error("Database Error:", error);
-    throw new Error("Failed to delete jadwal");
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
   }
 }
 

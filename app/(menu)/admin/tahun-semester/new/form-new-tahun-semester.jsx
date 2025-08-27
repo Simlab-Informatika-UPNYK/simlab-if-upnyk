@@ -13,12 +13,6 @@ export function FormNewTahunSemester() {
       setFormError("");
       const slugTahun = slugify(`${values.tahun_ajaran}-${values.semester}`);
 
-      const exists = await checkTahunSemesterExists(slugTahun);
-      if (exists) {
-        setFormError("Tahun semester dengan kombinasi ini sudah ada");
-        throw new Error("Tahun semester sudah ada");
-      }
-
       await createTahunSemester({
         ...values,
         slug: slugTahun,
