@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/db";
-import { kelas_praktikum, kelas_aslab } from "@/db/schema";
+import { kelas_praktikum, kelas_aslab, tahun_semester } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { translatePostgresError } from "@/lib/postgres-error-translator";
@@ -69,6 +69,7 @@ export async function findOneById(id) {
         mataKuliah: true,
         lab: true,
         kelasAslab: { with: { aslab: true } },
+        tahunSemester: true,
       },
     });
   } catch (error) {
@@ -106,7 +107,7 @@ export async function createJadwal(formData) {
         waktu: formData.waktu,
         lab: parseInt(formData.labId),
         jenis_praktikan: formData.jenisPraktikan,
-        tahun_semester: 1, // TODO: Get current tahun_semester
+        tahun_semester: parseInt(formData.tahunSemesterId),
       };
 
       const [newJadwal] = await tx
@@ -149,7 +150,7 @@ export async function updateJadwal(id, formData) {
         waktu: formData.waktu,
         lab: parseInt(formData.labId),
         jenis_praktikan: formData.jenisPraktikan,
-        tahun_semester: 1, // TODO: Get current tahun_semester
+        tahun_semester: parseInt(formData.tahunSemesterId),
       };
 
       // Update main jadwal data
@@ -220,5 +221,12 @@ export async function getLabOptions() {
 export async function getAslabOptions() {
   return await db.query.aslab.findMany({
     columns: { id_aslab: true, nama: true, nim: true },
+  });
+}
+
+export async function getTahunSemesterOptions() {
+  return await db.query.tahun_semester.findMany({
+    columns: { id: true, semester: true, tahun_ajaran: true },
+    orderBy: [desc(tahun_semester.id)],
   });
 }

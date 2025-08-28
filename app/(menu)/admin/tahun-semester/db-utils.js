@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { tahun_semester } from "@/db/schema";
-import { asc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 
 export async function findOneBySlug(slug) {
   const result = await db
@@ -16,7 +16,7 @@ export async function findAllOrdered() {
   return await db
     .select()
     .from(tahun_semester)
-    .orderBy(asc(tahun_semester.slug));
+    .orderBy(desc(tahun_semester.slug));
 }
 
 export async function checkExists(slug) {

@@ -24,6 +24,21 @@ export const getTahunSemesterId = async (slug) => {
   }
 };
 
+export const getCurrentAslabNim = async (id_aslab) => {
+  try {
+    const aslabData = await db
+      .select({ nim: aslab.nim })
+      .from(aslab)
+      .where(eq(aslab.id_aslab, id_aslab))
+      .limit(1);
+
+    return aslabData.length > 0 ? aslabData[0].nim : null;
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
+};
+
 export const getAllPeriode = async () => {
   try {
     const periode = await findAllOrdered();
@@ -61,6 +76,82 @@ export const getAllData = async (slug) => {
       })
       .from(aslab)
       .orderBy(aslab.nama);
+
+    // Get honor data for this periode
+    const honorData = await db
+      .select({
+        id: aslab_honor.id,
+        aslab: aslab_honor.aslab,
+        tanggal_diambil: aslab_honor.tanggal_diambil,
+        status_honor: aslab_honor.status_honor,
+      })
+      .from(aslab_honor)
+      .where(eq(aslab_honor.tahun_semester, tahunSemester.id));
+
+    // Create a map for honor data by aslab ID
+    const honorMap = new Map();
+    honorData.forEach((honor) => {
+      honorMap.set(honor.aslab, honor);
+    });
+
+    // Get class counts for all aslab
+    const classCounts = new Map();
+    for (const aslabItem of allAslab) {
+      const countResult = await db
+        .select({ count: count() })
+        .from(kelas_aslab)
+        .innerJoin(kelas_praktikum, eq(kelas_praktikum.id, kelas_aslab.kelas))
+        .where(
+          and(
+            eq(kelas_aslab.aslab, aslabItem.id_aslab),
+            eq(kelas_praktikum.tahun_semester, tahunSemester.id)
+          )
+        );
+
+      const countValue = countResult[0]?.count || 0;
+      classCounts.set(aslabItem.id_aslab, countValue);
+    }
+
+    // Map all aslab with their honor status
+    const mapped = allAslab.map((aslab) => {
+      const honor = honorMap.get(aslab.id_aslab);
+      return {
+        id_aslab: aslab.id_aslab,
+        nama: aslab.nama,
+        nim: aslab.nim,
+        tanggal_diambil: honor?.tanggal_diambil || '-',
+        status_honor: honor?.status_honor || '-',
+        jumlah_kelas: classCounts.get(aslab.id_aslab) || 0,
+        id_aslab_honor: honor?.id || null,
+        tahun_semester: slug,
+      };
+    });
+
+    return mapped;
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
+};
+
+export const getAllDataByAslab = async (slug, id_aslab) => {
+  try {
+    const tahunSemester = await findOneBySlug(slug);
+
+    if (!tahunSemester) {
+      return [];
+    }
+
+    // Get ALL aslab (not just those with honor data)
+    const allAslab = await db
+      .select({
+        id_aslab: aslab.id_aslab,
+        nama: aslab.nama,
+        nim: aslab.nim,
+      })
+      .from(aslab)
+      .orderBy(aslab.nama)
+      .where(eq(aslab.id_aslab, id_aslab));
 
     // Get honor data for this periode
     const honorData = await db

@@ -12,6 +12,7 @@ export const jadwalPraktikumSchema = z.object({
   waktu: z.string().min(1, "Waktu harus diisi"),
   labId: z.string().min(1, "Lab harus dipilih"),
   jenisPraktikan: z.string().min(1, "Jenis praktikan harus diisi"),
+  tahunSemesterId: z.string().min(1, "Tahun semester harus dipilih"),
   aslabIds: z.array(z.number()).min(1, { message: "Pilih minimal 1 asisten" }),
   // asisten: z.array(z.string().uuid()),
 });

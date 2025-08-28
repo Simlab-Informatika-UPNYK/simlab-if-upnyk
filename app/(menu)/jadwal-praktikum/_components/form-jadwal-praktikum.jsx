@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Form,
   FormField,
@@ -9,21 +9,21 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
-import { createJadwal, updateJadwal } from "../actions";
-import { jadwalPraktikumSchema } from "./form-schema";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/form';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+import { createJadwal, updateJadwal } from '../actions';
+import { jadwalPraktikumSchema } from './form-schema';
+import { useRouter } from 'next/navigation';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { AslabPicker } from "@/components/aslab-picker";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/select';
+import { AslabPicker } from '@/components/aslab-picker';
+import { Input } from '@/components/ui/input';
 
 export function FormJadwalPraktikum({
   action = createJadwal,
@@ -33,6 +33,7 @@ export function FormJadwalPraktikum({
   dosenOptions = [],
   labOptions = [],
   aslabOptions = [],
+  tahunSemesterOptions = [],
 }) {
   const { toast } = useToast();
   const router = useRouter();
@@ -53,20 +54,21 @@ export function FormJadwalPraktikum({
   const form = useForm({
     resolver,
     defaultValues: defaultValues || {
-      kelas: "",
-      mataKuliahId: "",
-      dosenPengampuId: "",
+      kelas: '',
+      mataKuliahId: '',
+      dosenPengampuId: '',
       jumlahPraktikan: 0,
-      hari: "",
-      labId: "",
+      hari: '',
+      labId: '',
       aslabIds: [],
-      jenisPraktikan: "",
-      waktu: "",
+      jenisPraktikan: '',
+      waktu: '',
+      tahunSemesterId: '',
     },
   });
 
   const allValues = form.watch();
-  console.log("form values:", allValues);
+  console.log('form values:', allValues);
 
   async function onSubmit(values) {
     try {
@@ -76,15 +78,15 @@ export function FormJadwalPraktikum({
         await createJadwal(values);
       }
       toast({
-        title: "Berhasil",
-        description: "Data jadwal berhasil disimpan",
+        title: 'Berhasil',
+        description: 'Data jadwal berhasil disimpan',
       });
-      router.push("/jadwal-praktikum");
+      router.push('/jadwal-praktikum');
     } catch (error) {
       toast({
-        title: "Gagal",
-        description: error.message || "Terjadi kesalahan",
-        variant: "destructive",
+        title: 'Gagal',
+        description: error.message || 'Terjadi kesalahan',
+        variant: 'destructive',
       });
     }
   }
@@ -280,6 +282,32 @@ export function FormJadwalPraktikum({
               <FormControl>
                 <Input placeholder="Contoh: 13:00-15:00" {...field} />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Tahun Semester */}
+        <FormField
+          control={form.control}
+          name="tahunSemesterId"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tahun Semester</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih Tahun Semester" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {tahunSemesterOptions.map((ts) => (
+                    <SelectItem key={ts.id} value={ts.id.toString()}>
+                      {ts.semester} - {ts.tahun_ajaran}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

@@ -1,15 +1,15 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
-import BackButton from "@/components/back-button";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Pencil, Trash2, MoreHorizontal } from 'lucide-react';
+import BackButton from '@/components/back-button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { deleteJadwal, findOneById } from "../actions";
-import { redirect } from "next/navigation";
+} from '@/components/ui/dropdown-menu';
+import { deleteJadwal, findOneById } from '../actions';
+import { redirect } from 'next/navigation';
 
 export default async function JadwalDetailPage({ params }) {
   const id = params.id;
@@ -29,12 +29,12 @@ export default async function JadwalDetailPage({ params }) {
   }
 
   const formattedCreatedAt = jadwal.created_at
-    ? new Date(jadwal.created_at).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
+    ? new Date(jadwal.created_at).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
       })
-    : "Tidak tersedia";
+    : 'Tidak tersedia';
 
   return (
     <div className="container mx-auto p-6">
@@ -62,7 +62,7 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Mata Kuliah</h3>
                 <p className="font-medium">
-                  {jadwal.mataKuliah?.nama || "Tidak tersedia"}
+                  {jadwal.mataKuliah?.nama || 'Tidak tersedia'}
                 </p>
                 {jadwal.mataKuliah?.id && (
                   <p className="text-sm text-gray-500">
@@ -73,7 +73,7 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Dosen Pengampu</h3>
                 <p className="font-medium">
-                  {jadwal.dosenPengampu?.nama || "Tidak tersedia"}
+                  {jadwal.dosenPengampu?.nama || 'Tidak tersedia'}
                 </p>
               </div>
               <div>
@@ -101,7 +101,14 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Laboratorium</h3>
                 <p className="font-medium">
-                  {jadwal.lab?.nama || "Tidak tersedia"}
+                  {jadwal.lab?.nama || 'Tidak tersedia'}
+                </p>
+              </div>
+              <div>
+                <h3 className="text-sm text-gray-500">Tahun Semester</h3>
+                <p className="font-medium">
+                  {`${jadwal.tahunSemester.tahun_ajaran} ${jadwal.tahunSemester.semester}` ||
+                    'Tidak tersedia'}
                 </p>
               </div>
               <div>
@@ -110,7 +117,7 @@ export default async function JadwalDetailPage({ params }) {
                   <ul className="font-medium list-disc pl-5">
                     {jadwal.kelasAslab.map((item, index) => (
                       <li key={index}>
-                        {item.aslab?.nama || "Tidak tersedia"}
+                        {item.aslab?.nama || 'Tidak tersedia'}
                         {item.aslab?.nim && ` (${item.aslab.nim})`}
                       </li>
                     ))}

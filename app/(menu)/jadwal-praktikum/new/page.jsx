@@ -1,20 +1,26 @@
-import { FormJadwalPraktikum } from "../_components/form-jadwal-praktikum";
+import { FormJadwalPraktikum } from '../_components/form-jadwal-praktikum';
 import {
   getMataKuliahOptions,
   getDosenOptions,
   getLabOptions,
   getAslabOptions,
-} from "../actions";
+  getTahunSemesterOptions,
+} from '../actions';
 
 export default async function Page() {
-  const [mkOptions, dosenOptions, labOptions, aslabOptions] = await Promise.all(
-    [
-      getMataKuliahOptions(),
-      getDosenOptions(),
-      getLabOptions(),
-      getAslabOptions(),
-    ]
-  );
+  const [
+    mkOptions,
+    dosenOptions,
+    labOptions,
+    aslabOptions,
+    tahunSemesterOptions,
+  ] = await Promise.all([
+    getMataKuliahOptions(),
+    getDosenOptions(),
+    getLabOptions(),
+    getAslabOptions(),
+    getTahunSemesterOptions(),
+  ]);
 
   return (
     <FormJadwalPraktikum
@@ -22,6 +28,7 @@ export default async function Page() {
       dosenOptions={dosenOptions}
       labOptions={labOptions}
       aslabOptions={aslabOptions}
+      tahunSemesterOptions={tahunSemesterOptions}
     />
   );
 }

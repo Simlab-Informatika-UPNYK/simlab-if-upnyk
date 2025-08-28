@@ -7,16 +7,18 @@ import {
   getDosenOptions,
   getLabOptions,
   getAslabOptions,
+  getTahunSemesterOptions,
 } from "../../actions";
 
 export default async function EditPage({ params }) {
-  const [jadwal, mataKuliahOptions, dosenOptions, labOptions, aslabOptions] =
+  const [jadwal, mataKuliahOptions, dosenOptions, labOptions, aslabOptions, tahunSemesterOptions] =
     await Promise.all([
       findOneById(params.id),
       getMataKuliahOptions(),
       getDosenOptions(),
       getLabOptions(),
       getAslabOptions(),
+      getTahunSemesterOptions(),
     ]);
     
   if (!jadwal) {
@@ -32,6 +34,7 @@ export default async function EditPage({ params }) {
     waktu: jadwal.waktu ?? "",
     labId: jadwal.lab?.id.toString() ?? "",
     jenisPraktikan: jadwal.jenis_praktikan ?? "",
+    tahunSemesterId: jadwal.tahun_semester?.toString() ?? "",
     aslabIds:
       jadwal.kelasAslab?.map((ka) => ({
         value: ka.aslab.id_aslab,
@@ -51,6 +54,7 @@ export default async function EditPage({ params }) {
         dosenOptions={dosenOptions}
         labOptions={labOptions}
         aslabOptions={aslabOptions}
+        tahunSemesterOptions={tahunSemesterOptions}
       />
     </div>
   );

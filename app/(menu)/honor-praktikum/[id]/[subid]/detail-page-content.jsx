@@ -1,6 +1,5 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import { useState, useEffect, use } from "react";
 import { BelumDiambil, UpdateDialog } from "../_components/update-dialog";
 import { useHonor } from "../_components/honor-context";
