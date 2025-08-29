@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { BelumDiambil, UpdateDialog } from "../_components/update-dialog";
-import { useHonor } from "../_components/honor-context";
-import { getTahunSemesterId } from "../actions";
+import { BelumDiambil, UpdateDialog } from "./_components/update-dialog";
+import { useHonor } from "./_components/honor-context";
+import { getTahunSemesterId } from "./actions";
 import {
   Table,
   TableBody,

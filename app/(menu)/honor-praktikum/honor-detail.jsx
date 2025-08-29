@@ -23,18 +23,29 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getOneHonor, getTahunSemesterId } from './[id]/actions';
+import { getOneHonor, getTahunSemesterId } from './[...id]/actions';
 
-const HonorDetail = ({ tahunSemester, nim }) => {
+const HonorDetail = ({
+  tahunSemester,
+  nim,
+  initialTahunSemester,
+  initialNim,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [honorData, setHonorData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Get parameters from URL path or query params
+  const pathTahunSemester = initialTahunSemester;
+  const pathNim = initialNim;
+
   const currentTahunSemester =
-    searchParams.get('tahunsemester') || tahunSemester[0].slug;
-  const currentNim = searchParams.get('nim') || nim;
+    pathTahunSemester ||
+    searchParams.get('tahunsemester') ||
+    (tahunSemester && tahunSemester.length > 0 ? tahunSemester[0]?.slug : '');
+  const currentNim = pathNim || searchParams.get('nim') || nim;
 
   // Fetch honor data when parameters change
   useEffect(() => {
@@ -76,14 +87,13 @@ const HonorDetail = ({ tahunSemester, nim }) => {
 
   return (
     <div className="p-5 space-y-6">
-      {/* Tahun Semester Selector */}
       <div>
         <Select
           onValueChange={handleTahunSemesterChange}
           defaultValue={tahunSemester[0]?.slug}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="Select Tahun Semester" />
+          <SelectTrigger className="w-[250px]">
+            <SelectValue placeholder="Pilih Tahun Semester" />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>

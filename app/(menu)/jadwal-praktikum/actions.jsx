@@ -1,9 +1,12 @@
-"use server";
-import { db } from "@/db";
-import { kelas_praktikum, kelas_aslab, tahun_semester } from "@/db/schema";
-import { eq, and, desc } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
-import { translatePostgresError } from "@/lib/postgres-error-translator";
+'use server';
+import { db } from '@/db';
+import { kelas_praktikum, kelas_aslab, tahun_semester } from '@/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
+import { revalidatePath } from 'next/cache';
+import { translatePostgresError } from '@/lib/postgres-error-translator';
+import { findAllOrdered } from '../admin/tahun-semester/db-utils';
+
+export const getTahunSemester = findAllOrdered;
 
 // Reusable query functions
 export async function findAllJadwal() {
@@ -35,7 +38,7 @@ export async function findAllJadwalByAslab(aslabId) {
     });
 
     // Extract the kelas IDs
-    const kelasIds = kelasAslabRelations.map(relation => relation.kelas);
+    const kelasIds = kelasAslabRelations.map((relation) => relation.kelas);
 
     if (kelasIds.length === 0) {
       return []; // No jadwal found for this aslab
@@ -51,6 +54,68 @@ export async function findAllJadwalByAslab(aslabId) {
         kelasAslab: {
           with: { aslab: { columns: { nama: true } } },
         },
+      },
+      orderBy: [desc(kelas_praktikum.id)],
+    });
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
+}
+
+// Find all jadwal filtered by tahun semester
+export async function findAllJadwalByTahunSemester(tahunSemesterId) {
+  try {
+    return await db.query.kelas_praktikum.findMany({
+      where: eq(kelas_praktikum.tahun_semester, tahunSemesterId),
+      with: {
+        dosenPengampu: { columns: { nama: true } },
+        mataKuliah: { columns: { nama: true } },
+        lab: { columns: { nama: true } },
+        kelasAslab: {
+          with: { aslab: { columns: { nama: true } } },
+        },
+        tahunSemester: true,
+      },
+      orderBy: [desc(kelas_praktikum.id)],
+    });
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
+}
+
+// Find jadwal by aslab ID and tahun semester
+export async function findAllJadwalByAslabAndTahunSemester(aslabId, tahunSemesterId) {
+  try {
+    // First get all kelas_aslab relations for the specified aslab
+    const kelasAslabRelations = await db.query.kelas_aslab.findMany({
+      where: eq(kelas_aslab.aslab, aslabId),
+      columns: { kelas: true },
+    });
+
+    // Extract the kelas IDs
+    const kelasIds = kelasAslabRelations.map((relation) => relation.kelas);
+
+    if (kelasIds.length === 0) {
+      return []; // No jadwal found for this aslab
+    }
+
+    // Find all jadwal that have matching kelas IDs and tahun semester
+    return await db.query.kelas_praktikum.findMany({
+      where: (jadwal, { inArray, eq }) =>
+        and(
+          inArray(jadwal.id, kelasIds),
+          eq(jadwal.tahun_semester, tahunSemesterId)
+        ),
+      with: {
+        dosenPengampu: { columns: { nama: true } },
+        mataKuliah: { columns: { nama: true } },
+        lab: { columns: { nama: true } },
+        kelasAslab: {
+          with: { aslab: { columns: { nama: true } } },
+        },
+        tahunSemester: true,
       },
       orderBy: [desc(kelas_praktikum.id)],
     });
@@ -128,7 +193,7 @@ export async function createJadwal(formData) {
       return newJadwal;
     });
 
-    revalidatePath("/jadwal-praktikum");
+    revalidatePath('/jadwal-praktikum');
     return result;
   } catch (error) {
     const errorMessage = translatePostgresError(error);
@@ -175,7 +240,7 @@ export async function updateJadwal(id, formData) {
       return updated;
     });
 
-    revalidatePath("/jadwal-praktikum");
+    revalidatePath('/jadwal-praktikum');
     return result;
   } catch (error) {
     const errorMessage = translatePostgresError(error);
@@ -191,7 +256,7 @@ export async function deleteJadwal(id) {
       await tx.delete(kelas_praktikum).where(eq(kelas_praktikum.id, id));
     });
 
-    revalidatePath("/admin/jadwal-praktikum");
+    revalidatePath('/admin/jadwal-praktikum');
     return { success: true };
   } catch (error) {
     const errorMessage = translatePostgresError(error);

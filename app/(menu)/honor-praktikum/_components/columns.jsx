@@ -10,7 +10,7 @@ export const columns = [
     cell: ({ row }) => row.index + 1,
   },
   {
-    accessorKey: "semester",
+    accessorKey: "nim",
     header: ({ column }) => {
       return (
         <Button
@@ -18,56 +18,63 @@ export const columns = [
           className="px-0 hover:bg-black/0"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Tahun Ajaran & Semester
+          NIM
           <ArrowUpDown />
         </Button>
       );
-    },
-    sortingFn: (rowA, rowB) => {
-      const tahunA = rowA.original.tahun_ajaran;
-      const tahunB = rowB.original.tahun_ajaran;
-      const semesterA = rowA.original.semester;
-      const semesterB = rowB.original.semester;
-
-      // Urutkan berdasarkan tahun ajaran dulu, lalu semester
-      if (tahunA !== tahunB) {
-        return tahunA.localeCompare(tahunB);
-      }
-      return semesterA.localeCompare(semesterB);
     },
     cell: ({ row }) => {
       const data = row.original;
       return (
         <Link
-          href={`/honor-praktikum/${data.slug}`}
-          className="text-blue-600"
+          href={`/honor-praktikum/${data.tahun_semester}/${data.nim}`}
+          className="text-blue-600 hover:underline"
         >
-          {data.tahun_ajaran} Semester {data.semester}
+          {data.nim}
         </Link>
       );
     },
   },
+  {
+    accessorKey: "nama",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="px-0 hover:bg-black/0"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Nama Asisten
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+  },
+  {
+    accessorKey: "jumlah_kelas",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          className="px-0 hover:bg-black/0"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Jumlah Kelas
+          <ArrowUpDown />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const jumlahKelas = row.getValue("jumlah_kelas");
+      return (
+        <span className={jumlahKelas > 0 ? "text-green-600 font-medium" : "text-gray-400"}>
+          {jumlahKelas} kelas
+        </span>
+      );
+    },
+  },
 ];
-
-/*   {tahunSemester.map((semester) => (
-            <Link key={semester.id} href={`/admin/honor-praktikum/${semester.slug}`}>
-              <Card className="hover:shadow-lg transition-shadow cursor-pointer h-full">
-                <CardHeader>
-                  <CardTitle className="text-xl">
-                    {semester.tahun_ajaran}
-                  </CardTitle>
-                  <CardDescription>
-                    Semester {semester.semester}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">
-                      Klik untuk melihat detail
-                    </span>
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))} */

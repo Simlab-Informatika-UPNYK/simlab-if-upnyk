@@ -1,12 +1,17 @@
-"use client";
+'use client';
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header";
-import Link from "next/link";
-import { ActionCell } from "./action-cell";
+import { DataTableColumnHeader } from '@/components/data-table/data-table-column-header';
+import Link from 'next/link';
+import { ActionCell } from './action-cell';
 
 export const columns = [
   {
-    accessorKey: "kelas",
+    accessorKey: 'no',
+    header: () => 'No',
+    cell: ({ row }) => row.index + 1,
+  },
+  {
+    accessorKey: 'kelas',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Kelas" />
     ),
@@ -25,7 +30,7 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "mata_kuliah",
+    accessorKey: 'mata_kuliah',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Mata Kuliah" />
     ),
@@ -35,21 +40,21 @@ export const columns = [
     },
   },
   {
-    accessorKey: "dosen",
+    accessorKey: 'dosen',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Dosen" />
     ),
     enableSorting: true,
   },
   {
-    accessorKey: "jumlah_praktikan",
+    accessorKey: 'jumlah_praktikan',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jumlah Praktikan" />
     ),
     enableSorting: true,
   },
   {
-    accessorKey: "hari",
+    accessorKey: 'hari',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Hari" />
     ),
@@ -59,14 +64,14 @@ export const columns = [
     },
   },
   {
-    accessorKey: "waktu",
+    accessorKey: 'waktu',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Waktu" />
     ),
     enableSorting: true,
   },
   {
-    accessorKey: "lab",
+    accessorKey: 'lab',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Lab" />
     ),
@@ -76,7 +81,7 @@ export const columns = [
     },
   },
   {
-    accessorKey: "asisten",
+    accessorKey: 'asisten',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Asisten" />
     ),
@@ -94,7 +99,7 @@ export const columns = [
     },
   },
   {
-    accessorKey: "jenis_praktikan",
+    accessorKey: 'jenis_praktikan',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Jenis Praktikan" />
     ),
@@ -104,7 +109,7 @@ export const columns = [
     },
   },
   {
-    id: "aksi",
+    id: 'aksi',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Aksi" />
     ),

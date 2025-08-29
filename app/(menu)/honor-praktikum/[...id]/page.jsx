@@ -1,10 +1,10 @@
-import { getOneHonor, getTahunSemesterId } from '../actions.js';
-import { HonorProvider } from '../_components/honor-context.jsx';
+import { getOneHonor, getTahunSemesterId } from './actions.js';
+import { HonorProvider } from './_components/honor-context.jsx';
 import DetailPageContent from './detail-page-content.jsx';
 
-export default async function DetailPage({ params, searchParams }) {
-  const nim = (await params).subid;
-  const periodeSlug = (await params)?.id;
+export default async function DetailPage({ params }) {
+  const periodeSlug = (await params).id[0];
+  const nim = (await params).id[1];
 
   const tahunSemesterId = await getTahunSemesterId(periodeSlug);
   const honorData = await getOneHonor(nim, tahunSemesterId);

@@ -1,7 +1,12 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { getServerSession } from '@/lib/auth-server';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession();
+  const isLoggedIn = !!session?.user;
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
@@ -33,12 +38,15 @@ export default function Home() {
             >
               Kontak
             </Link>
-            <Link
-              href="/login"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition duration-300"
-            >
-              Login
-            </Link>
+            {!isLoggedIn ? (
+              <Button>
+                <Link href="/login">Login</Link>
+              </Button>
+            ) : (
+              <Button variant="outline">
+                <Link href="/dashboard">Dashboard</Link>
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -76,14 +84,15 @@ export default function Home() {
               sistem manajemen terpadu yang efisien dan modern.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/login">
-                <Button className="w-full sm:w-auto">Masuk Sistem</Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button variant="outline" className="w-full sm:w-auto">
-                  Lihat Dashboard
-                </Button>
-              </Link>
+              {!isLoggedIn ? (
+                <Link href="/login">
+                  <Button className="w-full sm:w-auto">Masuk Sistem</Button>
+                </Link>
+              ) : (
+                <Link href="/dashboard">
+                  <Button className="w-full sm:w-auto">Dashboard</Button>
+                </Link>
+              )}
             </div>
           </div>
           {/* <div className="w-full md:w-1/2 mt-10 md:mt-0 flex justify-center">
@@ -107,21 +116,21 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                title: "Manajemen Perangkat",
+                title: 'Manajemen Perangkat',
                 description:
-                  "Kelola inventaris laboratorium dengan mudah dan efisien.",
-                icon: "💻",
+                  'Kelola inventaris laboratorium dengan mudah dan efisien.',
+                icon: '💻',
               },
               {
-                title: "Penjadwalan",
+                title: 'Penjadwalan',
                 description:
-                  "Atur jadwal penggunaan laboratorium tanpa konflik.",
-                icon: "🗓️",
+                  'Atur jadwal penggunaan laboratorium tanpa konflik.',
+                icon: '🗓️',
               },
               {
-                title: "Monitoring Aktivitas",
-                description: "Pantau penggunaan laboratorium secara real-time.",
-                icon: "📊",
+                title: 'Monitoring Aktivitas',
+                description: 'Pantau penggunaan laboratorium secara real-time.',
+                icon: '📊',
               },
             ].map((feature, index) => (
               <div
