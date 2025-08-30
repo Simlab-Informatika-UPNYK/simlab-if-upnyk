@@ -1,29 +1,20 @@
-import { getTahunSemester } from './actions';
+import { getCurrentAslabNim, getTahunSemester } from './actions';
 import { getServerSession } from '@/lib/auth-server';
-import HonorClient from './honor-client';
-import HonorDetail from './honor-detail';
+import AdminHonorPage from './admin-honor';
+import AslabHonorPage from './aslab-honor';
+import { getOneHonor } from './[...id]/actions';
 
 export default async function HonorPraktikumPage() {
-  let tahunSemester = [];
   const session = await getServerSession();
 
-  if (!session) {
-    return <div>Silakan login terlebih dahulu</div>;
-  }
+  const { user } = session;
+  let tahunSemester = await getTahunSemester();
+  const data = await getOneHonor(user.username, tahunSemester[0].slug);
 
-  const { role, aslab_id } = session.user;
-
-  tahunSemester = await getTahunSemester();
-
-  return (
-    <>
-      {role === 'admin' ? (
-        <HonorClient
-          initialTahunSemester={tahunSemester}
-        />
-      ) : (
-        <HonorDetail tahunSemester={tahunSemester} />
-      )}
-    </>
+  return user.role === 'admin' ? (
+    <AdminHonorPage initialTahunSemester={tahunSemester} />
+  ) : (
+    // <pre>{JSON.stringify(data, null, 2)}</pre>
+    <AslabHonorPage initialNim={user.username} tahunSemester={tahunSemester} />
   );
 }

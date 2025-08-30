@@ -75,7 +75,7 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       drizzle-orm:
-        specifier: ^0.44.4
+        specifier: ^0.44.5
         version: 0.44.5(kysely@0.28.5)(pg@8.16.3)(postgres@3.4.7)
       lucide-react:
         specifier: ^0.474.0

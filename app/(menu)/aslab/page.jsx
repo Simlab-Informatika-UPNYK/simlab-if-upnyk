@@ -3,12 +3,8 @@ import { columns } from './_components/data-table/columns.jsx';
 import { DataTable } from './_components/data-table/data-table.jsx';
 import { getServerSession } from '@/lib/auth-server';
 
-async function getData() {
-  return await getAslab();
-}
-
 export default async function Page() {
-  const data = await getData();
+  const data = await getAslab();
   const { user } = await getServerSession();
 
   return (

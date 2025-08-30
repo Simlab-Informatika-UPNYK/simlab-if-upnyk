@@ -24,21 +24,6 @@ export const getTahunSemesterId = async (slug) => {
   }
 };
 
-export const getCurrentAslabNim = async (id_aslab) => {
-  try {
-    const aslabData = await db
-      .select({ nim: aslab.nim })
-      .from(aslab)
-      .where(eq(aslab.id_aslab, id_aslab))
-      .limit(1);
-
-    return aslabData.length > 0 ? aslabData[0].nim : null;
-  } catch (error) {
-    const errorMessage = translatePostgresError(error);
-    throw new Error(errorMessage);
-  }
-};
-
 export const getAllPeriode = async () => {
   try {
     const periode = await findAllOrdered();
@@ -210,9 +195,16 @@ export const getAllDataByAslab = async (slug, id_aslab) => {
   }
 };
 
-export const getOneHonor = async (nim, tahunSemesterId) => {
+export const getOneHonor = async (nim, tahunSemesterSlug) => {
   try {
-    // Get aslab data with honor and classes
+    // First get the tahun semester ID from the slug
+    const tahunSemester = await findOneBySlug(tahunSemesterSlug);
+    
+    if (!tahunSemester) {
+      return { error: 'Tahun semester tidak ditemukan' };
+    }
+
+    // Get aslab data with honor and classes using the tahun semester ID
     const aslabData = await db
       .select({
         id_aslab: aslab.id_aslab,
@@ -231,7 +223,7 @@ export const getOneHonor = async (nim, tahunSemesterId) => {
         aslab_honor,
         and(
           eq(aslab_honor.aslab, aslab.id_aslab),
-          eq(aslab_honor.tahun_semester, tahunSemesterId)
+          eq(aslab_honor.tahun_semester, tahunSemester.id)
         )
       )
       .leftJoin(kelas_aslab, eq(kelas_aslab.aslab, aslab.id_aslab))
@@ -239,7 +231,7 @@ export const getOneHonor = async (nim, tahunSemesterId) => {
         kelas_praktikum,
         and(
           eq(kelas_praktikum.id, kelas_aslab.kelas),
-          eq(kelas_praktikum.tahun_semester, tahunSemesterId)
+          eq(kelas_praktikum.tahun_semester, tahunSemester.id)
         )
       )
       .leftJoin(
@@ -328,9 +320,9 @@ export const getOneHonor = async (nim, tahunSemesterId) => {
 
     return {
       asisten: {
-        nama: aslabData[0].nama,
-        nim: aslabData[0].nim,
-        id_aslab: aslabData[0].id_aslab,
+        nama: aslabData[0].nama ?? null,
+        nim: aslabData[0].nim ?? null,
+        id_aslab: aslabData[0].id_aslab ?? null,
       },
       id_aslab_honor: aslabData[0].aslab_honor_id || null,
       tanggal_diambil: aslabData[0].aslab_honor_tanggal_diambil || null,

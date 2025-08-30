@@ -1,12 +1,16 @@
-"use server";
+'use server';
 
 import { db } from '@/db';
-import { aslab, kelas_aslab, kelas_praktikum, tahun_semester } from '@/db/schema';
+import {
+  aslab,
+  kelas_aslab,
+  kelas_praktikum,
+  tahun_semester,
+} from '@/db/schema';
 import { eq, and, count } from 'drizzle-orm';
-import { getTahunSemester } from "@/app/(menu)/admin/tahun-semester/actions";
+import { getTahunSemester } from '@/app/(menu)/admin/tahun-semester/actions';
 import { translatePostgresError } from '@/lib/postgres-error-translator';
 
-// Get all aslab data with their honor status for a specific tahun semester
 export async function getAslabByTahunSemester(tahunSemesterId) {
   try {
     // Get all aslab with their class count for the specified periode

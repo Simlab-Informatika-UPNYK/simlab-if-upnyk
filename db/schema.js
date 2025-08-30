@@ -125,13 +125,6 @@ export const admin = pgTable("admin", {
   nip: text("nip"),
 });
 
-/* export const user = pgTable("user", {
-  id: serial("id").primaryKey(),
-  username: text("username"),
-  password: text("password"),
-  created_at: timestamp("created_at"),
-}); */
-
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   role: userRoleEnum("role").default("aslab"),
@@ -151,6 +144,7 @@ export const user = pgTable("user", {
     .notNull(),
   username: text("username").unique(),
   displayUsername: text("display_username"),
+  nip: text("nip"),
 });
 
 export const session = pgTable("session", {

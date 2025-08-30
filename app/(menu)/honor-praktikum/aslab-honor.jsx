@@ -23,7 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
-import { getOneHonor, getTahunSemesterId } from './[...id]/actions';
+import { getOneHonor } from './[...id]/actions';
 
 const HonorDetail = ({
   tahunSemester,
@@ -56,14 +56,11 @@ const HonorDetail = ({
       setError(null);
 
       try {
-        const tahunSemesterId = await getTahunSemesterId(currentTahunSemester);
-        if (tahunSemesterId) {
-          const data = await getOneHonor(currentNim, tahunSemesterId);
-          if (data.error) {
-            setError(data.error);
-          } else {
-            setHonorData(data);
-          }
+        const data = await getOneHonor(currentNim, currentTahunSemester);
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setHonorData(data);
         }
       } catch (err) {
         setError(err.message || 'Terjadi kesalahan saat mengambil data honor');
@@ -229,7 +226,7 @@ const HonorDetail = ({
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Jumlah Honor</p>
-                  <p>{honorData.formatted_honor}</p>
+                  <p>{honorData.formatted_honor ?? 0}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Tanggal Pengambilan</p>

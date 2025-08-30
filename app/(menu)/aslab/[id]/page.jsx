@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import { Pencil, Trash2 } from "lucide-react";
-import BackButton from "@/components/back-button";
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { Pencil, Trash2 } from 'lucide-react';
+import BackButton from '@/components/back-button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
-import { getAslabById } from "../actions";
+} from '@/components/ui/dropdown-menu';
+import { MoreHorizontal } from 'lucide-react';
+import { getAslabById } from '../actions';
 
 export default async function Page({ params }) {
-  const nim = params.id;
+  const nim = (await params).id;
   const data = await getAslabById(nim);
 
   if (!data) {

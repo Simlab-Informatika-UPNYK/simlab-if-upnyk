@@ -7,7 +7,7 @@ import { columns } from './_components/columns';
 import HonorFilter from './_components/honor-filter';
 import { getAslabByTahunSemester, getTahunSemesterId } from './actions';
 import { Skeleton } from '@/components/ui/skeleton';
-import HonorDetail from './honor-detail';
+import HonorDetail from './aslab-honor';
 
 export default function HonorClient({
   initialTahunSemester,
