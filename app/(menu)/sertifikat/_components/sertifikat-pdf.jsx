@@ -226,7 +226,7 @@ const getPeriodFromCourses = (courses) => {
   const earliest = uniqueSemesters[0];
   const latest = uniqueSemesters[uniqueSemesters.length - 1];
   
-  return `${earliest} - ${latest}`;
+  return `${earliest} S.D. ${latest}`;
 };
 
 // Komponen Sertifikat PDF

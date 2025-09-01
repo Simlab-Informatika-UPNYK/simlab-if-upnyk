@@ -1,7 +1,6 @@
 "use server";
 
 import { auth } from "@/lib/auth";
-// import { authClient } from "@/lib/auth-client";
 
 export async function register(formData) {
   const password = formData.get("password");

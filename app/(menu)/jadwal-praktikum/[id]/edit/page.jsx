@@ -1,5 +1,5 @@
-import { FormJadwalPraktikum } from "../../_components/form-jadwal-praktikum";
-import { notFound } from "next/navigation";
+import { FormJadwalPraktikum } from '../../_components/form-jadwal-praktikum';
+import { notFound, redirect } from 'next/navigation';
 import {
   findOneById,
   updateJadwal,
@@ -8,33 +8,55 @@ import {
   getLabOptions,
   getAslabOptions,
   getTahunSemesterOptions,
-} from "../../actions";
+} from '../../actions';
+import { getServerSession } from '@/lib/auth-server';
 
 export default async function EditPage({ params }) {
-  const [jadwal, mataKuliahOptions, dosenOptions, labOptions, aslabOptions, tahunSemesterOptions] =
-    await Promise.all([
-      findOneById(params.id),
-      getMataKuliahOptions(),
-      getDosenOptions(),
-      getLabOptions(),
-      getAslabOptions(),
-      getTahunSemesterOptions(),
-    ]);
-    
+  const session = await getServerSession();
+  const userRole = session?.user?.role;
+  const currentAslabId = userRole === 'aslab' ? session.user?.aslab_id : null;
+  const id = (await params).id;
+
+  const [
+    jadwal,
+    mataKuliahOptions,
+    dosenOptions,
+    labOptions,
+    aslabOptions,
+    tahunSemesterOptions,
+  ] = await Promise.all([
+    findOneById(id),
+    getMataKuliahOptions(),
+    getDosenOptions(),
+    getLabOptions(),
+    getAslabOptions(),
+    getTahunSemesterOptions(),
+  ]);
+
+  console.log(jadwal);
+
+  if (
+    session.user.role === 'aslab' &&
+    session.user.username &&
+    !jadwal.kelasAslab.some((item) => item.aslab?.nim === session.user.username)
+  ) {
+    redirect('/jadwal-praktikum');
+  }
+  
   if (!jadwal) {
-    return notFound();
+    redirect('/jadwal-praktikum');
   }
 
   const defaultValues = {
-    kelas: jadwal.kelas ?? "",
-    mataKuliahId: jadwal.mataKuliah?.id.toString() ?? "",
-    dosenPengampuId: jadwal.dosenPengampu?.id.toString() ?? "",
-    jumlahPraktikan: jadwal.jumlah_praktikan ?? "",
-    hari: jadwal.hari ?? "",
-    waktu: jadwal.waktu ?? "",
-    labId: jadwal.lab?.id.toString() ?? "",
-    jenisPraktikan: jadwal.jenis_praktikan ?? "",
-    tahunSemesterId: jadwal.tahun_semester?.toString() ?? "",
+    kelas: jadwal.kelas ?? '',
+    mataKuliahId: jadwal.mataKuliah?.id.toString() ?? '',
+    dosenPengampuId: jadwal.dosenPengampu?.id.toString() ?? '',
+    jumlahPraktikan: jadwal.jumlah_praktikan ?? '',
+    hari: jadwal.hari ?? '',
+    waktu: jadwal.waktu ?? '',
+    labId: jadwal.lab?.id.toString() ?? '',
+    jenisPraktikan: jadwal.jenis_praktikan ?? '',
+    tahunSemesterId: jadwal.tahun_semester?.toString() ?? '',
     aslabIds:
       jadwal.kelasAslab?.map((ka) => ({
         value: ka.aslab.id_aslab,
@@ -42,6 +64,26 @@ export default async function EditPage({ params }) {
         nim: ka.aslab.nim,
       })) ?? [],
   };
+
+  // Jika user adalah aslab dan belum ada di daftar aslab, tambahkan otomatis
+  if (currentAslabId && userRole === 'aslab') {
+    const currentAslabInList = defaultValues.aslabIds.some(
+      (aslab) => aslab.value === currentAslabId
+    );
+
+    if (!currentAslabInList) {
+      const currentAslabData = aslabOptions.find(
+        (a) => a.id_aslab === currentAslabId
+      );
+      if (currentAslabData) {
+        defaultValues.aslabIds.push({
+          value: currentAslabId,
+          label: currentAslabData.nama,
+          nim: currentAslabData.nim,
+        });
+      }
+    }
+  }
 
   return (
     <div className="container mx-auto p-6">
@@ -55,6 +97,7 @@ export default async function EditPage({ params }) {
         labOptions={labOptions}
         aslabOptions={aslabOptions}
         tahunSemesterOptions={tahunSemesterOptions}
+        currentAslabId={currentAslabId}
       />
     </div>
   );

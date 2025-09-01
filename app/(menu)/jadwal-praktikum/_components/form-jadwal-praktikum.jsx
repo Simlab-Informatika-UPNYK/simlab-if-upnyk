@@ -34,6 +34,7 @@ export function FormJadwalPraktikum({
   labOptions = [],
   aslabOptions = [],
   tahunSemesterOptions = [],
+  currentAslabId = null,
 }) {
   const { toast } = useToast();
   const router = useRouter();
@@ -240,9 +241,11 @@ export function FormJadwalPraktikum({
                 options={aslabOptions.map((a) => ({
                   value: a.id_aslab,
                   label: `${a.nama} (${a.nim})`,
+                  nim: a.nim,
                 }))}
                 value={field.value}
                 onChange={field.onChange}
+                currentAslabId={currentAslabId}
               />
               <FormMessage />
             </FormItem>

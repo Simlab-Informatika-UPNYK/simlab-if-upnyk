@@ -9,11 +9,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
-import { getAslabById } from '../actions';
+import { getAslabByNim } from '../actions';
+import { getServerSession } from '@/lib/auth-server';
 
 export default async function Page({ params }) {
   const nim = (await params).id;
-  const data = await getAslabById(nim);
+  const session = await getServerSession();
+
+  const data = await getAslabByNim(nim);
 
   if (!data) {
     return <div className="container mx-auto p-6">Aslab not found</div>;
@@ -24,24 +27,13 @@ export default async function Page({ params }) {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">{data.nama}</h1>
         <div className="flex gap-2">
-          <Link href={`/aslab/${nim}/edit`}>
-            <Button variant="outline" size="icon">
-              <Pencil className="h-4 w-4" />
-            </Button>
-          </Link>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                More <MoreHorizontal className="ml-2 h-4 w-4" />
+          {session.user.role === 'admin' && (
+            <Link href={`/aslab/${nim}/edit`}>
+              <Button variant="outline" size="icon">
+                <Pencil className="h-4 w-4" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem className="text-red-600">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </Link>
+          )}
           <BackButton />
         </div>
       </div>

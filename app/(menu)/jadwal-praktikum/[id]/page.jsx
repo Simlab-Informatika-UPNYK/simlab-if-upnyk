@@ -2,18 +2,22 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Pencil, Trash2, MoreHorizontal } from 'lucide-react';
 import BackButton from '@/components/back-button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { deleteJadwal, findOneById } from '../actions';
+import { getServerSession } from '@/lib/auth-server';
 import { redirect } from 'next/navigation';
 
 export default async function JadwalDetailPage({ params }) {
-  const id = params.id;
+  const id = (await params).id;
   const jadwal = await findOneById(id);
+  const session = await getServerSession();
+
+  if (
+    session.user.role === 'aslab' &&
+    session.user.username &&
+    !jadwal.kelasAslab.some((item) => item.aslab?.nim === session.user.username)
+  ) {
+    redirect('/jadwal-praktikum');
+  }
 
   if (!jadwal) {
     return (

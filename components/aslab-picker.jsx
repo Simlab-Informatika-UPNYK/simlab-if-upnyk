@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 
-export function AslabPicker({ options = [], value = [], onChange }) {
+export function AslabPicker({ options = [], value = [], onChange, currentAslabId = null }) {
   const [selectedAslabs, setSelectedAslabs] = React.useState(value || []);
 
   React.useEffect(() => {
@@ -55,20 +55,29 @@ export function AslabPicker({ options = [], value = [], onChange }) {
       {/* Display selected assistants */}
       {selectedAslabs.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {selectedAslabs.map((aslab) => (
-            <Badge key={aslab.value} variant="secondary" className="px-3 py-1.5">
-              {aslab.label} ({aslab.nim})
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleRemoveAslab(aslab.value)}
-                className="h-auto p-0 pl-1.5"
+          {selectedAslabs.map((aslab) => {
+            const isCurrentAslab = currentAslabId && aslab.value === currentAslabId;
+            return (
+              <Badge
+                key={aslab.value}
+                variant="secondary"
+                className="px-3 py-1.5"
               >
-                <X className="h-3 w-3" />
-                <span className="sr-only">Remove</span>
-              </Button>
-            </Badge>
-          ))}
+                {aslab.label}
+                {!isCurrentAslab && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleRemoveAslab(aslab.value)}
+                    className="h-auto p-0 pl-1.5"
+                  >
+                    <X className="h-3 w-3" />
+                    <span className="sr-only">Remove</span>
+                  </Button>
+                )}
+              </Badge>
+            );
+          })}
         </div>
       )}
 
@@ -125,7 +134,7 @@ function AslabCombobox({ options, onSelect, placeholder }) {
                     setOpen(false);
                   }}
                 >
-                  {option.label} ({option.nim})
+                  {option.label}
                   <Check
                     className={cn(
                       "ml-auto",
