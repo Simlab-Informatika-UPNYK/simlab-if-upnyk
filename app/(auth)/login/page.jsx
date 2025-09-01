@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Building } from "lucide-react";
-import LoginForm from "./login-form";
+import Link from 'next/link';
+import { Building } from 'lucide-react';
+import LoginForm from './login-form';
 
 export default function LoginPage() {
   return (
@@ -22,7 +22,7 @@ export default function LoginPage() {
           <LoginForm />
         </div>
         <div className="text-center ">
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="underline underline-offset-4">
             Register (sementara)
           </Link>

@@ -1,7 +1,8 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,9 +12,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
 import {
   Select,
   SelectContent,
@@ -21,12 +19,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { createUser } from '../actions';
-import { userFormSchema, defaultValues } from '../_components/form-schema';
+import { userFormSchema, defaultValues } from './form-schema';
+import { useToast } from '@/hooks/use-toast';
 
-export function FormNewUser() {
+export function FormUser({ onSubmitHandler, successMessage, onSuccess }) {
   const { toast } = useToast();
-  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(userFormSchema),
@@ -35,19 +32,22 @@ export function FormNewUser() {
 
   async function onSubmit(values) {
     try {
-      const result = await createUser(values);
-      if (result.success) {
-        toast({
-          title: 'Berhasil Menambahkan',
-          description: `${values.nama} telah berhasil ditambahkan`,
-          variant: 'success',
-        });
-        router.push('/admin/user');
-        router.refresh();
+      await onSubmitHandler(values);
+
+      toast({
+        title: 'Berhasil',
+        description: successMessage,
+        variant: 'success',
+      });
+
+      if (onSuccess) {
+        onSuccess();
       }
+
+      form.reset();
     } catch (error) {
       toast({
-        title: 'Gagal Menambahkan',
+        title: 'Gagal',
         description: error.message,
         variant: 'destructive',
       });
@@ -56,80 +56,73 @@ export function FormNewUser() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="nama"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Username</FormLabel>
+              <FormLabel>Nama</FormLabel>
               <FormControl>
-                <Input className="w-full" placeholder="Nama" {...field} />
+                <Input placeholder="Masukkan nama lengkap" {...field} />
               </FormControl>
-              <FormMessage className="text-sm text-red-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Email</FormLabel>
+              <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input
-                  type="email"
-                  className="w-full"
-                  placeholder="Email"
-                  {...field}
-                />
+                <Input type="email" placeholder="Masukkan email" {...field} />
               </FormControl>
-              <FormMessage className="text-sm text-red-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">Password</FormLabel>
+              <FormLabel>Password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  className="w-full"
-                  placeholder="Password"
+                  placeholder="Masukkan password"
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="text-sm text-red-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-sm font-medium">
-                Konfirmasi Password
-              </FormLabel>
+              <FormLabel>Konfirmasi Password</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  className="w-full"
-                  placeholder="Konfirmasi Password"
+                  placeholder="Konfirmasi password"
                   {...field}
                 />
               </FormControl>
-              <FormMessage className="text-sm text-red-500" />
+              <FormMessage />
             </FormItem>
           )}
         />
+
         <div className="flex justify-end pt-4">
-          <Button type="submit" className="px-6">
-            Submit
-          </Button>
+          <Button type="submit">Simpan</Button>
         </div>
       </form>
     </Form>

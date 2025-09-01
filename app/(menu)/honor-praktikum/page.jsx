@@ -14,7 +14,6 @@ export default async function HonorPraktikumPage() {
   return user.role === 'admin' ? (
     <AdminHonorPage initialTahunSemester={tahunSemester} />
   ) : (
-    // <pre>{JSON.stringify(data, null, 2)}</pre>
     <AslabHonorPage initialNim={user.username} tahunSemester={tahunSemester} />
   );
 }

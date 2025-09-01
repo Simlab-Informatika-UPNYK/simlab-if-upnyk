@@ -38,12 +38,6 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "created_at",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Created At" />
-    ),
-  },
-  {
     id: "aksi",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Aksi" />

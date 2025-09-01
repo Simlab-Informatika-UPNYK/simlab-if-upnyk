@@ -1,34 +1,41 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { login } from "./actions";
-import { redirect } from "next/navigation";
+import { useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { login } from './actions';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function LoginForm() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
+  const { toast } = useToast();
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPending(true);
-    setError("");
+    setError('');
+
     const formData = new FormData();
-    formData.append("username", username);
-    formData.append("password", password);
+    formData.append('username', username);
+    formData.append('password', password);
     const result = await login(formData);
+
     setPending(false);
-    console.log(result);
-    if (result && result.success) {
-      redirect("/dashboard");
-    } else if (result && typeof result.error === "string") {
-      setError(result.error);
+
+    if (result.success) {
+      toast({
+        title: 'Berhasil Login',
+        description: `Login berhasil, sedang mengalihkan...`,
+      });
+      router.replace('/dashboard');
     } else {
-      setError("Login gagal. Cek kembali data Anda.");
+      setError(result.error || 'Login gagal. Cek kembali data Anda.');
     }
   };
 
@@ -43,7 +50,7 @@ export default function LoginForm() {
             placeholder="Masukkan NIM"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={error ? "border-red-500 focus-visible:ring-red-500" : ""}
+            className={error ? 'border-red-500 focus-visible:ring-red-500' : ''}
             required
           />
         </div>
@@ -55,15 +62,15 @@ export default function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={error ? "border-red-500 focus-visible:ring-red-500" : ""}
+            className={error ? 'border-red-500 focus-visible:ring-red-500' : ''}
             required
           />
         </div>
-        {typeof error == "string" && (
+        {error && (
           <div className="text-red-500 text-sm text-center">{error}</div>
         )}
         <Button type="submit" className="w-full" disabled={pending}>
-          {pending ? "Loading..." : "Login"}
+          {pending ? 'Loading...' : 'Login'}
         </Button>
       </div>
     </form>

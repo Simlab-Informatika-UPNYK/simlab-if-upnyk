@@ -1,28 +1,35 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { register } from "./actions";
-import { redirect } from "next/navigation";
+import { useState } from 'react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { register } from './actions';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
 
 export default function RegisterForm() {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const router = useRouter();
+  const { toast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
+    setError('');
     const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
+    formData.append('username', username);
+    formData.append('email', email);
+    formData.append('password', password);
     const result = await register(formData);
     if (result?.success) {
-      redirect("/login");
+      toast({
+        title: 'Berhasil',
+        description: 'Berhasil register, silahkan login dengan akun ini',
+      });
+      router.push('/login');
     } else {
       setError(result.error);
     }

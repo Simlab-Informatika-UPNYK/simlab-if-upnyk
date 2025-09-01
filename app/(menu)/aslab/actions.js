@@ -16,7 +16,7 @@ export async function getAslab() {
   }
 }
 
-export async function getAslabById(nim) {
+export async function getAslabByNim(nim) {
   try {
     const result = await db
       .select()

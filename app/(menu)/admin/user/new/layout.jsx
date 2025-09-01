@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
 
             <div className="mx-auto p-6 ">
                 <div className='flex justify-between'>
-                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Tambah Pengguna</h2>
+                    <h2 className="text-2xl font-bold mb-6 text-gray-800">Tambah Admin</h2>
                     <Button
                         variant='outline'
                         onClick={() => {

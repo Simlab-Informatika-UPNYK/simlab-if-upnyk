@@ -1,5 +1,6 @@
-"use client";
+'use client';
 
+import { useState } from 'react';
 import {
   BadgeCheck,
   Bell,
@@ -7,9 +8,8 @@ import {
   CreditCard,
   LogOut,
   Sparkles,
-} from "lucide-react";
-import { signOut } from "@/app/(auth)/login/actions";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+} from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,19 +18,46 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/sidebar';
+import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
   const router = useRouter();
+  const { toast } = useToast();
+  const [isSignoutDialogOpen, setIsSignoutDialogOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          toast({
+            title: 'Berhasil',
+            description: `Logout berhasil`,
+          });
+          router.push('/');
+        },
+      },
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -54,7 +81,7 @@ export function NavUser({ user }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="start"
             sideOffset={4}
           >
@@ -73,19 +100,8 @@ export function NavUser({ user }) {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
                 <BadgeCheck />
                 Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -93,17 +109,33 @@ export function NavUser({ user }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={async () => {
-                authClient.signOut();
-                router.push("/login");
-              }}
-            >
+            <DropdownMenuItem onClick={() => setIsSignoutDialogOpen(true)}>
               <LogOut />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Signout Confirmation Dialog */}
+        <AlertDialog
+          open={isSignoutDialogOpen}
+          onOpenChange={setIsSignoutDialogOpen}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
+              <AlertDialogDescription>
+                Apakah Anda yakin ingin keluar dari akun Anda?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Batal</AlertDialogCancel>
+              <AlertDialogAction variant="destructive" onClick={handleSignOut}>
+                Logout
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </SidebarMenuItem>
     </SidebarMenu>
   );

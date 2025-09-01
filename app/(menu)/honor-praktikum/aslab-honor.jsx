@@ -201,7 +201,7 @@ const HonorDetail = ({
 
       {error && (
         <div className="text-red-600 p-4 bg-red-50 rounded-lg">
-          <p>Error: {error}</p>
+          <p>Honor anda tidak tersedia</p>
         </div>
       )}
 
