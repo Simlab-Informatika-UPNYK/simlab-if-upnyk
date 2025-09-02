@@ -7,6 +7,7 @@ import {
   mata_kuliah_praktikum,
   lab,
   tahun_semester,
+  user,
 } from "./schema";
 
 export const kelasPraktikumRelations = relations(kelas_praktikum, ({ one, many }) => ({
@@ -42,4 +43,15 @@ export const kelasAslabRelations = relations(kelas_aslab, ({ one }) => ({
 
 export const aslabRelations = relations(aslab, ({ many }) => ({
   kelasAslab: many(kelas_aslab),
+}));
+
+export const userRelations = relations(user, ({ one }) => ({
+  aslab: one(aslab, {
+    fields: [user.aslab_id],
+    references: [aslab.id_aslab],
+  }),
+}));
+
+export const aslabUserRelations = relations(aslab, ({ many }) => ({
+  users: many(user),
 }));

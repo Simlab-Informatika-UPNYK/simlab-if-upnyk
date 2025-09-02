@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -8,14 +7,13 @@ import { AslabForm } from "../../_components/form-aslab";
 import { updateAslab } from "../../actions";
 
 export function FormEdit({ data }) {
-  const [formError, setFormError] = useState("");
   const router = useRouter();
 
   async function onSubmit(values) {
     try {
-      setFormError("");
+      console.log("value", values.nama);
       const result = await updateAslab(data.id_aslab, values);
-      
+
       if (result?.error) {
         throw new Error(result.error);
       }
@@ -33,12 +31,11 @@ export function FormEdit({ data }) {
         description: error.message || "Terjadi kesalahan saat mengupdate data asisten",
         variant: "destructive",
       });
-      setFormError(error.message || "Terjadi kesalahan saat menambahkan asisten baru");
     }
   }
 
   return (
-    <AslabForm 
+    <AslabForm
       onSubmit={onSubmit}
       defaultValues={{
         nama: data?.nama || "",
@@ -46,15 +43,12 @@ export function FormEdit({ data }) {
         email: data?.email || "",
         angkatan: data?.angkatan || "",
         program_studi: data?.program_studi || "",
-        pendidikan_terakhir: data?.pendidikan_terakhir || "",
         status: data?.status || "",
-        profile_picture: data?.profile_picture || ""
+        no_hp: data?.no_hp || "",
       }}
     >
-      <div className="flex justify-end pt-4">
-        <Button type="submit" className="px-6">
-          Submit
-        </Button>
+      <div className="pt-5">
+        <Button type="submit">Simpan</Button>
       </div>
     </AslabForm>
   );

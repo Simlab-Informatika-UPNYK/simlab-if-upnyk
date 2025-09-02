@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { createAslab } from '../actions';
-import { useToast } from '@/hooks/use-toast';
-import { AslabForm } from '../_components/form-aslab';
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { createAslab } from "../actions";
+import { useToast } from "@/hooks/use-toast";
+import { AslabForm } from "../_components/form-aslab";
+import { Button } from "@/components/ui/button";
 
 export function NewAslabForm() {
   const { toast } = useToast();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const onSubmit = async (values) => {
     try {
       setIsLoading(true);
-      setError('');
+      setError("");
 
       await createAslab({
         ...values,
@@ -24,12 +24,12 @@ export function NewAslabForm() {
       });
 
       toast({
-        title: 'Berhasil',
+        title: "Berhasil",
         description: `Data ${values.nama} berhasil ditambahkan`,
       });
-      router.push('/aslab');
+      router.push("/aslab");
     } catch (err) {
-      setError(err.message || 'Terjadi kesalahan');
+      setError(err.message || "Terjadi kesalahan");
     } finally {
       setIsLoading(false);
     }
@@ -43,7 +43,7 @@ export function NewAslabForm() {
         </div>
       )}
       <div className="flex justify-end pt-4">
-        <Button type="submit" loading={isLoading ? 'true' : undefined}>
+        <Button type="submit" loading={isLoading ? "true" : undefined}>
           Submit
         </Button>
       </div>

@@ -1,15 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from "react";
+import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,16 +11,11 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
-import { authClient } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
+} from "@/components/ui/dropdown-menu";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,7 +25,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
@@ -50,10 +39,10 @@ export function NavUser({ user }) {
       fetchOptions: {
         onSuccess: () => {
           toast({
-            title: 'Berhasil',
+            title: "Berhasil",
             description: `Logout berhasil`,
           });
-          router.push('/');
+          router.push("/");
         },
       },
     });
@@ -81,7 +70,7 @@ export function NavUser({ user }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? 'bottom' : 'right'}
+            side={isMobile ? "bottom" : "right"}
             align="start"
             sideOffset={4}
           >
@@ -99,9 +88,11 @@ export function NavUser({ user }) {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem asChild>
+                <Link href="/profile">
+                  <BadgeCheck />
+                  Account
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Bell />
@@ -117,16 +108,11 @@ export function NavUser({ user }) {
         </DropdownMenu>
 
         {/* Signout Confirmation Dialog */}
-        <AlertDialog
-          open={isSignoutDialogOpen}
-          onOpenChange={setIsSignoutDialogOpen}
-        >
+        <AlertDialog open={isSignoutDialogOpen} onOpenChange={setIsSignoutDialogOpen}>
           <AlertDialogContent>
             <AlertDialogHeader>
               <AlertDialogTitle>Konfirmasi Logout</AlertDialogTitle>
-              <AlertDialogDescription>
-                Apakah Anda yakin ingin keluar dari akun Anda?
-              </AlertDialogDescription>
+              <AlertDialogDescription>Apakah Anda yakin ingin keluar dari akun Anda?</AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Batal</AlertDialogCancel>

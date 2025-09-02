@@ -1,15 +1,27 @@
-'use server';
+"use server";
 
-import { db } from '@/db';
-import { aslab } from '@/db/schema';
-import { eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
-import { translatePostgresError } from '@/lib/postgres-error-translator';
-import { auth } from '@/lib/auth';
+import { db } from "@/db";
+import { aslab, user } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { revalidatePath } from "next/cache";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
+import { auth } from "@/lib/auth";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function getAslab() {
   try {
-    return await db.select().from(aslab);
+    return await db
+      .select({
+        nama: user.name,
+        nim: aslab.nim,
+        email: user.email,
+        angkatan: aslab.angkatan,
+        program_studi: aslab.program_studi,
+        status: aslab.status,
+        id_aslab: aslab.id_aslab,
+      })
+      .from(aslab)
+      .leftJoin(user, eq(user.aslab_id, aslab.id_aslab));
   } catch (error) {
     const errorMessage = translatePostgresError(error);
     throw new Error(errorMessage);
@@ -19,13 +31,23 @@ export async function getAslab() {
 export async function getAslabByNim(nim) {
   try {
     const result = await db
-      .select()
+      .select({
+        nama: user.name,
+        nim: aslab.nim,
+        email: user.email,
+        angkatan: aslab.angkatan,
+        program_studi: aslab.program_studi,
+        status: aslab.status,
+        id_aslab: aslab.id_aslab,
+        no_hp: aslab.no_hp,
+      })
       .from(aslab)
+      .leftJoin(user, eq(user.aslab_id, aslab.id_aslab))
       .where(eq(aslab.nim, nim))
       .limit(1);
 
     if (!result[0]) {
-      return { error: `Aslab with NIM ${nim} not found` };
+      return { error: `Aslab tidak ditemukan` };
     }
     return result[0];
   } catch (error) {
@@ -45,8 +67,8 @@ export async function getAslabIds() {
 }
 
 export async function createAslab(data) {
+  await requireAdmin();
   try {
-    // Insert data aslab ke database
     const insertedAslab = await db.insert(aslab).values(data).returning();
     const aslabData = insertedAslab[0];
 
@@ -61,7 +83,7 @@ export async function createAslab(data) {
           name: data.nama,
           password: password,
           username: data.nim,
-          role: 'aslab',
+          role: "aslab",
           aslab_id: aslabData.id_aslab,
         },
       });
@@ -71,7 +93,7 @@ export async function createAslab(data) {
       throw new Error(`Gagal membuat user: ${authError.message}`);
     }
 
-    revalidatePath('/aslab');
+    revalidatePath("/aslab");
     return { success: true };
   } catch (error) {
     const errorMessage = translatePostgresError(error);
@@ -79,10 +101,20 @@ export async function createAslab(data) {
   }
 }
 
-export async function updateAslab(id, data) {
+export async function updateAslab(id_aslab, data) {
+  await db.update(user).set({ name: data.nama, email: data.email }).where(eq(user.aslab_id, id_aslab));
+  const { nama, email, ...aslabData } = data;
+
+  await db.update(aslab).set(aslabData).where(eq(aslab.id_aslab, id_aslab));
   try {
-    await db.update(aslab).set(data).where(eq(aslab.id_aslab, id));
-    revalidatePath('/aslab');
+    await requireAdmin();
+    await db.transaction(async (tx) => {
+      if (data.nama && data.nama.trim() !== "") {
+      }
+
+      const { nama, email, ...aslabData } = data;
+    });
+    revalidatePath("/aslab");
     return { success: true };
   } catch (error) {
     const errorMessage = translatePostgresError(error);
@@ -91,12 +123,10 @@ export async function updateAslab(id, data) {
 }
 
 export async function deleteAslab(id) {
+  await requireAdmin();
   try {
-    const data = await db
-      .delete(aslab)
-      .where(eq(aslab.id_aslab, id))
-      .returning();
-    revalidatePath('/aslab');
+    const data = await db.delete(aslab).where(eq(aslab.id_aslab, id)).returning();
+    revalidatePath("/aslab");
     return { success: true, data };
   } catch (error) {
     const errorMessage = translatePostgresError(error);

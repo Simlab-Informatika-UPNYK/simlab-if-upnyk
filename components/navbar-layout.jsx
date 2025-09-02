@@ -24,8 +24,8 @@ export default async function NavbarLayout({ children, title = "SIMLAB" }) {
             user={{
               name: user.name,
               email: user.email,
-              avatar:
-                "https://imgs.search.brave.com/hTCF4lIz_LNq76HYbdPumfAVw_jhrFS1Qm-P-7yyfJ4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA2LzE0Lzk2LzA1/LzM2MF9GXzYxNDk2/MDUxNV9tUXNGN25T/MXIzcVo5ZUNIenFK/NWN5Q3htanNmSk9D/US5qcGc",
+              // avatar:
+              // "https://imgs.search.brave.com/hTCF4lIz_LNq76HYbdPumfAVw_jhrFS1Qm-P-7yyfJ4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA2LzE0Lzk2LzA1/LzM2MF9GXzYxNDk2/MDUxNV9tUXNGN25T/MXIzcVo5ZUNIenFK/NWN5Q3htanNmSk9D/US5qcGc",
             }}
           />
         </div>

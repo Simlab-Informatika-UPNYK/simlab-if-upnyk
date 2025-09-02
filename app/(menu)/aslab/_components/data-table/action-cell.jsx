@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
-import { useState } from 'react';
-import { deleteAslab } from '../../actions';
+import { Button } from "@/components/ui/button";
+import { MoreHorizontal } from "lucide-react";
+import { useState } from "react";
+import { deleteAslab } from "../../actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +13,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,10 +21,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+} from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export function ActionCell({ row }) {
   const router = useRouter();
@@ -39,15 +39,13 @@ export function ActionCell({ row }) {
       toast({
         title: `Berhasil Menghapus`,
         description: `Data ${deletedAslab.nama} telah berhasil dihapus`,
-        variant: 'success',
+        variant: "success",
       });
     } catch (error) {
       toast({
         title: `Gagal Menghapus`,
-        description: `Gagal menghapus data: ${
-          error.message || 'Terjadi kesalahan'
-        }`,
-        variant: 'destructive',
+        description: `Gagal menghapus data: ${error.message || "Terjadi kesalahan"}`,
+        variant: "destructive",
       });
     }
   };
@@ -68,9 +66,7 @@ export function ActionCell({ row }) {
             <DropdownMenuItem>
               <Link href={`/aslab/${row.nim}/edit`}>Edit Data</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem onSelect={() => setOpen(true)}>
-              Hapus
-            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setOpen(true)}>Hapus</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
@@ -79,9 +75,7 @@ export function ActionCell({ row }) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus Asisten</AlertDialogTitle>
-            <AlertDialogDescription>
-              Apakah anda yakin ingin menghapus {row.nama}?
-            </AlertDialogDescription>
+            <AlertDialogDescription>Apakah anda yakin ingin menghapus {row.nama}?</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>

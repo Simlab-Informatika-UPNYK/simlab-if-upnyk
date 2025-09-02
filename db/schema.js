@@ -19,9 +19,7 @@ export const userRoleEnum = pgEnum("user_role", ["admin", "aslab"]);
 
 export const aslab = pgTable("aslab", {
   id_aslab: serial("id_aslab").primaryKey(),
-  nama: text("nama"),
   nim: text("nim"),
-  email: text("email"),
   no_hp: varchar("no_hp", { length: 15 }),
   angkatan: varchar("angkatan", { length: 4 }),
   program_studi: programStudiEnum("program_studi"),
@@ -119,17 +117,10 @@ export const permintaan_sertifikat = pgTable("permintaan_sertifikat", {
   keterangan: text("keterangan"),
 });
 
-export const admin = pgTable("admin", {
-  id: serial("id").primaryKey(),
-  nama: text("nama"),
-  nip: text("nip"),
-});
-
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
   role: userRoleEnum("role").default("aslab"),
   aslab_id: integer("aslab_id").references(() => aslab.id_aslab),
-  admin_id: integer("admin_id").references(() => admin.id),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified")

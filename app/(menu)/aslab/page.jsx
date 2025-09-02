@@ -1,7 +1,7 @@
-import { getAslab } from './actions';
-import { columns } from './_components/data-table/columns.jsx';
-import { DataTable } from './_components/data-table/data-table.jsx';
-import { getServerSession } from '@/lib/auth-server';
+import { getAslab } from "./actions";
+import { columns } from "./_components/data-table/columns.jsx";
+import { DataTable } from "./_components/data-table/data-table.jsx";
+import { getServerSession } from "@/lib/auth-server";
 
 export default async function Page() {
   const data = await getAslab();
