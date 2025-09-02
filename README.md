@@ -1,18 +1,18 @@
 # Todo
 
 - [x] Perbaiki sertifikat agar aslab bisa request dan admin bisa approve/reject (kurang database protection)
-- [ ] Tambahkan pengecekan role dan id aslab di /honor, /jadwal
-- [ ] Perbaiki form jadwal ketika aslab menambahkan jadwal 
+- [x] Tambahkan pengecekan role dan id aslab di /honor, /jadwal
+- [x] Perbaiki form jadwal ketika aslab menambahkan jadwal 
 - [ ] Edit profil
 - [ ] Navbar
 
-- [ ] 1. Ganti ketua jadi kepala laboratorium
-- [ ] 2. Tambahkan nama lengkap pada kalab dan dosen pengampu
+- [x] 1. Ganti ketua jadi kepala laboratorium
+- [x] 2. Tambahkan nama lengkap pada kalab dan dosen pengampu
 
-- [ ] 3. Search untuk dosen pengampu
+- [x] 3. Search untuk dosen pengampu
 - [ ] 4. Dosen pengampu, mata kuliah pake drop down 
 
-- [ ] 5. Buatkan cara penulisan untuk kelas karena input sendiri
+- [ ] 5. Buatkan cara penulisan untuk kelas karena input sendiri --> panduan untuk menginput kelas (jadwal di menu sekarang), apakah kelas diganti menjadi jadwal?
 
 - [ ] 6. Kondisi b, rr, rb
 
@@ -30,9 +30,11 @@
 
 - [ ] 14. Jadwal, kalab, sama pengumuman di dashboard
 
-- [ ] 15. Honor di asisten dihapus
+- [x] 15. Honor di asisten dihapus
 
 - [ ] 16. Asisten : jadwal, data lab, kalab, sertifikat, asisten
+
+jadwal (√), data lab (cuma tampil atau gimana), kalab (belum), sertifikat (√), asisten (√)
 
 - [ ] 17. Sertifikat : tujuan pengajuan dan ajukan
 
