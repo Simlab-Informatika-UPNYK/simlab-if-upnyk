@@ -4,51 +4,23 @@ import * as React from "react";
 import { Check, ChevronsUpDown, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 
 export function AslabPicker({ options = [], value = [], onChange, currentAslabId = null }) {
-  const [selectedAslabs, setSelectedAslabs] = React.useState(value || []);
+  const selectedAslabs = value || [];
 
-  React.useEffect(() => {
-    setSelectedAslabs(value || []);
-  }, [value]);
-
-  const updateValue = (newValue) => {
-    setSelectedAslabs(newValue);
-    onChange(newValue);
-  };
-
-  // Add a new item to the list
   const handleAddAslab = (aslabObj) => {
-    if (
-      !aslabObj ||
-      selectedAslabs.some((a) => a.value === aslabObj.value)
-    )
-      return;
-    updateValue([...selectedAslabs, aslabObj]);
+    if (!aslabObj || selectedAslabs.some((a) => a.value === aslabObj.value)) return;
+    onChange([...selectedAslabs, aslabObj]);
   };
 
-  // Remove an item from the list
   const handleRemoveAslab = (aslabId) => {
-    updateValue(selectedAslabs.filter((a) => a.value !== aslabId));
+    onChange(selectedAslabs.filter((a) => a.value !== aslabId));
   };
 
-  const availableOptions = options.filter(
-    (option) => !selectedAslabs.some((a) => a.value === option.value)
-  );
+  const availableOptions = options.filter((option) => !selectedAslabs.some((a) => a.value === option.value));
 
   return (
     <div className="space-y-3">
@@ -58,14 +30,11 @@ export function AslabPicker({ options = [], value = [], onChange, currentAslabId
           {selectedAslabs.map((aslab) => {
             const isCurrentAslab = currentAslabId && aslab.value === currentAslabId;
             return (
-              <Badge
-                key={aslab.value}
-                variant="secondary"
-                className="px-3 py-1.5"
-              >
+              <Badge key={aslab.value} variant="secondary" className="px-3 py-1.5">
                 {aslab.label}
                 {!isCurrentAslab && (
                   <Button
+                    // key={`remove-${aslab.value}`}
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveAslab(aslab.value)}
@@ -101,12 +70,7 @@ function AslabCombobox({ options, onSelect, placeholder }) {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-        >
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
           <div className="flex items-center">
             <Plus className="mr-2 h-4 w-4" />
             {placeholder}
@@ -114,11 +78,7 @@ function AslabCombobox({ options, onSelect, placeholder }) {
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent
-        className="w-[var(--radix-popover-trigger-width)] p-0"
-        align="start"
-        side="bottom"
-      >
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start" side="bottom">
         <Command className="w-full">
           <CommandInput placeholder="Cari nama atau NIM..." className="h-9" />
           <CommandList>
@@ -135,12 +95,7 @@ function AslabCombobox({ options, onSelect, placeholder }) {
                   }}
                 >
                   {option.label}
-                  <Check
-                    className={cn(
-                      "ml-auto",
-                      value === option.value ? "opacity-100" : "opacity-0"
-                    )}
-                  />
+                  <Check className={cn("ml-auto", value === option.value ? "opacity-100" : "opacity-0")} />
                 </CommandItem>
               ))}
             </CommandGroup>

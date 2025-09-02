@@ -113,9 +113,11 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Aksi" />
     ),
-    cell: ({ row }) => {
+    cell: ({ row, table }) => {
       const data = row.original;
-      return <ActionCell data={data} />;
+      // Get the refresh function from the table meta
+      const onRefresh = table.options.meta?.onRefresh;
+      return <ActionCell data={data} onRefresh={onRefresh} />;
     },
     enableHiding: false,
   },

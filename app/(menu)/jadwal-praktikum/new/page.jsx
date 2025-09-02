@@ -1,25 +1,19 @@
-import { FormJadwalPraktikum } from '../_components/form-jadwal-praktikum';
+import { FormJadwalPraktikum } from "../_components/form-jadwal-praktikum";
 import {
   getMataKuliahOptions,
   getDosenOptions,
   getLabOptions,
   getAslabOptions,
   getTahunSemesterOptions,
-} from '../actions';
-import { getServerSession } from '@/lib/auth-server';
+} from "../actions";
+import { getServerSession } from "@/lib/auth-server";
 
 export default async function Page() {
   const session = await getServerSession();
   const userRole = session?.user?.role;
-  const currentAslabId = userRole === 'aslab' ? session.user?.aslab_id : null;
+  const currentAslabId = userRole === "aslab" ? session.user?.aslab_id : null;
 
-  const [
-    mkOptions,
-    dosenOptions,
-    labOptions,
-    aslabOptions,
-    tahunSemesterOptions,
-  ] = await Promise.all([
+  const [mkOptions, dosenOptions, labOptions, aslabOptions, tahunSemesterOptions] = await Promise.all([
     getMataKuliahOptions(),
     getDosenOptions(),
     getLabOptions(),
@@ -28,15 +22,26 @@ export default async function Page() {
   ]);
 
   // Jika user adalah aslab, tambahkan dirinya sendiri ke default values
-  const defaultValues = currentAslabId ? {
-    aslabIds: [
-      {
-        value: currentAslabId,
-        label: aslabOptions.find(a => a.id_aslab === currentAslabId)?.nama || 'Aslab',
-        nim: aslabOptions.find(a => a.id_aslab === currentAslabId)?.nim || '',
+  const defaultValues = currentAslabId
+    ? {
+        kelas: "",
+        mataKuliahId: "",
+        dosenPengampuId: "",
+        jumlahPraktikan: 0,
+        hari: "",
+        labId: "",
+        jenisPraktikan: "",
+        waktu: "",
+        tahunSemesterId: "",
+        aslabIds: [
+          {
+            value: currentAslabId,
+            label: aslabOptions.find((a) => a.id_aslab === currentAslabId)?.nama || "Aslab",
+            nim: aslabOptions.find((a) => a.id_aslab === currentAslabId)?.nim || "",
+          },
+        ],
       }
-    ]
-  } : {};
+    : {};
 
   return (
     <FormJadwalPraktikum

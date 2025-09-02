@@ -1,8 +1,8 @@
-import { getCurrentAslabNim, getTahunSemester } from './actions';
-import { getServerSession } from '@/lib/auth-server';
-import AdminHonorPage from './admin-honor';
-import AslabHonorPage from './aslab-honor';
-import { getOneHonor } from './[...id]/actions';
+import { getCurrentAslabNim, getTahunSemester } from "./actions";
+import { getServerSession } from "@/lib/auth-server";
+import AdminHonorPage from "./admin-honor";
+import AslabHonorPage from "./aslab-honor";
+import { getOneHonor } from "./[...id]/actions";
 
 export default async function HonorPraktikumPage() {
   const session = await getServerSession();
@@ -11,7 +11,7 @@ export default async function HonorPraktikumPage() {
   let tahunSemester = await getTahunSemester();
   const data = await getOneHonor(user.username, tahunSemester[0].slug);
 
-  return user.role === 'admin' ? (
+  return user.role === "admin" ? (
     <AdminHonorPage initialTahunSemester={tahunSemester} />
   ) : (
     <AslabHonorPage initialNim={user.username} tahunSemester={tahunSemester} />

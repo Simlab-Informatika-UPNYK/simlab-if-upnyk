@@ -1,0 +1,11 @@
+{
+    "documentSelectors": [
+        "**/*"
+    ],
+    "enableDebugLogs": true,
+    "endOfLine": "lf",
+    "printWidth": 120,
+    "requireConfig": true,
+    "semi": true,
+    "singleQuote": false
+}

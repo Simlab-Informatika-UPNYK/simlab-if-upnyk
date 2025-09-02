@@ -1,7 +1,42 @@
 # Todo
 
-- [ ] Perbaiki sertifikat agar aslab bisa request dan admin bisa approve/reject (kurang database protection)
+- [x] Perbaiki sertifikat agar aslab bisa request dan admin bisa approve/reject (kurang database protection)
 - [ ] Tambahkan pengecekan role dan id aslab di /honor, /jadwal
 - [ ] Perbaiki form jadwal ketika aslab menambahkan jadwal 
 - [ ] Edit profil
 - [ ] Navbar
+
+- [ ] 1. Ganti ketua jadi kepala laboratorium
+- [ ] 2. Tambahkan nama lengkap pada kalab dan dosen pengampu
+
+- [ ] 3. Search untuk dosen pengampu
+- [ ] 4. Dosen pengampu, mata kuliah pake drop down 
+
+- [ ] 5. Buatkan cara penulisan untuk kelas karena input sendiri
+
+- [ ] 6. Kondisi b, rr, rb
+
+- [ ] 7. Buat password auto nanti baru asisten yang ngedit
+- [ ] 8. Ganti jadi rincian honor asisten
+
+- [ ] 9. Waktu mulai dan selesai kayak di logbook sadewa
+- [ ] 10. Tahun mulai mengajar dibuat seperti periode
+
+- [x] 11. Mata kuliah yang telah di ajar dibuat per semester
+
+- [ ] 12. Help center masukin link dm instagram
+
+- [ ] 13. Setting untuk ganti password
+
+- [ ] 14. Jadwal, kalab, sama pengumuman di dashboard
+
+- [ ] 15. Honor di asisten dihapus
+
+- [ ] 16. Asisten : jadwal, data lab, kalab, sertifikat, asisten
+
+- [ ] 17. Sertifikat : tujuan pengajuan dan ajukan
+
+Yang tidak perlu d dashboard
+* Data asisten
+* Pengumuman
+* Computer usage

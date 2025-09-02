@@ -29,6 +29,7 @@ export function DataTable({
   toolbar,
   filters = [],
   pagination,
+  meta,
 }) {
   const [sorting, setSorting] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState([]);
@@ -49,6 +50,7 @@ export function DataTable({
       globalFilter,
       rowSelection,
     },
+    meta,
   });
 
   return (

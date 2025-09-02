@@ -1,31 +1,19 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Printer } from 'lucide-react';
-import BackButton from '@/components/back-button';
-import { getAslabDetailByNim } from '../actions';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { useToast } from '@/hooks/use-toast';
-import SertifikatPDF from '../_components/sertifikat-pdf';
-import { PDFViewer } from '@react-pdf/renderer';
+import { useState, useEffect } from "react";
+import BackButton from "@/components/back-button";
+import { getAslabDetailByNim } from "../actions";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { useToast } from "@/hooks/use-toast";
+import SertifikatPDF from "../_components/sertifikat-pdf";
+import { PDFViewer } from "@react-pdf/renderer";
 
 export default function AslabDetailClient({ nim }) {
   const { toast } = useToast();
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [printing, setPrinting] = useState(false);
 
-  // Fetch data on mount
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,9 +21,9 @@ export default function AslabDetailClient({ nim }) {
         setData(aslabData);
       } catch (error) {
         toast({
-          title: 'Error',
-          description: 'Terjadi kesalahan saat mengambil data mahasiswa',
-          variant: 'destructive',
+          title: "Error",
+          description: "Terjadi kesalahan saat mengambil data mahasiswa",
+          variant: "destructive",
         });
       } finally {
         setLoading(false);
@@ -46,9 +34,7 @@ export default function AslabDetailClient({ nim }) {
   }, [nim, toast]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">Loading...</div>
-    );
+    return <div className="flex justify-center items-center h-64">Loading...</div>;
   }
 
   if (!data) {
@@ -71,14 +57,6 @@ export default function AslabDetailClient({ nim }) {
         <h1 className="text-2xl font-bold">Detail Mahasiswa</h1>
         <div className="flex gap-2">
           <BackButton />
-          {/* <Button
-            onClick={handlePrintCertificate}
-            disabled={printing || data.courses.length < 1}
-            className="flex items-center gap-2"
-          >
-            <Printer size={16} />
-            {printing ? 'Mencetak...' : 'Cetak Sertifikat'}
-          </Button> */}
         </div>
       </div>
 
@@ -138,15 +116,13 @@ export default function AslabDetailClient({ nim }) {
           </Table>
         ) : (
           <div className="text-center p-6 border rounded-lg">
-            <p className="text-gray-500">
-              Mahasiswa belum mengajar kelas praktikum
-            </p>
+            <p className="text-gray-500">Mahasiswa belum mengajar kelas praktikum</p>
           </div>
         )}
       </div>
 
       <h2>Sertifikat</h2>
-      <PDFViewer style={{ width: '100%', height: '50rem' }}>
+      <PDFViewer style={{ width: "100%", height: "50rem" }}>
         <SertifikatPDF data={data} />
       </PDFViewer>
     </div>

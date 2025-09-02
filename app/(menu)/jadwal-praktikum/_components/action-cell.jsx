@@ -6,9 +6,7 @@ import Link from "next/link";
 import { DeleteButton } from "./delete-button";
 import { deleteJadwal } from "../actions";
 
-export const ActionCell = ({ data }) => {
-  // For client-side components, we'll rely on server-side access control
-  // The action buttons will be shown but the server will block unauthorized access
+export const ActionCell = ({ data, onRefresh }) => {
   return (
     <div className="flex items-center space-x-2">
       <Link href={`/jadwal-praktikum/${data.id}/edit`}>
@@ -17,9 +15,11 @@ export const ActionCell = ({ data }) => {
         </Button>
       </Link>
 
-      <DeleteButton 
+      <DeleteButton
         id={data.id}
+        aslab={data.asisten_nim}
         onDelete={deleteJadwal}
+        onSuccess={onRefresh}
         description="Penghapusan bersifat permanen. Data jadwal praktikum ini akan terhapus."
       />
     </div>

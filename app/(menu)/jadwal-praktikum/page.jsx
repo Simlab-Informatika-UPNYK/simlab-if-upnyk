@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { DataTable } from '@/components/data-table/data-table';
-import { columns } from './_components/columns';
-import { PlusCircle } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { DataTable } from "@/components/data-table/data-table";
+import { columns } from "./_components/columns";
+import { PlusCircle } from "lucide-react";
 import {
   findAllJadwalByAslab,
   findAllJadwalByTahunSemester,
   findAllJadwalByAslabAndTahunSemester,
   getTahunSemester,
-} from './actions';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { createAuthClient } from 'better-auth/react';
-import JadwalFilter from './_components/jadwal-filter';
-import { Skeleton } from '@/components/ui/skeleton';
+} from "./actions";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { createAuthClient } from "better-auth/react";
+import JadwalFilter from "./_components/jadwal-filter";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const { useSession } = createAuthClient();
 
@@ -24,16 +24,17 @@ export default function Page() {
   const [tahunSemester, setTahunSemester] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const searchParams = useSearchParams();
   const router = useRouter();
-  const {
-    data: session,
-    isPending: status,
-    error: sessionError,
-  } = useSession();
+  const { data: session, isPending: status } = useSession();
 
-  const currentTahunSemester = searchParams.get('tahunsemester');
+  const currentTahunSemester = searchParams.get("tahunsemester");
+
+  const handleRefresh = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
 
   const filters = [];
 
@@ -56,29 +57,20 @@ export default function Page() {
 
         if (currentTahunSemester) {
           // Get tahun semester ID from slug
-          const tahunSemesterItem = tahunSemesterData.find(
-            (item) => item.slug === currentTahunSemester
-          );
+          const tahunSemesterItem = tahunSemesterData.find((item) => item.slug === currentTahunSemester);
 
           if (tahunSemesterItem) {
-            if (userRole === 'admin') {
-              jadwalData = await findAllJadwalByTahunSemester(
-                tahunSemesterItem.id
-              );
-            } else if (userRole === 'aslab' && aslabId) {
-              jadwalData = await findAllJadwalByAslabAndTahunSemester(
-                aslabId,
-                tahunSemesterItem.id
-              );
+            if (userRole === "admin") {
+              jadwalData = await findAllJadwalByTahunSemester(tahunSemesterItem.id);
+            } else if (userRole === "aslab" && aslabId) {
+              jadwalData = await findAllJadwalByAslabAndTahunSemester(aslabId, tahunSemesterItem.id);
             }
           }
         } else {
           // No filter selected, get all data
-          if (userRole === 'admin') {
-            jadwalData = await findAllJadwalByTahunSemester(
-              tahunSemesterData[0].id
-            );
-          } else if (userRole === 'aslab' && aslabId) {
+          if (userRole === "admin") {
+            jadwalData = await findAllJadwalByTahunSemester(tahunSemesterData[0].id);
+          } else if (userRole === "aslab" && aslabId) {
             jadwalData = await findAllJadwalByAslab(aslabId);
           } else {
             jadwalData = [];
@@ -88,16 +80,19 @@ export default function Page() {
         const formattedData = jadwalData.map((item) => ({
           ...item,
           kelas: item.kelas,
-          mata_kuliah: item.mataKuliah?.nama || '-',
-          dosen: item.dosenPengampu?.nama || '-',
+          mata_kuliah: item.mataKuliah?.nama || "-",
+          dosen: item.dosenPengampu?.nama || "-",
           jumlah_praktikan: item.jumlah_praktikan,
           hari: item.hari,
           waktu: item.waktu,
-          lab: item.lab?.nama || '-',
+          lab: item.lab?.nama || "-",
           jenis_praktikan: item.jenis_praktikan,
-          asisten:
-            item.kelasAslab?.map((a) => a.aslab?.nama).filter(Boolean) || [],
+          asisten: item.kelasAslab?.map((a) => a.aslab?.nama).filter(Boolean) || [],
+          asisten_nim: item.kelasAslab?.map((a) => a.aslab?.nim) || [],
         }));
+
+        console.log("jadwal data", jadwalData);
+        console.log("format data", formattedData);
 
         setData(formattedData);
       } catch (err) {
@@ -108,15 +103,15 @@ export default function Page() {
     };
 
     fetchData();
-  }, [session, currentTahunSemester]);
+  }, [session, currentTahunSemester, refreshTrigger]);
 
   const handleTahunSemesterChange = (value) => {
     const params = new URLSearchParams(searchParams);
 
     if (value) {
-      params.set('tahunsemester', value);
+      params.set("tahunsemester", value);
     } else {
-      params.delete('tahunsemester');
+      params.delete("tahunsemester");
     }
 
     router.push(`/jadwal-praktikum/?${params.toString()}`);
@@ -164,6 +159,7 @@ export default function Page() {
           columns={columns}
           data={data}
           emptyMessage="Data jadwal praktikum tidak ditemukan"
+          meta={{ onRefresh: handleRefresh }}
         />
       )}
     </div>

@@ -1,6 +1,7 @@
-import { db } from "@/db";
-import { permintaan_sertifikat, aslab } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { db } from '@/db';
+import { permintaan_sertifikat, aslab } from '@/db/schema';
+import { requireAdmin } from '@/lib/admin-auth';
+import { desc, eq } from 'drizzle-orm';
 
 export async function findOneByNim(nim) {
   const result = await db
@@ -14,6 +15,7 @@ export async function findOneByNim(nim) {
 }
 
 export async function findAllOrdered() {
+  await requireAdmin();
   const result = await db
     .select({
       id: permintaan_sertifikat.id,
@@ -23,29 +25,32 @@ export async function findAllOrdered() {
       aslab: {
         id_aslab: aslab.id_aslab,
         nama: aslab.nama,
-        nim: aslab.nim
-      }
+        nim: aslab.nim,
+      },
     })
     .from(permintaan_sertifikat)
     .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
     .orderBy(desc(permintaan_sertifikat.waktu_pengajuan));
 
-  return result.map(item => ({
+  return result.map((item) => ({
     id: item.id.toString(),
     nim: item.aslab.nim,
     nama_asisten: item.aslab.nama,
     tanggal_pengajuan: item.waktu_pengajuan
-      ? new Date(item.waktu_pengajuan).toLocaleDateString("id-ID", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
+      ? new Date(item.waktu_pengajuan).toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
         })
-      : "-",
-    status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending",
+      : '-',
+    status: item.status
+      ? item.status.charAt(0).toUpperCase() + item.status.slice(1)
+      : 'Pending',
   }));
 }
 
 export async function checkExists(nim) {
+  await requireAdmin();
   const result = await findOneByNim(nim);
   return result !== null;
 }

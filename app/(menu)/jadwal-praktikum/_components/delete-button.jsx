@@ -15,9 +15,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 
-export function DeleteButton({ 
+export function DeleteButton({
   id,
+  aslab = null,
   onDelete,
+  onSuccess,
   title = "Apakah anda yakin?",
   description = "Penghapusan bersifat permanen. Data akan terhapus.",
 }) {
@@ -25,11 +27,17 @@ export function DeleteButton({
 
   const handleDelete = async () => {
     try {
-      await onDelete(id);
+      await onDelete(id, aslab);
+
       toast({
         title: "Berhasil Menghapus",
         description: "Data berhasil dihapus",
       });
+      
+      // Call onSuccess callback if provided
+      if (onSuccess) {
+        onSuccess();
+      }
     } catch (error) {
       toast({
         title: "Gagal Menghapus",
@@ -49,9 +57,7 @@ export function DeleteButton({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
-          <AlertDialogDescription>
-            {description}
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Batal</AlertDialogCancel>

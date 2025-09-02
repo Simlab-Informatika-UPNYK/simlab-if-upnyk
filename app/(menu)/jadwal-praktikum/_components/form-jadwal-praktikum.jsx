@@ -1,33 +1,19 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { createJadwal, updateJadwal } from '../actions';
-import { jadwalPraktikumSchema } from './form-schema';
-import { useRouter } from 'next/navigation';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { AslabPicker } from '@/components/aslab-picker';
-import { Input } from '@/components/ui/input';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { createJadwal, updateJadwal } from "../actions";
+import { jadwalPraktikumSchema } from "./form-schema";
+import { useRouter } from "next/navigation";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AslabPicker } from "@/components/aslab-picker";
+import { Input } from "@/components/ui/input";
 
 export function FormJadwalPraktikum({
-  action = createJadwal,
-  defaultValues,
+  defaultValues = null,
   id,
   mataKuliahOptions = [],
   dosenOptions = [],
@@ -42,34 +28,28 @@ export function FormJadwalPraktikum({
   const resolver = async (values, context, options) => {
     const mapped = {
       ...values,
-      aslabIds: Array.isArray(values?.aslabIds)
-        ? values.aslabIds.map((v) => {
-            if (v === null || v === undefined) return v;
-            return Number(v.value);
-          })
-        : [],
+      aslabIds: values.aslabIds.map((e) => e.value ?? null),
     };
+    console.log("mapped");
+    console.log(mapped);
     return zodResolver(jadwalPraktikumSchema)(mapped, context, options);
   };
 
   const form = useForm({
     resolver,
     defaultValues: defaultValues || {
-      kelas: '',
-      mataKuliahId: '',
-      dosenPengampuId: '',
+      kelas: "",
+      mataKuliahId: "",
+      dosenPengampuId: "",
       jumlahPraktikan: 0,
-      hari: '',
-      labId: '',
+      hari: "",
+      labId: "",
       aslabIds: [],
-      jenisPraktikan: '',
-      waktu: '',
-      tahunSemesterId: '',
+      jenisPraktikan: "",
+      waktu: "",
+      tahunSemesterId: "",
     },
   });
-
-  const allValues = form.watch();
-  console.log('form values:', allValues);
 
   async function onSubmit(values) {
     try {
@@ -79,15 +59,15 @@ export function FormJadwalPraktikum({
         await createJadwal(values);
       }
       toast({
-        title: 'Berhasil',
-        description: 'Data jadwal berhasil disimpan',
+        title: "Berhasil",
+        description: "Data jadwal berhasil disimpan",
       });
-      router.push('/jadwal-praktikum');
+      router.push("/jadwal-praktikum");
     } catch (error) {
       toast({
-        title: 'Gagal',
-        description: error.message || 'Terjadi kesalahan',
-        variant: 'destructive',
+        title: "Gagal",
+        description: error.message || "Terjadi kesalahan",
+        variant: "destructive",
       });
     }
   }
