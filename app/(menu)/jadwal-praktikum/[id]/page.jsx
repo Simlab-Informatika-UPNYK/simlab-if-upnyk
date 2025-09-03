@@ -1,31 +1,29 @@
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
-import { Pencil, Trash2, MoreHorizontal } from 'lucide-react';
-import BackButton from '@/components/back-button';
-import { deleteJadwal, findOneById } from '../actions';
-import { getServerSession } from '@/lib/auth-server';
-import { redirect } from 'next/navigation';
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import BackButton from "@/components/back-button";
+import { deleteJadwal, findOneById } from "../actions";
+import { getServerSession } from "@/lib/auth-server";
+import { redirect } from "next/navigation";
 
 export default async function JadwalDetailPage({ params }) {
-  const id = (await params).id;
-  const jadwal = await findOneById(id);
+  const { id } = await params;
   const session = await getServerSession();
-
+  
   if (
-    session.user.role === 'aslab' &&
+    session.user.role === "aslab" &&
     session.user.username &&
     !jadwal.kelasAslab.some((item) => item.aslab?.nim === session.user.username)
   ) {
-    redirect('/jadwal-praktikum');
+    redirect("/jadwal-praktikum");
   }
-
+  
+  const jadwal = await findOneById(id);
   if (!jadwal) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center p-12">
-          <h2 className="text-xl font-semibold">
-            Jadwal praktikum tidak ditemukan
-          </h2>
+          <h2 className="text-xl font-semibold">Jadwal praktikum tidak ditemukan</h2>
           <BackButton className="mt-4" />
         </div>
       </div>
@@ -33,12 +31,12 @@ export default async function JadwalDetailPage({ params }) {
   }
 
   const formattedCreatedAt = jadwal.created_at
-    ? new Date(jadwal.created_at).toLocaleDateString('id-ID', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
+    ? new Date(jadwal.created_at).toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
       })
-    : 'Tidak tersedia';
+    : "Tidak tersedia";
 
   return (
     <div className="container mx-auto p-6">
@@ -65,20 +63,12 @@ export default async function JadwalDetailPage({ params }) {
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Mata Kuliah</h3>
-                <p className="font-medium">
-                  {jadwal.mataKuliah?.nama || 'Tidak tersedia'}
-                </p>
-                {jadwal.mataKuliah?.id && (
-                  <p className="text-sm text-gray-500">
-                    id: {jadwal.mata_kuliah.id}
-                  </p>
-                )}
+                <p className="font-medium">{jadwal.mataKuliah?.nama || "Tidak tersedia"}</p>
+                {jadwal.mataKuliah?.id && <p className="text-sm text-gray-500">id: {jadwal.mata_kuliah.id}</p>}
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Dosen Pengampu</h3>
-                <p className="font-medium">
-                  {jadwal.dosenPengampu?.nama || 'Tidak tersedia'}
-                </p>
+                <p className="font-medium">{jadwal.dosenPengampu?.nama || "Tidak tersedia"}</p>
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Jumlah Praktikan</h3>
@@ -104,15 +94,12 @@ export default async function JadwalDetailPage({ params }) {
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Laboratorium</h3>
-                <p className="font-medium">
-                  {jadwal.lab?.nama || 'Tidak tersedia'}
-                </p>
+                <p className="font-medium">{jadwal.lab?.nama || "Tidak tersedia"}</p>
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Tahun Semester</h3>
                 <p className="font-medium">
-                  {`${jadwal.tahunSemester.tahun_ajaran} ${jadwal.tahunSemester.semester}` ||
-                    'Tidak tersedia'}
+                  {`${jadwal.tahunSemester.tahun_ajaran} ${jadwal.tahunSemester.semester}` || "Tidak tersedia"}
                 </p>
               </div>
               <div>
@@ -121,7 +108,7 @@ export default async function JadwalDetailPage({ params }) {
                   <ul className="font-medium list-disc pl-5">
                     {jadwal.kelasAslab.map((item, index) => (
                       <li key={index}>
-                        {item.aslab?.nama || 'Tidak tersedia'}
+                        {item.aslab?.user?.name || "Tidak tersedia"}
                         {item.aslab?.nim && ` (${item.aslab.nim})`}
                       </li>
                     ))}

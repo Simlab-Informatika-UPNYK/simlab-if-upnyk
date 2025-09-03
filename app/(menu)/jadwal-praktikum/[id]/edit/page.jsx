@@ -52,7 +52,7 @@ export default async function EditPage({ params }) {
     aslabIds:
       jadwal.kelasAslab?.map((ka) => ({
         value: ka.aslab.id_aslab,
-        label: `${ka.aslab.nama} (${ka.aslab.nim})`,
+        label: `${ka.aslab?.user?.name} (${ka.aslab.nim})`,
         nim: ka.aslab.nim,
       })) ?? [],
   };
@@ -62,11 +62,17 @@ export default async function EditPage({ params }) {
 
     if (!currentAslabInList) {
       const currentAslabData = aslabOptions.find((a) => a.id_aslab === currentAslabId);
-      if (currentAslabData) {
-        defaultValues.aslabIds.push(currentAslabId.toString());
+      if (!currentAslabData) {
+        defaultValues.aslabIds.push({
+          value: currentAslabId,
+          label: `${currentAslabData.nama} (${currentAslabData.nim})`,
+          nim: currentAslabData.nim,
+        });
       }
     }
   }
+
+  console.log("defaultValues", defaultValues);
 
   return (
     <div className="container mx-auto p-6">

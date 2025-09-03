@@ -8,9 +8,9 @@ import {
   kelas_praktikum,
   mata_kuliah_praktikum,
   tahun_semester,
+  user,
 } from "@/db/schema";
 import { eq, desc, and } from "drizzle-orm";
-import { findAllOrdered, checkExists } from "./db-utils";
 import { translatePostgresError } from "@/lib/postgres-error-translator";
 import { requireAdmin } from "@/lib/admin-auth";
 import { getServerSession } from "@/lib/auth-server";
@@ -21,9 +21,9 @@ export const getAllAslabWithCourses = async () => {
     const result = await db
       .select({
         id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
+        nama: user.name,
         nim: aslab.nim,
-        email: aslab.email,
+        email: user.email,
         no_hp: aslab.no_hp,
         angkatan: aslab.angkatan,
         program_studi: aslab.program_studi,
@@ -35,10 +35,11 @@ export const getAllAslabWithCourses = async () => {
       })
       .from(aslab)
       .leftJoin(kelas_aslab, eq(aslab.id_aslab, kelas_aslab.aslab))
+      .leftJoin(user, eq(user.aslab_id, aslab.id_aslab))
       .leftJoin(kelas_praktikum, eq(kelas_aslab.kelas, kelas_praktikum.id))
       .leftJoin(mata_kuliah_praktikum, eq(kelas_praktikum.mata_kuliah, mata_kuliah_praktikum.id))
       .leftJoin(tahun_semester, eq(kelas_praktikum.tahun_semester, tahun_semester.id))
-      .orderBy(aslab.nama);
+      .orderBy(aslab.nim);
 
     // Group by aslab and process courses
     const aslabMap = new Map();
@@ -77,6 +78,57 @@ export const getAllAslabWithCourses = async () => {
   }
 };
 
+export async function findOneByNim(nim) {
+  const result = await db
+    .select()
+    .from(permintaan_sertifikat)
+    .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
+    .where(eq(aslab.nim, nim))
+    .limit(1);
+
+  return result[0] || null;
+}
+
+export async function findAllOrdered() {
+  await requireAdmin();
+  const result = await db
+    .select({
+      id: permintaan_sertifikat.id,
+      waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
+      status: permintaan_sertifikat.status,
+      keterangan: permintaan_sertifikat.keterangan,
+      aslab: {
+        id_aslab: aslab.id_aslab,
+        nama: user.name,
+        nim: aslab.nim,
+      },
+    })
+    .from(permintaan_sertifikat)
+    .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
+    .innerJoin(user, eq(user.aslab_id, aslab.id_aslab))
+    .orderBy(desc(permintaan_sertifikat.waktu_pengajuan));
+
+  return result.map((item) => ({
+    id: item.id.toString(),
+    nim: item.aslab.nim,
+    nama_asisten: item.aslab.nama,
+    tanggal_pengajuan: item.waktu_pengajuan
+      ? new Date(item.waktu_pengajuan).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "-",
+    status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending",
+  }));
+}
+
+export async function checkExists(nim) {
+  await requireAdmin();
+  const result = await findOneByNim(nim);
+  return result !== null;
+}
+
 export const getAllCertificateRequests = findAllOrdered;
 
 export const checkCertificateRequestExists = checkExists;
@@ -90,7 +142,7 @@ export const getCertificateRequestByNim = async (nim) => {
         waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
         status: permintaan_sertifikat.status,
         keterangan: permintaan_sertifikat.keterangan,
-        nama_mahasiswa: aslab.nama,
+        nama_mahasiswa: user.name,
         nim: aslab.nim,
         program_studi: aslab.program_studi,
         kelas_aslab: kelas_aslab,
@@ -101,6 +153,7 @@ export const getCertificateRequestByNim = async (nim) => {
       .from(permintaan_sertifikat)
       .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
       .leftJoin(kelas_aslab, eq(aslab.id_aslab, kelas_aslab.aslab))
+      .leftJoin(user, eq(user.aslab_id, aslab.id_aslab))
       .leftJoin(kelas_praktikum, eq(kelas_aslab.kelas, kelas_praktikum.id))
       .leftJoin(mata_kuliah_praktikum, eq(kelas_praktikum.mata_kuliah, mata_kuliah_praktikum.id))
       .leftJoin(tahun_semester, eq(kelas_praktikum.tahun_semester, tahun_semester.id))
@@ -252,69 +305,74 @@ export const getAslabDetailByNim = async (nim) => {
   if (user.role === "aslab" && user.username !== nim) {
     throw new Error("Unauthorized");
   }
-  try {
-    const result = await db
-      .select({
-        id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
-        nim: aslab.nim,
-        email: aslab.email,
-        no_hp: aslab.no_hp,
-        angkatan: aslab.angkatan,
-        program_studi: aslab.program_studi,
-        status: aslab.status,
-        kelas_aslab: kelas_aslab,
-        kelas_praktikum: kelas_praktikum,
-        mata_kuliah: mata_kuliah_praktikum,
-        tahun_semester: tahun_semester,
-      })
-      .from(aslab)
-      .leftJoin(kelas_aslab, eq(aslab.id_aslab, kelas_aslab.aslab))
-      .leftJoin(kelas_praktikum, eq(kelas_aslab.kelas, kelas_praktikum.id))
-      .leftJoin(mata_kuliah_praktikum, eq(kelas_praktikum.mata_kuliah, mata_kuliah_praktikum.id))
-      .leftJoin(tahun_semester, eq(kelas_praktikum.tahun_semester, tahun_semester.id))
-      .where(eq(aslab.nim, nim));
 
-    if (!result || result.length === 0) {
-      return null;
-    }
+  const result = await db.query.aslab.findFirst({
+    columns: {
+      id_aslab: true,
+      nim: true,
+      no_hp: true,
+      angkatan: true,
+      program_studi: true,
+      status: true,
+    },
+    with: {
+      user: {
+        columns: {
+          name: true,
+          email: true,
+        },
+      },
+      kelasAslab: {
+        with: {
+          kelasPraktikum: {
+            with: {
+              mataKuliah: {
+                columns: {
+                  nama: true,
+                },
+              },
+              tahunSemester: {
+                columns: {
+                  semester: true,
+                  tahun_ajaran: true,
+                  slug: true,
+                },
+              },
+            },
+            columns: {
+              kelas: true,
+            },
+          },
+        },
+      },
+    },
+    where: eq(aslab.nim, nim),
+  });
 
-    // Group by aslab and process courses
-    const aslabData = {
-      id: result[0].id_aslab.toString(),
-      nama: result[0].nama,
-      nim: result[0].nim,
-      email: result[0].email,
-      no_hp: result[0].no_hp,
-      angkatan: result[0].angkatan,
-      program_studi: result[0].program_studi,
-      status: result[0].status,
-      courses: [],
-    };
+  const aslabData = {
+    id: result.id_aslab.toString(),
+    nama: result.user.name,
+    nim: result.nim,
+    email: result.user.email,
+    no_hp: result.no_hp,
+    angkatan: result.angkatan,
+    program_studi: result.program_studi,
+    status: result.status,
+    courses: result.kelasAslab
+      .map((kelas) => ({
+        mata_kuliah: kelas.kelasPraktikum.mataKuliah.nama,
+        kelas: kelas.kelasPraktikum.kelas,
+        semester: `${kelas.kelasPraktikum.tahunSemester.semester} ${kelas.kelasPraktikum.tahunSemester.tahun_ajaran}`,
+        slug: kelas.kelasPraktikum.tahunSemester.slug,
+      }))
+      .sort((a, b) => a.slug.localeCompare(b.slug)), // Sort by tahunSemester.slug
+  };
 
-    // Process courses
-    result.forEach((item) => {
-      if (item.mata_kuliah && item.tahun_semester) {
-        aslabData.courses.push({
-          mata_kuliah: item.mata_kuliah.nama,
-          kelas: item.kelas_praktikum.kelas,
-          semester: `${item.tahun_semester.semester} ${item.tahun_semester.tahun_ajaran}`,
-        });
-      }
-    });
-
-    // Remove duplicate courses
-    aslabData.courses = Array.from(
-      new Map(
-        aslabData.courses.map((course) => [`${course.mata_kuliah}-${course.kelas}-${course.semester}`, course])
-      ).values()
-    );
-
-    return aslabData;
-  } catch (error) {
-    const errorMessage = translatePostgresError(error);
-    throw new Error(errorMessage);
-  }
+  return aslabData;
+  // } catch (error) {
+  //   const errorMessage = translatePostgresError(error);
+  //   throw new Error(errorMessage);
+  // }
 };
 
 export const getAllAslab = async () => {
@@ -322,9 +380,9 @@ export const getAllAslab = async () => {
     const result = await db
       .select({
         id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
+        nama: user.name,
         nim: aslab.nim,
-        email: aslab.email,
+        email: user.email,
         no_hp: aslab.no_hp,
         angkatan: aslab.angkatan,
         program_studi: aslab.program_studi,
@@ -335,6 +393,7 @@ export const getAllAslab = async () => {
         tahun_semester: tahun_semester,
       })
       .from(aslab)
+      .leftJoin(user, eq(user.aslab_id, aslab.id_aslab))
       .leftJoin(kelas_aslab, eq(aslab.id_aslab, kelas_aslab.aslab))
       .leftJoin(kelas_praktikum, eq(kelas_aslab.kelas, kelas_praktikum.id))
       .leftJoin(mata_kuliah_praktikum, eq(kelas_praktikum.mata_kuliah, mata_kuliah_praktikum.id))
@@ -416,39 +475,57 @@ export const getCertificateRequestsByAslab = async (aslabId) => {
     throw new Error("Unauthorized: Admin access required");
   }
 
-  try {
-    const result = await db
-      .select({
-        id: permintaan_sertifikat.id,
-        waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
-        status: permintaan_sertifikat.status,
-        keterangan: permintaan_sertifikat.keterangan,
-        nama: aslab.nama,
-        nim: aslab.nim,
-      })
-      .from(permintaan_sertifikat)
-      .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
-      .where(eq(permintaan_sertifikat.id_aslab, aslabId))
-      .orderBy(desc(permintaan_sertifikat.waktu_pengajuan));
+  // try {
+  // const result = await db
+  //   .select({
+  //     id: permintaan_sertifikat.id,
+  //     waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
+  //     status: permintaan_sertifikat.status,
+  //     keterangan: permintaan_sertifikat.keterangan,
+  //     // nama: user.name,
+  //     nim: aslab.nim,
+  //   })
+  //   .from(permintaan_sertifikat)
+  //   .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
+  //   .innerJoin(user, eq(user.aslab_id, permintaan_sertifikat.id_aslab))
+  //   .where(eq(permintaan_sertifikat.id_aslab, aslabId));
+  // .orderBy(desc(permintaan_sertifikat.waktu_pengajuan));
+  const result = await db.query.permintaan_sertifikat.findMany({
+    columns: {
+      id: true,
+      waktu_pengajuan: true,
+      status: true,
+      keterangan: true,
+    },
+    with: {
+      aslab: {
+        columns: { nim: true },
+        with: {
+          user: { columns: { name: true } },
+        },
+      },
+    },
+    where: eq(permintaan_sertifikat.id_aslab, aslabId),
+  });
 
-    return result.map((item) => ({
-      id: item.id.toString(),
-      nim: item.nim,
-      nama_asisten: item.nama,
-      tanggal_pengajuan: item.waktu_pengajuan
-        ? new Date(item.waktu_pengajuan).toLocaleDateString("id-ID", {
-            day: "numeric",
-            month: "long",
-            year: "numeric",
-          })
-        : "-",
-      status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending",
-      keterangan: item.keterangan,
-    }));
-  } catch (error) {
-    const errorMessage = translatePostgresError(error);
-    throw new Error(errorMessage);
-  }
+  return result.map((item) => ({
+    id: item.id.toString(),
+    nim: item.aslab.nim,
+    nama_asisten: item.aslab.user.name,
+    tanggal_pengajuan: item.waktu_pengajuan
+      ? new Date(item.waktu_pengajuan).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "-",
+    status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending",
+    keterangan: item.keterangan,
+  }));
+  // } catch (error) {
+  //   const errorMessage = translatePostgresError(error);
+  //   throw new Error(errorMessage);
+  // }
 };
 
 export const updateCertificateStatus = async (requestId, status, keterangan = null) => {

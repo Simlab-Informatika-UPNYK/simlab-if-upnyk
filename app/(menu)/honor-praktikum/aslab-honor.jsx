@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import * as React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import * as React from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
 
 import {
   Select,
@@ -12,25 +12,12 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
-import { getOneHonor } from './[...id]/actions';
+} from "@/components/ui/select";
+import { Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getOneHonor } from "./[...id]/actions";
 
-const HonorDetail = ({
-  tahunSemester,
-  nim,
-  initialTahunSemester,
-  initialNim,
-}) => {
+const HonorDetail = ({ tahunSemester, nim, initialTahunSemester, initialNim }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [honorData, setHonorData] = useState(null);
@@ -43,9 +30,9 @@ const HonorDetail = ({
 
   const currentTahunSemester =
     pathTahunSemester ||
-    searchParams.get('tahunsemester') ||
-    (tahunSemester && tahunSemester.length > 0 ? tahunSemester[0]?.slug : '');
-  const currentNim = pathNim || searchParams.get('nim') || nim;
+    searchParams.get("tahunsemester") ||
+    (tahunSemester && tahunSemester.length > 0 ? tahunSemester[0]?.slug : "");
+  const currentNim = pathNim || searchParams.get("nim") || nim;
 
   // Fetch honor data when parameters change
   useEffect(() => {
@@ -55,18 +42,19 @@ const HonorDetail = ({
       setLoading(true);
       setError(null);
 
-      try {
-        const data = await getOneHonor(currentNim, currentTahunSemester);
-        if (data.error) {
-          setError(data.error);
-        } else {
-          setHonorData(data);
-        }
-      } catch (err) {
-        setError(err.message || 'Terjadi kesalahan saat mengambil data honor');
-      } finally {
-        setLoading(false);
-      }
+      // const data = await getOneHonor(currentNim, currentTahunSemester);
+      // try {
+      //   console.log("data", data);
+      //   if (data.error) {
+      //     setError(data.error);
+      //   } else {
+      // setHonorData(data);
+      //   }
+      // } catch (err) {
+      //   setError(err.message || "Terjadi kesalahan saat mengambil data honor");
+      // } finally {
+      //   setLoading(false);
+      // }
     };
 
     fetchHonorData();
@@ -75,8 +63,8 @@ const HonorDetail = ({
   const handleTahunSemesterChange = (value) => {
     setLoading(true);
     const params = new URLSearchParams(searchParams);
-    params.set('tahunsemester', value);
-    params.set('nim', currentNim);
+    params.set("tahunsemester", value);
+    params.set("nim", currentNim);
 
     // Navigate to the selected tahun semester page with query parameters
     router.push(`/honor-praktikum/?${params.toString()}`);
@@ -85,10 +73,7 @@ const HonorDetail = ({
   return (
     <div className="p-5 space-y-6">
       <div>
-        <Select
-          onValueChange={handleTahunSemesterChange}
-          defaultValue={tahunSemester[0]?.slug}
-        >
+        <Select onValueChange={handleTahunSemesterChange} defaultValue={tahunSemester[0]?.slug}>
           <SelectTrigger className="w-[250px]">
             <SelectValue placeholder="Pilih Tahun Semester" />
           </SelectTrigger>
@@ -172,10 +157,7 @@ const HonorDetail = ({
                 </div>
                 {/* Table Body Skeleton */}
                 {[1, 2, 3].map((row) => (
-                  <div
-                    key={row}
-                    className="grid grid-cols-8 gap-4 p-4 border-b"
-                  >
+                  <div key={row} className="grid grid-cols-8 gap-4 p-4 border-b">
                     <Skeleton className="h-4 w-24" />
                     <Skeleton className="h-4 w-8" />
                     <Skeleton className="h-4 w-16" />
@@ -230,36 +212,31 @@ const HonorDetail = ({
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Tanggal Pengambilan</p>
-                  <p>{honorData.tanggal_diambil ?? '-'}</p>
+                  <p>{honorData.tanggal_diambil ?? "-"}</p>
                 </div>
               </div>
             </div>
 
             {/* Honor Calculation Info */}
             <div className="bg-white rounded-lg border p-6 shadow-sm">
-              <h2 className="text-lg font-semibold mb-4 border-b pb-2">
-                Perhitungan
-              </h2>
+              <h2 className="text-lg font-semibold mb-4 border-b pb-2">Perhitungan</h2>
               <div className="space-y-2 text-sm">
                 <div className="flex items-center">
                   <span className="w-24 font-medium">Responsi</span>
                   <span className="text-gray-600">
-                    : 1 x Rp{' '}
-                    {honorData.honor_jenis.responsi?.biaya?.toLocaleString()}
+                    : 1 x Rp {honorData.honor_jenis.responsi?.biaya?.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex items-center">
                   <span className="w-24 font-medium">Koreksi</span>
                   <span className="text-gray-600">
-                    : Jumlah mahasiswa x Rp{' '}
-                    {honorData.honor_jenis.koreksi?.biaya?.toLocaleString()}
+                    : Jumlah mahasiswa x Rp {honorData.honor_jenis.koreksi?.biaya?.toLocaleString()}
                   </span>
                 </div>
                 <div className="flex items-center">
                   <span className="w-24 font-medium">Honorarium</span>
                   <span className="text-gray-600">
-                    : Jumlah hadir x Rp{' '}
-                    {honorData.honor_jenis.honorarium?.biaya?.toLocaleString()}
+                    : Jumlah hadir x Rp {honorData.honor_jenis.honorarium?.biaya?.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -268,18 +245,14 @@ const HonorDetail = ({
             {/* Honor Detail Table */}
             {honorData.kelas && honorData.kelas.length > 0 && (
               <div className="relative w-[0] min-w-full overflow-x-auto">
-                <h2 className="text-xl font-semibold mb-4">
-                  Detail Honorarium
-                </h2>
+                <h2 className="text-xl font-semibold mb-4">Detail Honorarium</h2>
                 <Table className="w-full">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Mata Kuliah</TableHead>
                       <TableHead>Kelas</TableHead>
                       <TableHead className="text-right">Responsi</TableHead>
-                      <TableHead className="text-right">
-                        Jumlah Mahasiswa
-                      </TableHead>
+                      <TableHead className="text-right">Jumlah Mahasiswa</TableHead>
                       <TableHead className="text-right">Koreksi</TableHead>
                       <TableHead className="text-right">Naskah</TableHead>
                       <TableHead className="text-right">Honorarium</TableHead>
@@ -292,12 +265,9 @@ const HonorDetail = ({
                         <TableCell>{kelas.mata_kuliah?.nama}</TableCell>
                         <TableCell>{kelas.kelas}</TableCell>
                         <TableCell className="text-right">
-                          Rp.{' '}
-                          {kelas.honor_breakdown?.responsi?.toLocaleString()}
+                          Rp. {kelas.honor_breakdown?.responsi?.toLocaleString()}
                         </TableCell>
-                        <TableCell className="text-right">
-                          {kelas.jumlah_praktikan}
-                        </TableCell>
+                        <TableCell className="text-right">{kelas.jumlah_praktikan}</TableCell>
                         <TableCell className="text-right">
                           Rp. {kelas.honor_breakdown?.koreksi?.toLocaleString()}
                         </TableCell>
@@ -305,8 +275,7 @@ const HonorDetail = ({
                           Rp. {kelas.honor_breakdown?.naskah?.toLocaleString()}
                         </TableCell>
                         <TableCell className="text-right">
-                          Rp.{' '}
-                          {kelas.honor_breakdown?.honorarium?.toLocaleString()}
+                          Rp. {kelas.honor_breakdown?.honorarium?.toLocaleString()}
                         </TableCell>
                         <TableCell className="text-right font-bold">
                           Rp. {kelas.honor_kelas?.toLocaleString()}
@@ -317,9 +286,7 @@ const HonorDetail = ({
                   <TableFooter>
                     <TableRow>
                       <TableCell colSpan={7}>Total</TableCell>
-                      <TableCell className="text-right font-bold">
-                        {honorData.formatted_honor}
-                      </TableCell>
+                      <TableCell className="text-right font-bold">{honorData.formatted_honor}</TableCell>
                     </TableRow>
                   </TableFooter>
                 </Table>

@@ -62,6 +62,7 @@ export default function Page() {
           if (tahunSemesterItem) {
             if (userRole === "admin") {
               jadwalData = await findAllJadwalByTahunSemester(tahunSemesterItem.id);
+              console.log("jadwalData", jadwalData);
             } else if (userRole === "aslab" && aslabId) {
               jadwalData = await findAllJadwalByAslabAndTahunSemester(aslabId, tahunSemesterItem.id);
             }
@@ -71,7 +72,7 @@ export default function Page() {
           if (userRole === "admin") {
             jadwalData = await findAllJadwalByTahunSemester(tahunSemesterData[0].id);
           } else if (userRole === "aslab" && aslabId) {
-            jadwalData = await findAllJadwalByAslab(aslabId);
+            jadwalData = await findAllJadwalByAslabAndTahunSemester(aslabId, tahunSemesterData[0].id);
           } else {
             jadwalData = [];
           }
@@ -87,13 +88,9 @@ export default function Page() {
           waktu: item.waktu,
           lab: item.lab?.nama || "-",
           jenis_praktikan: item.jenis_praktikan,
-          asisten: item.kelasAslab?.map((a) => a.aslab?.nama).filter(Boolean) || [],
+          asisten: item.kelasAslab?.map((a) => a.aslab?.user?.name) || [],
           asisten_nim: item.kelasAslab?.map((a) => a.aslab?.nim) || [],
         }));
-
-        console.log("jadwal data", jadwalData);
-        console.log("format data", formattedData);
-
         setData(formattedData);
       } catch (err) {
         setError(err.message);

@@ -1,42 +1,31 @@
-'use server';
+"use server";
 
-import { db } from '@/db';
-import {
-  aslab,
-  kelas_aslab,
-  kelas_praktikum,
-  tahun_semester,
-} from '@/db/schema';
-import { eq, and, count } from 'drizzle-orm';
-import { getTahunSemester } from '@/app/(menu)/admin/tahun-semester/actions';
-import { translatePostgresError } from '@/lib/postgres-error-translator';
+import { db } from "@/db";
+import { aslab, kelas_aslab, kelas_praktikum, tahun_semester, user } from "@/db/schema";
+import { eq, and, count } from "drizzle-orm";
+import { getTahunSemester } from "@/app/(menu)/admin/tahun-semester/actions";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getAslabByTahunSemester(tahunSemesterId) {
   try {
-    // Get all aslab with their class count for the specified periode
     const allAslab = await db
       .select({
         id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
+        nama: user.name,
         nim: aslab.nim,
-        email: aslab.email,
+        email: user.email,
       })
       .from(aslab)
-      .orderBy(aslab.nama);
+      .innerJoin(user, eq(aslab.id_aslab, user.aslab_id))
+      .orderBy(aslab.nim);
 
-    // Get class counts for each aslab in the specified periode
     const classCounts = new Map();
     for (const aslabItem of allAslab) {
       const countResult = await db
         .select({ count: count() })
         .from(kelas_aslab)
         .innerJoin(kelas_praktikum, eq(kelas_praktikum.id, kelas_aslab.kelas))
-        .where(
-          and(
-            eq(kelas_aslab.aslab, aslabItem.id_aslab),
-            eq(kelas_praktikum.tahun_semester, tahunSemesterId)
-          )
-        );
+        .where(and(eq(kelas_aslab.aslab, aslabItem.id_aslab), eq(kelas_praktikum.tahun_semester, tahunSemesterId)));
 
       const countValue = countResult[0]?.count || 0;
       classCounts.set(aslabItem.id_aslab, countValue);

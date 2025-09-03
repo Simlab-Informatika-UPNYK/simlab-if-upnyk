@@ -8,6 +8,7 @@ import {
   lab,
   tahun_semester,
   user,
+  permintaan_sertifikat,
 } from "./schema";
 
 export const kelasPraktikumRelations = relations(kelas_praktikum, ({ one, many }) => ({
@@ -41,8 +42,13 @@ export const kelasAslabRelations = relations(kelas_aslab, ({ one }) => ({
   }),
 }));
 
-export const aslabRelations = relations(aslab, ({ many }) => ({
+export const aslabRelations = relations(aslab, ({ many, one }) => ({
   kelasAslab: many(kelas_aslab),
+  user: one(user, {
+    fields: [aslab.id_aslab],
+    references: [user.aslab_id],
+  }),
+  permintaanSertifikat: many(permintaan_sertifikat),
 }));
 
 export const userRelations = relations(user, ({ one }) => ({
@@ -52,6 +58,9 @@ export const userRelations = relations(user, ({ one }) => ({
   }),
 }));
 
-export const aslabUserRelations = relations(aslab, ({ many }) => ({
-  users: many(user),
+export const permintaanSertifikatRelations = relations(permintaan_sertifikat, ({ one }) => ({
+  aslab: one(aslab, {
+    fields: [permintaan_sertifikat.id_aslab],
+    references: [aslab.id_aslab],
+  }),
 }));

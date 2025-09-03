@@ -1,6 +1,6 @@
-'use server';
+"use server";
 
-import { db } from '@/db';
+import { db } from "@/db";
 import {
   aslab,
   aslab_honor,
@@ -9,10 +9,11 @@ import {
   kelas_praktikum,
   mata_kuliah_praktikum,
   honor_jenis,
-} from '@/db/schema';
-import { eq, and, count } from 'drizzle-orm';
-import { findOneBySlug, findAllOrdered } from './db-utils';
-import { translatePostgresError } from '@/lib/postgres-error-translator';
+  user,
+} from "@/db/schema";
+import { eq, and, count } from "drizzle-orm";
+import { findOneBySlug, findAllOrdered } from "./db-utils";
+import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export const getTahunSemesterId = async (slug) => {
   try {
@@ -56,11 +57,12 @@ export const getAllData = async (slug) => {
     const allAslab = await db
       .select({
         id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
+        nama: user.name,
         nim: aslab.nim,
       })
       .from(aslab)
-      .orderBy(aslab.nama);
+      .innerJoin(user, eq(user.aslab_id, aslab.id_aslab))
+      .orderBy(user.name);
 
     // Get honor data for this periode
     const honorData = await db
@@ -86,27 +88,22 @@ export const getAllData = async (slug) => {
         .select({ count: count() })
         .from(kelas_aslab)
         .innerJoin(kelas_praktikum, eq(kelas_praktikum.id, kelas_aslab.kelas))
-        .where(
-          and(
-            eq(kelas_aslab.aslab, aslabItem.id_aslab),
-            eq(kelas_praktikum.tahun_semester, tahunSemester.id)
-          )
-        );
+        .where(and(eq(kelas_aslab.aslab, aslabItem.id_aslab), eq(kelas_praktikum.tahun_semester, tahunSemester.id)));
 
       const countValue = countResult[0]?.count || 0;
       classCounts.set(aslabItem.id_aslab, countValue);
     }
 
     // Map all aslab with their honor status
-    const mapped = allAslab.map((aslab) => {
-      const honor = honorMap.get(aslab.id_aslab);
+    const mapped = allAslab.map((aslabItem) => {
+      const honor = honorMap.get(aslabItem.id_aslab);
       return {
-        id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
-        nim: aslab.nim,
-        tanggal_diambil: honor?.tanggal_diambil || '-',
-        status_honor: honor?.status_honor || '-',
-        jumlah_kelas: classCounts.get(aslab.id_aslab) || 0,
+        id_aslab: aslabItem.id_aslab,
+        nama: aslabItem.nama,
+        nim: aslabItem.nim,
+        tanggal_diambil: honor?.tanggal_diambil || "-",
+        status_honor: honor?.status_honor || "-",
+        jumlah_kelas: classCounts.get(aslabItem.id_aslab) || 0,
         id_aslab_honor: honor?.id || null,
         tahun_semester: slug,
       };
@@ -131,11 +128,12 @@ export const getAllDataByAslab = async (slug, id_aslab) => {
     const allAslab = await db
       .select({
         id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
+        nama: user.name,
         nim: aslab.nim,
       })
       .from(aslab)
-      .orderBy(aslab.nama)
+      .innerJoin(user, eq(user.aslab_id, aslab.id_aslab))
+      .orderBy(user.name)
       .where(eq(aslab.id_aslab, id_aslab));
 
     // Get honor data for this periode
@@ -162,27 +160,22 @@ export const getAllDataByAslab = async (slug, id_aslab) => {
         .select({ count: count() })
         .from(kelas_aslab)
         .innerJoin(kelas_praktikum, eq(kelas_praktikum.id, kelas_aslab.kelas))
-        .where(
-          and(
-            eq(kelas_aslab.aslab, aslabItem.id_aslab),
-            eq(kelas_praktikum.tahun_semester, tahunSemester.id)
-          )
-        );
+        .where(and(eq(kelas_aslab.aslab, aslabItem.id_aslab), eq(kelas_praktikum.tahun_semester, tahunSemester.id)));
 
       const countValue = countResult[0]?.count || 0;
       classCounts.set(aslabItem.id_aslab, countValue);
     }
 
     // Map all aslab with their honor status
-    const mapped = allAslab.map((aslab) => {
-      const honor = honorMap.get(aslab.id_aslab);
+    const mapped = allAslab.map((aslabItem) => {
+      const honor = honorMap.get(aslabItem.id_aslab);
       return {
-        id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
-        nim: aslab.nim,
-        tanggal_diambil: honor?.tanggal_diambil || '-',
-        status_honor: honor?.status_honor || '-',
-        jumlah_kelas: classCounts.get(aslab.id_aslab) || 0,
+        id_aslab: aslabItem.id_aslab,
+        nama: aslabItem.nama,
+        nim: aslabItem.nim,
+        tanggal_diambil: honor?.tanggal_diambil || "-",
+        status_honor: honor?.status_honor || "-",
+        jumlah_kelas: classCounts.get(aslabItem.id_aslab) || 0,
         id_aslab_honor: honor?.id || null,
         tahun_semester: slug,
       };
@@ -197,18 +190,16 @@ export const getAllDataByAslab = async (slug, id_aslab) => {
 
 export const getOneHonor = async (nim, tahunSemesterSlug) => {
   try {
-    // First get the tahun semester ID from the slug
     const tahunSemester = await findOneBySlug(tahunSemesterSlug);
-    
+
     if (!tahunSemester) {
-      return { error: 'Tahun semester tidak ditemukan' };
+      return { error: "Tahun semester tidak ditemukan" };
     }
 
-    // Get aslab data with honor and classes using the tahun semester ID
     const aslabData = await db
       .select({
         id_aslab: aslab.id_aslab,
-        nama: aslab.nama,
+        nama: user.name,
         nim: aslab.nim,
         aslab_honor_id: aslab_honor.id,
         aslab_honor_tanggal_diambil: aslab_honor.tanggal_diambil,
@@ -219,29 +210,20 @@ export const getOneHonor = async (nim, tahunSemesterSlug) => {
         mata_kuliah_slug: mata_kuliah_praktikum.slug,
       })
       .from(aslab)
-      .leftJoin(
-        aslab_honor,
-        and(
-          eq(aslab_honor.aslab, aslab.id_aslab),
-          eq(aslab_honor.tahun_semester, tahunSemester.id)
-        )
-      )
+      .leftJoin(user, eq(user.aslab_id, aslab.id_aslab))
+      .leftJoin(aslab_honor, and(eq(aslab_honor.aslab, aslab.id_aslab), eq(aslab_honor.tahun_semester, tahunSemester.id)))
       .leftJoin(kelas_aslab, eq(kelas_aslab.aslab, aslab.id_aslab))
       .leftJoin(
         kelas_praktikum,
-        and(
-          eq(kelas_praktikum.id, kelas_aslab.kelas),
-          eq(kelas_praktikum.tahun_semester, tahunSemester.id)
-        )
+        and(eq(kelas_praktikum.id, kelas_aslab.kelas), eq(kelas_praktikum.tahun_semester, tahunSemester.id))
       )
-      .leftJoin(
-        mata_kuliah_praktikum,
-        eq(mata_kuliah_praktikum.id, kelas_praktikum.mata_kuliah)
-      )
+      .leftJoin(mata_kuliah_praktikum, eq(mata_kuliah_praktikum.id, kelas_praktikum.mata_kuliah))
       .where(eq(aslab.nim, nim));
 
+    console.log("aslab data", aslabData);
+
     if (!aslabData || aslabData.length === 0) {
-      return { error: 'Honor not found' };
+      return { error: "Honor not found" };
     }
 
     // Get honor types
@@ -252,10 +234,10 @@ export const getOneHonor = async (nim, tahunSemesterSlug) => {
     const honorDetails = [];
 
     // Find honor types by slug
-    const responsi = jenisHonor.find((item) => item.slug === 'responsi');
-    const koreksi = jenisHonor.find((item) => item.slug === 'koreksi');
-    const naskah = jenisHonor.find((item) => item.slug === 'naskah');
-    const honorarium = jenisHonor.find((item) => item.slug === 'honorarium');
+    const responsi = jenisHonor.find((item) => item.slug === "responsi");
+    const koreksi = jenisHonor.find((item) => item.slug === "koreksi");
+    const naskah = jenisHonor.find((item) => item.slug === "naskah");
+    const honorarium = jenisHonor.find((item) => item.slug === "honorarium");
 
     // Group classes by kelas_id to avoid duplicates
     const uniqueClasses = new Map();
@@ -282,8 +264,7 @@ export const getOneHonor = async (nim, tahunSemesterSlug) => {
       }
 
       if (koreksi) {
-        honorBreakdown.koreksi =
-          koreksi.biaya * (kelasItem.kelas_jumlah_praktikan || 0);
+        honorBreakdown.koreksi = koreksi.biaya * (kelasItem.kelas_jumlah_praktikan || 0);
       }
 
       if (naskah) {
@@ -296,10 +277,7 @@ export const getOneHonor = async (nim, tahunSemesterSlug) => {
 
       // Calculate total for this class
       const kelasHonor =
-        honorBreakdown.responsi +
-        honorBreakdown.koreksi +
-        honorBreakdown.naskah +
-        honorBreakdown.honorarium;
+        honorBreakdown.responsi + honorBreakdown.koreksi + honorBreakdown.naskah + honorBreakdown.honorarium;
 
       honorBreakdown.total = kelasHonor;
       totalHonor += kelasHonor;
@@ -328,7 +306,7 @@ export const getOneHonor = async (nim, tahunSemesterSlug) => {
       tanggal_diambil: aslabData[0].aslab_honor_tanggal_diambil || null,
       kelas: honorDetails,
       total_honor: totalHonor,
-      formatted_honor: `Rp. ${totalHonor.toLocaleString('id-ID')}`,
+      formatted_honor: `Rp. ${totalHonor.toLocaleString("id-ID")}`,
       honor_jenis: {
         responsi: responsi,
         koreksi: koreksi,
@@ -359,22 +337,14 @@ export const calculateHonorForAslab = async (aslabId, tahunSemesterId) => {
       })
       .from(kelas_aslab)
       .innerJoin(kelas_praktikum, eq(kelas_praktikum.id, kelas_aslab.kelas))
-      .innerJoin(
-        mata_kuliah_praktikum,
-        eq(mata_kuliah_praktikum.id, kelas_praktikum.mata_kuliah)
-      )
-      .where(
-        and(
-          eq(kelas_aslab.aslab, aslabId),
-          eq(kelas_praktikum.tahun_semester, tahunSemesterId)
-        )
-      );
+      .innerJoin(mata_kuliah_praktikum, eq(mata_kuliah_praktikum.id, kelas_praktikum.mata_kuliah))
+      .where(and(eq(kelas_aslab.aslab, aslabId), eq(kelas_praktikum.tahun_semester, tahunSemesterId)));
 
     // Find honor types by slug
-    const responsi = jenisHonor.find((item) => item.slug === 'responsi');
-    const koreksi = jenisHonor.find((item) => item.slug === 'koreksi');
-    const naskah = jenisHonor.find((item) => item.slug === 'naskah');
-    const honorarium = jenisHonor.find((item) => item.slug === 'honorarium');
+    const responsi = jenisHonor.find((item) => item.slug === "responsi");
+    const koreksi = jenisHonor.find((item) => item.slug === "koreksi");
+    const naskah = jenisHonor.find((item) => item.slug === "naskah");
+    const honorarium = jenisHonor.find((item) => item.slug === "honorarium");
 
     let totalHonor = 0;
     const honorDetails = [];
@@ -396,8 +366,7 @@ export const calculateHonorForAslab = async (aslabId, tahunSemesterId) => {
       }
 
       if (koreksi) {
-        honorBreakdown.koreksi =
-          koreksi.biaya * (kelasItem.kelas_jumlah_praktikan || 0);
+        honorBreakdown.koreksi = koreksi.biaya * (kelasItem.kelas_jumlah_praktikan || 0);
       }
 
       if (naskah) {
@@ -410,10 +379,7 @@ export const calculateHonorForAslab = async (aslabId, tahunSemesterId) => {
 
       // Calculate total for this class
       const kelasHonor =
-        honorBreakdown.responsi +
-        honorBreakdown.koreksi +
-        honorBreakdown.naskah +
-        honorBreakdown.honorarium;
+        honorBreakdown.responsi + honorBreakdown.koreksi + honorBreakdown.naskah + honorBreakdown.honorarium;
 
       honorBreakdown.total = kelasHonor;
       totalHonor += kelasHonor;
@@ -445,48 +411,39 @@ export const calculateHonorForAslab = async (aslabId, tahunSemesterId) => {
 
 export const createHonorPraktikum = async (data) => {
   try {
-    console.log('Creating honor praktikum with data:', data);
+    console.log("Creating honor praktikum with data:", data);
 
     // Get tahun semester based on periode
-    const tahunSemester = await db
-      .select()
-      .from(tahun_semester)
-      .where(eq(tahun_semester.slug, data.periode))
-      .limit(1);
+    const tahunSemester = await db.select().from(tahun_semester).where(eq(tahun_semester.slug, data.periode)).limit(1);
 
     if (tahunSemester.length === 0) {
       return {
         success: false,
-        error: 'Periode tidak valid',
+        error: "Periode tidak valid",
       };
     }
 
-    console.log('Found tahun semester:', tahunSemester[0]);
+    console.log("Found tahun semester:", tahunSemester[0]);
 
     // Calculate honor automatically
-    const honorCalculation = await calculateHonorForAslab(
-      parseInt(data.aslab_id),
-      tahunSemester[0].id
-    );
+    const honorCalculation = await calculateHonorForAslab(parseInt(data.aslab_id), tahunSemester[0].id);
 
-    console.log('Honor calculation result:', honorCalculation);
+    console.log("Honor calculation result:", honorCalculation);
 
     // Create honor record
     const insertData = {
       aslab: parseInt(data.aslab_id),
       tahun_semester: tahunSemester[0].id,
-      status_honor:
-        data.status_honor ||
-        (data.tanggal_pengambilan ? 'Sudah Diambil' : 'Belum Diambil'),
+      status_honor: data.status_honor || (data.tanggal_pengambilan ? "Sudah Diambil" : "Belum Diambil"),
       tanggal_diambil: data.tanggal_pengambilan,
       created_at: new Date(), // Add created_at field
     };
 
-    console.log('Inserting data:', insertData);
+    console.log("Inserting data:", insertData);
 
     const result = await db.insert(aslab_honor).values(insertData).returning();
 
-    console.log('Insert successful, result:', result);
+    console.log("Insert successful, result:", result);
 
     return {
       success: true,
@@ -501,11 +458,13 @@ export const createHonorPraktikum = async (data) => {
 
 export const updateHonor = async (id, newTanggal, aslabId, tahunSemesterId) => {
   try {
-    const aslabData = await db
-      .select({ nim: aslab.nim })
-      .from(aslab)
-      .where(eq(aslab.id_aslab, aslabId))
-      .limit(1);
+    const aslabData = await db.select({ nim: aslab.nim }).from(aslab).where(eq(aslab.id_aslab, aslabId)).limit(1);
+
+    if (aslabData.length === 0 || !aslabData[0].nim) {
+      return { success: false, error: "Could not find assistant data" };
+    }
+
+    const nim = aslabData[0].nim;
 
     // If id exists, update that record
     if (id) {
@@ -513,21 +472,21 @@ export const updateHonor = async (id, newTanggal, aslabId, tahunSemesterId) => {
         .update(aslab_honor)
         .set({
           tanggal_diambil: newTanggal,
-          status_honor: newTanggal ? 'Sudah Diambil' : 'Belum Diambil',
+          status_honor: newTanggal ? "Sudah Diambil" : "Belum Diambil",
         })
         .where(eq(aslab_honor.id, id))
         .returning();
 
-      if (aslabData.length > 0 && aslabData[0].nim) {
-        // Fetch complete honor data with the nim
-        const updatedData = await getOneHonor(
-          aslabData[0].nim,
-          tahunSemesterId
-        );
-        return { success: true, data: updatedData };
-      } else {
-        return { success: false, error: 'Could not find assistant data' };
-      }
+      return {
+        success: true,
+        data: {
+          nim,
+          aslabId,
+          tahunSemesterId,
+          tanggal_diambil: newTanggal,
+          status_honor: newTanggal ? "Sudah Diambil" : "Belum Diambil",
+        },
+      };
     }
     // If id doesn't exist, create a new record
     else {
@@ -535,8 +494,7 @@ export const updateHonor = async (id, newTanggal, aslabId, tahunSemesterId) => {
       if (!aslabId || !tahunSemesterId) {
         return {
           success: false,
-          error:
-            'Aslab ID and Tahun Semester ID are required to create a new honor record',
+          error: "Aslab ID and Tahun Semester ID are required to create a new honor record",
         };
       }
 
@@ -545,16 +503,20 @@ export const updateHonor = async (id, newTanggal, aslabId, tahunSemesterId) => {
         .values({
           aslab: aslabId,
           tahun_semester: tahunSemesterId,
-          status_honor: 'Sudah Diambil',
+          status_honor: "Sudah Diambil",
           tanggal_diambil: newTanggal,
         })
         .returning();
 
-      const updatedData = await getOneHonor(aslabData[0].nim, tahunSemesterId);
-
       return {
         success: true,
-        data: updatedData,
+        data: {
+          nim,
+          aslabId,
+          tahunSemesterId,
+          tanggal_diambil: newTanggal,
+          status_honor: "Sudah Diambil",
+        },
       };
     }
   } catch (error) {

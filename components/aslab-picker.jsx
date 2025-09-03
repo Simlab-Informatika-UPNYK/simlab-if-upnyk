@@ -22,19 +22,20 @@ export function AslabPicker({ options = [], value = [], onChange, currentAslabId
 
   const availableOptions = options.filter((option) => !selectedAslabs.some((a) => a.value === option.value));
 
+  console.log("selected: ", selectedAslabs);
+  console.log("option", availableOptions);
+
   return (
     <div className="space-y-3">
-      {/* Display selected assistants */}
       {selectedAslabs.length > 0 && (
         <div className="flex flex-wrap gap-2">
-          {selectedAslabs.map((aslab) => {
+          {selectedAslabs.map((aslab, index) => {
             const isCurrentAslab = currentAslabId && aslab.value === currentAslabId;
             return (
-              <Badge key={aslab.value} variant="secondary" className="px-3 py-1.5">
+              <Badge key={`${aslab.value ?? index}-badge`} variant="secondary" className="px-3 py-1.5">
                 {aslab.label}
                 {!isCurrentAslab && (
                   <Button
-                    // key={`remove-${aslab.value}`}
                     variant="ghost"
                     size="sm"
                     onClick={() => handleRemoveAslab(aslab.value)}

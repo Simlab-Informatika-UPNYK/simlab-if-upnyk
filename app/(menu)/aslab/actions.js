@@ -102,17 +102,31 @@ export async function createAslab(data) {
 }
 
 export async function updateAslab(id_aslab, data) {
-  await db.update(user).set({ name: data.nama, email: data.email }).where(eq(user.aslab_id, id_aslab));
-  const { nama, email, ...aslabData } = data;
-
-  await db.update(aslab).set(aslabData).where(eq(aslab.id_aslab, id_aslab));
   try {
     await requireAdmin();
+
+    const existingUser = await db.select().from(user).where(eq(user.aslab_id, id_aslab));
+
     await db.transaction(async (tx) => {
-      if (data.nama && data.nama.trim() !== "") {
+      const { nama, email, ...aslabData } = data;
+
+      if (existingUser.length === 0) {
+        const password = aslabData.nim + "aslab";
+        await auth.api.signUpEmail({
+          body: {
+            email: email,
+            name: nama,
+            password: password,
+            username: aslabData.nim,
+            role: "aslab",
+            aslab_id: id_aslab,
+          },
+        });
+      } else {
+        await tx.update(user).set({ name: nama, email: email }).where(eq(user.aslab_id, id_aslab));
       }
 
-      const { nama, email, ...aslabData } = data;
+      await tx.update(aslab).set(aslabData).where(eq(aslab.id_aslab, id_aslab));
     });
     revalidatePath("/aslab");
     return { success: true };

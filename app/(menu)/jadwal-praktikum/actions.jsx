@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/db";
-import { kelas_praktikum, kelas_aslab, tahun_semester } from "@/db/schema";
+import { kelas_praktikum, kelas_aslab, tahun_semester, user } from "@/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { translatePostgresError } from "@/lib/postgres-error-translator";
@@ -59,7 +59,12 @@ export async function findAllJadwalByTahunSemester(tahunSemesterId) {
         mataKuliah: { columns: { nama: true } },
         lab: { columns: { nama: true } },
         kelasAslab: {
-          with: { aslab: { columns: { nama: true, nim: true } } },
+          with: {
+            aslab: {
+              with: { user: { columns: { name: true } } },
+              columns: { nama: true, nim: true },
+            },
+          },
         },
         tahunSemester: true,
       },
@@ -99,7 +104,12 @@ export async function findAllJadwalByAslabAndTahunSemester(aslabId, tahunSemeste
         mataKuliah: { columns: { nama: true } },
         lab: { columns: { nama: true } },
         kelasAslab: {
-          with: { aslab: { columns: { nama: true, nim: true } } },
+          with: {
+            aslab: {
+              with: { user: { columns: { name: true } } },
+              columns: { nim: true },
+            },
+          },
         },
         tahunSemester: true,
       },
@@ -119,7 +129,9 @@ export async function findOneById(id) {
         dosenPengampu: true,
         mataKuliah: true,
         lab: true,
-        kelasAslab: { with: { aslab: true } },
+        kelasAslab: {
+          with: { aslab: { with: { user: { columns: { name: true } } }, columns: { nim: true, id_aslab: true } } },
+        },
         tahunSemester: true,
       },
     });
@@ -273,9 +285,18 @@ export async function getLabOptions() {
 }
 
 export async function getAslabOptions() {
-  return await db.query.aslab.findMany({
-    columns: { id_aslab: true, nama: true, nim: true },
+  const result = await db.query.aslab.findMany({
+    with: {
+      user: { columns: { name: true } },
+    },
+    columns: { id_aslab: true, nim: true },
   });
+
+  return result.map((r) => ({
+    id_aslab: r.id_aslab,
+    nim: r.nim,
+    nama: r.user?.name,
+  }));
 }
 
 export async function getTahunSemesterOptions() {

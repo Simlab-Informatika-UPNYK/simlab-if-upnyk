@@ -1,25 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { getAllCertificateRequests, updateCertificateStatus } from '../actions';
-import { DataTable } from '@/components/data-table/data-table';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from '@/components/ui/select';
-import { Eye, Edit } from 'lucide-react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { getAllCertificateRequests, updateCertificateStatus } from "../actions";
+import { DataTable } from "@/components/data-table/data-table";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Eye, Edit } from "lucide-react";
+import Link from "next/link";
 
 export default function AdminCertificateView() {
   const [requests, setRequests] = useState([]);
@@ -27,53 +16,49 @@ export default function AdminCertificateView() {
   const [error, setError] = useState(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentRequest, setCurrentRequest] = useState(null);
-  const [selectedStatus, setSelectedStatus] = useState('');
-  const [keterangan, setKeterangan] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [keterangan, setKeterangan] = useState("");
   const [updating, setUpdating] = useState(false);
   const { toast } = useToast();
 
   const columns = [
     {
-      header: 'NIM',
-      id: 'nim',
-      accessorKey: 'nim',
+      header: "NIM",
+      id: "nim",
+      accessorKey: "nim",
     },
     {
-      header: 'Nama Asisten',
-      id: 'nama_asisten',
-      accessorKey: 'nama_asisten',
+      header: "Nama Asisten",
+      id: "nama_asisten",
+      accessorKey: "nama_asisten",
     },
     {
-      header: 'Tanggal Pengajuan',
-      id: 'tanggal_pengajuan',
-      accessorKey: 'tanggal_pengajuan',
+      header: "Tanggal Pengajuan",
+      id: "tanggal_pengajuan",
+      accessorKey: "tanggal_pengajuan",
     },
     {
-      header: 'Status',
-      id: 'status',
-      accessorKey: 'status',
+      header: "Status",
+      id: "status",
+      accessorKey: "status",
       cell: ({ row }) => {
-        const status = row.original.status || 'Pending';
+        const status = row.original.status || "Pending";
         const statusColors = {
-          'Pending': 'bg-yellow-100 text-yellow-800',
-          'Disetujui': 'bg-green-100 text-green-800',
-          'Ditolak': 'bg-red-100 text-red-800',
+          Pending: "bg-yellow-100 text-yellow-800",
+          Disetujui: "bg-green-100 text-green-800",
+          Ditolak: "bg-red-100 text-red-800",
         };
 
         return (
-          <span
-            className={`px-2 py-1 rounded-full text-xs ${
-              statusColors[status] || 'bg-gray-100 text-gray-800'
-            }`}
-          >
+          <span className={`px-2 py-1 rounded-full text-xs ${statusColors[status] || "bg-gray-100 text-gray-800"}`}>
             {status}
           </span>
         );
       },
     },
     {
-      header: 'Aksi',
-      id: 'aksi',
+      header: "Aksi",
+      id: "aksi",
       cell: ({ row }) => {
         const request = row.original;
 
@@ -89,10 +74,9 @@ export default function AdminCertificateView() {
               variant="secondary"
               size="sm"
               onClick={() => {
-                // Set data untuk modal edit
                 setCurrentRequest(request);
-                setSelectedStatus(request.status || 'pending');
-                setKeterangan('');
+                setSelectedStatus(request.status || "pending");
+                setKeterangan("");
                 setEditModalOpen(true);
               }}
             >
@@ -111,8 +95,8 @@ export default function AdminCertificateView() {
         const data = await getAllCertificateRequests();
         setRequests(data || []);
       } catch (error) {
-        console.error('Gagal memuat data permintaan sertifikat:', error);
-        setError('Gagal memuat data permintaan sertifikat');
+        console.error("Gagal memuat data permintaan sertifikat:", error);
+        setError("Gagal memuat data permintaan sertifikat");
       } finally {
         setLoading(false);
       }
@@ -126,16 +110,16 @@ export default function AdminCertificateView() {
 
     let reason = null;
 
-    if (selectedStatus === 'Ditolak' && !keterangan) {
+    if (selectedStatus === "Ditolak" && !keterangan) {
       toast({
-        title: 'Gagal',
-        description: 'Keterangan wajib diisi untuk status Ditolak',
+        title: "Gagal",
+        description: "Keterangan wajib diisi untuk status Ditolak",
       });
 
       return;
     }
 
-    if (selectedStatus === 'Ditolak') {
+    if (selectedStatus === "Ditolak") {
       reason = keterangan;
     }
 
@@ -143,17 +127,17 @@ export default function AdminCertificateView() {
       setUpdating(true);
       await updateCertificateStatus(currentRequest.id, selectedStatus, reason);
       toast({
-        title: 'Berhasil',
+        title: "Berhasil",
         description: `Status berhasil diubah menjadi ${selectedStatus}`,
       });
       setEditModalOpen(false);
-      setKeterangan('');
+      setKeterangan("");
 
       // Refresh data tanpa reload page
       const refreshedData = await getAllCertificateRequests();
       setRequests(refreshedData || []);
     } catch (error) {
-      toast({ title: 'Gagal', description: `Error: ${error.message}` });
+      toast({ title: "Gagal", description: `Error: ${error.message}` });
     } finally {
       setUpdating(false);
     }
@@ -161,7 +145,7 @@ export default function AdminCertificateView() {
 
   const handleCancelEdit = () => {
     setEditModalOpen(false);
-    setKeterangan('');
+    setKeterangan("");
   };
 
   if (loading) {
@@ -196,9 +180,7 @@ export default function AdminCertificateView() {
     <div className="container mx-auto">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Kelola Permintaan Sertifikat</h1>
-        <p className="text-gray-600">
-          Kelola semua permintaan sertifikat dari asisten laboratorium
-        </p>
+        <p className="text-gray-600">Kelola semua permintaan sertifikat dari asisten laboratorium</p>
       </div>
 
       {requests.length === 0 ? (
@@ -206,13 +188,7 @@ export default function AdminCertificateView() {
           <p className="text-gray-500">Tidak ada permintaan sertifikat</p>
         </div>
       ) : (
-        <DataTable
-          columns={columns}
-          data={requests}
-          globalSearch={true}
-          pagination={true}
-          viewOptions={true}
-        />
+        <DataTable columns={columns} data={requests} globalSearch={true} pagination={true} viewOptions={true} />
       )}
 
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
@@ -235,10 +211,7 @@ export default function AdminCertificateView() {
 
               <div>
                 <label className="text-sm font-medium">Status Saat Ini</label>
-                <Select
-                  value={selectedStatus}
-                  onValueChange={setSelectedStatus}
-                >
+                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Pilih status" />
                   </SelectTrigger>
@@ -250,11 +223,9 @@ export default function AdminCertificateView() {
                 </Select>
               </div>
 
-              {selectedStatus === 'Ditolak' && (
+              {selectedStatus === "Ditolak" && (
                 <div>
-                  <label className="text-sm font-medium">
-                    Alasan Penolakan
-                  </label>
+                  <label className="text-sm font-medium">Alasan Penolakan</label>
                   <textarea
                     placeholder="Masukkan alasan penolakan..."
                     value={keterangan}
@@ -266,15 +237,11 @@ export default function AdminCertificateView() {
               )}
 
               <div className="flex gap-2 justify-end">
-                <Button
-                  variant="outline"
-                  onClick={handleCancelEdit}
-                  disabled={updating}
-                >
+                <Button variant="outline" onClick={handleCancelEdit} disabled={updating}>
                   Batal
                 </Button>
                 <Button onClick={handleStatusChange} disabled={updating}>
-                  {updating ? 'Menyimpan...' : 'Simpan'}
+                  {updating ? "Menyimpan..." : "Simpan"}
                 </Button>
               </div>
             </div>

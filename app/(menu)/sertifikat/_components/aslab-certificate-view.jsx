@@ -27,14 +27,17 @@ export default function AslabCertificateView({ aslabId }) {
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const requestsData = await getCertificateRequestsByAslab(aslabId);
-        setRequests(requestsData);
-      } catch (error) {
-        console.log("Tidak ada permintaan sertifikat yang ditemukan");
-      } finally {
-        setLoading(false);
-      }
+      // try {
+      console.log("request ");
+      const requestsData = await getCertificateRequestsByAslab(aslabId);
+      console.log("request 2");
+      console.log("request data", requestsData);
+      setRequests(requestsData);
+      // } catch (error) {
+      //   console.log("Tidak ada permintaan sertifikat yang ditemukan");
+      // } finally {
+      setLoading(false);
+      // }
     };
 
     fetchData();
@@ -51,7 +54,7 @@ export default function AslabCertificateView({ aslabId }) {
           description: "Permintaan sertifikat berhasil dibuat",
           variant: "success",
         });
-        
+
         const requestsData = await getCertificateRequestsByAslab(aslabId);
         setRequests(requestsData);
       }
@@ -66,6 +69,8 @@ export default function AslabCertificateView({ aslabId }) {
     }
   };
 
+  // return <pre>{JSON.stringify(requests, null, 2)}</pre>;
+
   if (loading) {
     return (
       <div className="container mx-auto p-6">
@@ -76,7 +81,7 @@ export default function AslabCertificateView({ aslabId }) {
     );
   }
 
-  const latestRequest = requests.length > 0 ? requests[0] : null;
+  const latestRequest = requests?.length > 0 ? requests[0] : null;
 
   return (
     <div className="container mx-auto p-6">
