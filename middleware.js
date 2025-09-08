@@ -6,18 +6,13 @@ export async function middleware(request) {
   const sessionCookie = getSessionCookie(request);
   const { pathname } = request.nextUrl;
 
-  if (
-    (pathname.startsWith("/login") || pathname.startsWith("/register")) &&
-    sessionCookie
-  ) {
+  if (pathname.startsWith("/login") && sessionCookie) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  const publicRoutes = ["/", "/login", "/register"];
+  const publicRoutes = ["/", "/login"];
 
-  const isPublicRoute = publicRoutes.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`)
-  );
+  const isPublicRoute = publicRoutes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 
   if (!isPublicRoute && !sessionCookie) {
     return NextResponse.redirect(new URL("/login", request.url));

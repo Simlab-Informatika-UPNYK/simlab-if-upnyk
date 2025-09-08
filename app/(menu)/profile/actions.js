@@ -62,6 +62,33 @@ export async function getProfile() {
   }
 }
 
+export async function updateUser(data) {
+  try {
+    const session = await getServerSession();
+    if (!session?.user) {
+      throw new Error("User not authenticated");
+    }
+
+    await db
+      .update(user)
+      .set({
+        name: data.user.name,
+        email: data.user.email,
+        username: data.user.username,
+        displayUsername: data.user.displayUsername,
+        nip: data.user.nip,
+        image: data.user.image,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, session.user.id));
+    revalidatePath("/profile");
+    return { success: true, message: "Profile updated successfully" };
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    throw new Error("Failed to update profile");
+  }
+}
+
 // Update user profile
 export async function updateProfile(data) {
   try {
@@ -70,36 +97,33 @@ export async function updateProfile(data) {
       throw new Error("User not authenticated");
     }
 
-    await db.transaction(async (tx) => {
-      // Update user table
-      await tx
-        .update(user)
-        .set({
-          name: data.user.name,
-          email: data.user.email,
-          username: data.user.username,
-          displayUsername: data.user.displayUsername,
-          nip: data.user.nip,
-          image: data.user.image,
-          updatedAt: new Date(),
-        })
-        .where(eq(user.id, session.user.id));
+    await db
+      .update(user)
+      .set({
+        name: data.user.name,
+        email: data.user.email,
+        username: data.user.username,
+        displayUsername: data.user.displayUsername,
+        nip: data.user.nip,
+        image: data.user.image,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, session.user.id));
 
-      // If user is aslab, update aslab table (only non-redundant fields)
-      if (data.aslab && session.user.role === "aslab") {
-        await tx
-          .update(aslab)
-          .set({
-            nim: data.aslab.nim,
-            no_hp: data.aslab.no_hp,
-            angkatan: data.aslab.angkatan,
-            program_studi: data.aslab.program_studi,
-            status: data.aslab.status,
-            profile_picture: data.aslab.profile_picture,
-          })
-          .where(eq(aslab.id_aslab, session.user.aslab_id));
-      }
-    });
+    // If user is aslab, update aslab table (only non-redundant fields)
+    if (data.aslab && session.user.role === "aslab") {
+      await db
+        .update(aslab)
+        .set({
+          nim: data.aslab.nim,
+          no_hp: data.aslab.no_hp,
+          angkatan: data.aslab.angkatan,
+          program_studi: data.aslab.program_studi,
+          status: data.aslab.status,
+          profile_picture: data.aslab.profile_picture,
+        })
+        .where(eq(aslab.id_aslab, session.user.aslab_id));
+    }
 
     revalidatePath("/profile");
     return { success: true, message: "Profile updated successfully" };

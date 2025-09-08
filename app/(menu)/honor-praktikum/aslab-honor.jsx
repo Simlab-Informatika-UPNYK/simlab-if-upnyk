@@ -42,19 +42,19 @@ const HonorDetail = ({ tahunSemester, nim, initialTahunSemester, initialNim }) =
       setLoading(true);
       setError(null);
 
-      // const data = await getOneHonor(currentNim, currentTahunSemester);
-      // try {
-      //   console.log("data", data);
-      //   if (data.error) {
-      //     setError(data.error);
-      //   } else {
-      // setHonorData(data);
-      //   }
-      // } catch (err) {
-      //   setError(err.message || "Terjadi kesalahan saat mengambil data honor");
-      // } finally {
-      //   setLoading(false);
-      // }
+      const data = await getOneHonor(currentNim, currentTahunSemester);
+      try {
+        console.log("data", data);
+        if (data.error) {
+          setError(data.error);
+        } else {
+      setHonorData(data);
+        }
+      } catch (err) {
+        setError(err.message || "Terjadi kesalahan saat mengambil data honor");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchHonorData();

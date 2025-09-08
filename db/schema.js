@@ -114,6 +114,7 @@ export const permintaan_sertifikat = pgTable("permintaan_sertifikat", {
   id_aslab: integer("id_aslab").references(() => aslab.id_aslab),
   waktu_pengajuan: timestamp("waktu_pengajuan"),
   status: text("status"),
+  alasan: text("alasan"),
   keterangan: text("keterangan"),
 });
 

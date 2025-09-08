@@ -1,5 +1,5 @@
 import AdminCertificateView from "./_components/admin-certificate-view";
-import AslabCertificateView from "./_components/aslab-certificate-view";
+import AslabCertificateList from "./_components/aslab-certificate-list";
 import Link from "next/link";
 import { getServerSession } from "@/lib/auth-server";
 
@@ -18,7 +18,7 @@ export default async function CertificatePage() {
   }
 
   if (user?.role === "aslab") {
-    return <AslabCertificateView aslabId={user.aslab_id} />;
+    return <AslabCertificateList aslabId={user.aslab_id} />;
   }
 
   return (

@@ -5,9 +5,9 @@ export const userSchema = z.object({
   name: z.string().min(1, "Nama harus diisi"),
   email: z.string().email("Email tidak valid"),
   username: z.string().min(3, "Username minimal 3 karakter"),
-  displayUsername: z.string().optional(),
-  nip: z.string().optional(),
-  image: z.string().optional(),
+  // displayUsername: z.string().optional(),
+  // nip: z.string().optional(),
+  // image: z.string().optional(),
 });
 
 // Aslab schema (only non-redundant fields)
@@ -24,10 +24,10 @@ export const aslabSchema = z.object({
   profile_picture: z.string().optional(),
 });
 
-// Main profile schema
+// Main profile schema - conditionally require aslab based on user role
 export const profileSchema = z.object({
   user: userSchema,
-  aslab: aslabSchema.optional(),
+  aslab: aslabSchema.optional().or(z.object({}).optional()),
 });
 
 // Default values

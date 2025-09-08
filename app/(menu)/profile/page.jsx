@@ -10,7 +10,13 @@ const ProfilePage = async () => {
 
   const handleUpdateProfile = async (data) => {
     "use server";
-    return await updateProfile(data);
+    try {
+      await updateProfile(data);
+      // Tidak perlu return apa-apa, cukup await selesai untuk trigger success toast
+    } catch (error) {
+      console.error("Error in handleUpdateProfile:", error);
+      throw error;
+    }
   };
 
   const initialFormData = {
@@ -22,16 +28,14 @@ const ProfilePage = async () => {
       nip: profileData.user.nip || "",
       image: profileData.user.image || "",
     },
-    aslab: profileData.aslab
-      ? {
-          nim: profileData.aslab.nim || "",
-          no_hp: profileData.aslab.no_hp || "",
-          angkatan: profileData.aslab.angkatan || "",
-          program_studi: profileData.aslab.program_studi || "Sistem Informasi",
-          status: profileData.aslab.status || "Aktif",
-          profile_picture: profileData.aslab.profile_picture || "",
-        }
-      : undefined,
+    aslab: {
+      nim: profileData.aslab?.nim || profileData.user.username || "",
+      no_hp: profileData.aslab?.no_hp || "",
+      angkatan: profileData.aslab?.angkatan || "",
+      program_studi: profileData.aslab?.program_studi || "Sistem Informasi",
+      status: profileData.aslab?.status || "Aktif",
+      profile_picture: profileData.aslab?.profile_picture || "",
+    },
   };
 
   return (
@@ -45,7 +49,7 @@ const ProfilePage = async () => {
         </CardContent>
       </Card>
 
-      {session.user.role === "aslab" && profileData.aslab && (
+      {session.user.role === "aslab" && (
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Edit Data Asisten</CardTitle>

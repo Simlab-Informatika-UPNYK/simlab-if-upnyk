@@ -96,6 +96,7 @@ export async function findAllOrdered() {
       id: permintaan_sertifikat.id,
       waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
       status: permintaan_sertifikat.status,
+      alasan: permintaan_sertifikat.alasan,
       keterangan: permintaan_sertifikat.keterangan,
       aslab: {
         id_aslab: aslab.id_aslab,
@@ -120,6 +121,8 @@ export async function findAllOrdered() {
         })
       : "-",
     status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending",
+    alasan: item.alasan,
+    keterangan: item.keterangan,
   }));
 }
 
@@ -141,6 +144,7 @@ export const getCertificateRequestByNim = async (nim) => {
         id: permintaan_sertifikat.id,
         waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
         status: permintaan_sertifikat.status,
+        alasan: permintaan_sertifikat.alasan,
         keterangan: permintaan_sertifikat.keterangan,
         nama_mahasiswa: user.name,
         nim: aslab.nim,
@@ -221,6 +225,7 @@ export const getCertificateRequestByNim = async (nim) => {
       id: data.id,
       waktu_pengajuan: data.waktu_pengajuan,
       status: data.status ? data.status.charAt(0).toUpperCase() + data.status.slice(1) : "Pending",
+      alasan: data.alasan,
       keterangan: data.keterangan,
       nama_mahasiswa: data.nama_mahasiswa,
       nim: data.nim,
@@ -432,23 +437,13 @@ export const getAllAslab = async () => {
   }
 };
 
-export const createCertificateRequest = async (aslabId) => {
+export const createCertificateRequest = async (aslabId, alasan) => {
   const user = (await getServerSession()).user;
   if (user.role === "aslab" && user.aslab_id !== aslabId) {
     throw new Error("Unauthorized");
   }
 
   try {
-    const existingRequest = await db
-      .select()
-      .from(permintaan_sertifikat)
-      .where(and(eq(permintaan_sertifikat.id_aslab, aslabId), eq(permintaan_sertifikat.status, "pending")))
-      .limit(1);
-
-    if (existingRequest.length > 0) {
-      throw new Error("Anda sudah memiliki permintaan sertifikat yang sedang diproses");
-    }
-
     const result = await db.transaction(async (tx) => {
       return await tx
         .insert(permintaan_sertifikat)
@@ -456,6 +451,7 @@ export const createCertificateRequest = async (aslabId) => {
           id_aslab: aslabId,
           waktu_pengajuan: new Date(),
           status: "pending",
+          alasan: alasan,
           created_at: new Date(),
           updated_at: new Date(),
         })
@@ -475,26 +471,12 @@ export const getCertificateRequestsByAslab = async (aslabId) => {
     throw new Error("Unauthorized: Admin access required");
   }
 
-  // try {
-  // const result = await db
-  //   .select({
-  //     id: permintaan_sertifikat.id,
-  //     waktu_pengajuan: permintaan_sertifikat.waktu_pengajuan,
-  //     status: permintaan_sertifikat.status,
-  //     keterangan: permintaan_sertifikat.keterangan,
-  //     // nama: user.name,
-  //     nim: aslab.nim,
-  //   })
-  //   .from(permintaan_sertifikat)
-  //   .innerJoin(aslab, eq(permintaan_sertifikat.id_aslab, aslab.id_aslab))
-  //   .innerJoin(user, eq(user.aslab_id, permintaan_sertifikat.id_aslab))
-  //   .where(eq(permintaan_sertifikat.id_aslab, aslabId));
-  // .orderBy(desc(permintaan_sertifikat.waktu_pengajuan));
   const result = await db.query.permintaan_sertifikat.findMany({
     columns: {
       id: true,
       waktu_pengajuan: true,
       status: true,
+      alasan: true,
       keterangan: true,
     },
     with: {
@@ -506,6 +488,7 @@ export const getCertificateRequestsByAslab = async (aslabId) => {
       },
     },
     where: eq(permintaan_sertifikat.id_aslab, aslabId),
+    orderBy: (permintaan_sertifikat, { desc }) => [desc(permintaan_sertifikat.waktu_pengajuan)],
   });
 
   return result.map((item) => ({
@@ -520,12 +503,110 @@ export const getCertificateRequestsByAslab = async (aslabId) => {
         })
       : "-",
     status: item.status ? item.status.charAt(0).toUpperCase() + item.status.slice(1) : "Pending",
+    alasan: item.alasan,
     keterangan: item.keterangan,
   }));
-  // } catch (error) {
-  //   const errorMessage = translatePostgresError(error);
-  //   throw new Error(errorMessage);
-  // }
+};
+
+export const getCertificateRequestByIdForAslab = async (requestId) => {
+  const user = (await getServerSession()).user;
+  
+  if (user.role !== "aslab") {
+    throw new Error("Unauthorized: Only aslab can access this");
+  }
+
+  const result = await db.query.permintaan_sertifikat.findFirst({
+    columns: {
+      id: true,
+      waktu_pengajuan: true,
+      status: true,
+      alasan: true,
+      keterangan: true,
+      created_at: true,
+      updated_at: true,
+    },
+    with: {
+      aslab: {
+        columns: { 
+          id_aslab: true,
+          nim: true,
+          no_hp: true,
+          angkatan: true,
+          program_studi: true,
+          status: true,
+        },
+        with: {
+          user: { 
+            columns: { 
+              name: true,
+              email: true,
+            } 
+          },
+          kelasAslab: {
+            with: {
+              kelasPraktikum: {
+                with: {
+                  mataKuliah: {
+                    columns: {
+                      nama: true,
+                    },
+                  },
+                  tahunSemester: {
+                    columns: {
+                      semester: true,
+                      tahun_ajaran: true,
+                    },
+                  },
+                },
+                columns: {
+                  kelas: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: and(
+      eq(permintaan_sertifikat.id, requestId),
+      eq(permintaan_sertifikat.id_aslab, user.aslab_id)
+    ),
+  });
+
+  if (!result) {
+    throw new Error("Permintaan sertifikat tidak ditemukan atau Anda tidak memiliki akses");
+  }
+
+  // Process courses data
+  const courses = result.aslab.kelasAslab.map((kelas) => ({
+    mata_kuliah: kelas.kelasPraktikum.mataKuliah.nama,
+    kelas: kelas.kelasPraktikum.kelas,
+    semester: `${kelas.kelasPraktikum.tahunSemester.semester} ${kelas.kelasPraktikum.tahunSemester.tahun_ajaran}`,
+  }));
+
+  return {
+    id: result.id.toString(),
+    nim: result.aslab.nim,
+    nama_asisten: result.aslab.user.name,
+    email: result.aslab.user.email,
+    no_hp: result.aslab.no_hp,
+    angkatan: result.aslab.angkatan,
+    program_studi: result.aslab.program_studi,
+    status_aslab: result.aslab.status,
+    tanggal_pengajuan: result.waktu_pengajuan
+      ? new Date(result.waktu_pengajuan).toLocaleDateString("id-ID", {
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+        })
+      : "-",
+    status: result.status ? result.status.charAt(0).toUpperCase() + result.status.slice(1) : "Pending",
+    alasan: result.alasan,
+    keterangan: result.keterangan,
+    courses: courses,
+    created_at: result.created_at,
+    updated_at: result.updated_at,
+  };
 };
 
 export const updateCertificateStatus = async (requestId, status, keterangan = null) => {

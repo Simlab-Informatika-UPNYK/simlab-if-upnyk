@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { profileSchema, defaultValues } from "./form-schema";
+import { defaultValues, profileSchema, userSchema } from "./form-schema";
 import { useToast } from "@/hooks/use-toast";
 import { useState } from "react";
 

@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { Eye, Edit } from "lucide-react";
 import Link from "next/link";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function AdminCertificateView() {
   const [requests, setRequests] = useState([]);
@@ -20,6 +20,12 @@ export default function AdminCertificateView() {
   const [keterangan, setKeterangan] = useState("");
   const [updating, setUpdating] = useState(false);
   const { toast } = useToast();
+
+  const statusColors = {
+    Pending: "bg-yellow-100 text-yellow-800",
+    Disetujui: "bg-green-100 text-green-800",
+    Ditolak: "bg-red-100 text-red-800",
+  };
 
   const columns = [
     {
@@ -38,21 +44,98 @@ export default function AdminCertificateView() {
       accessorKey: "tanggal_pengajuan",
     },
     {
+      header: "Alasan",
+      id: "alasan",
+      accessorKey: "alasan",
+      cell: ({ row }) => {
+        const alasan = row.original.alasan;
+        return (
+          <div className="max-w-md">
+            <p className="text-sm line-clamp-2">{alasan || "-"}</p>
+          </div>
+        );
+      },
+    },
+    {
       header: "Status",
       id: "status",
       accessorKey: "status",
       cell: ({ row }) => {
-        const status = row.original.status || "Pending";
-        const statusColors = {
-          Pending: "bg-yellow-100 text-yellow-800",
-          Disetujui: "bg-green-100 text-green-800",
-          Ditolak: "bg-red-100 text-red-800",
+        const request = row.original;
+        const [updating, setUpdating] = useState(false);
+
+        const handleStatusChange = async (newStatus) => {
+          if (newStatus === "Ditolak") {
+            // Buka dialog untuk alasan penolakan
+            setCurrentRequest(request);
+            setSelectedStatus(newStatus);
+            setKeterangan("");
+            setEditModalOpen(true);
+            return;
+          }
+
+          try {
+            setUpdating(true);
+            await updateCertificateStatus(request.id, newStatus, null);
+            toast({
+              title: "Berhasil",
+              description: `Status berhasil diubah menjadi ${newStatus}`,
+            });
+
+            // Refresh data
+            const refreshedData = await getAllCertificateRequests();
+            setRequests(refreshedData || []);
+          } catch (error) {
+            toast({ title: "Gagal", description: `Error: ${error.message}` });
+          } finally {
+            setUpdating(false);
+          }
         };
 
         return (
-          <span className={`px-2 py-1 rounded-full text-xs ${statusColors[status] || "bg-gray-100 text-gray-800"}`}>
-            {status}
-          </span>
+          <Select value={request.status || "Pending"} onValueChange={handleStatusChange} disabled={updating}>
+            <SelectTrigger className="border-0 shadow-none">
+              <div className="flex items-center gap-2">
+                <span
+                  className={`px-2 py-1 rounded-full text-xs ${
+                    statusColors[request.status] || "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {request.status || "Pending"}
+                </span>
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Pending">
+                <div className="flex items-center gap-2">
+                  <span className="text-yellow-800">Pending</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="Disetujui">
+                <div className="flex items-center gap-2">
+                  <span className="text-green-800">Disetujui</span>
+                </div>
+              </SelectItem>
+              <SelectItem value="Ditolak">
+                <div className="flex items-center gap-2">
+                  <span className="text-red-800">Ditolak</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        );
+      },
+    },
+    {
+      header: "Keterangan",
+      id: "keterangan",
+      accessorKey: "keterangan",
+      cell: ({ row }) => {
+        const keterangan = row.original.keterangan;
+        return (
+          <div className="max-w-md">
+            <p className="text-sm text-gray-600">{keterangan || "-"}</p>
+          </div>
         );
       },
     },
@@ -66,22 +149,9 @@ export default function AdminCertificateView() {
           <div className="flex gap-2">
             <Link href={`/sertifikat/${request.nim}`}>
               <Button variant="outline" size="sm">
-                <Eye className="h-4 w-4" />
+                Lihat Detail
               </Button>
             </Link>
-
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                setCurrentRequest(request);
-                setSelectedStatus(request.status || "pending");
-                setKeterangan("");
-                setEditModalOpen(true);
-              }}
-            >
-              <Edit className="h-4 w-4" />
-            </Button>
           </div>
         );
       },
@@ -194,53 +264,27 @@ export default function AdminCertificateView() {
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Status Sertifikat</DialogTitle>
+            <DialogTitle>Alasan Penolakan</DialogTitle>
           </DialogHeader>
 
           {currentRequest && (
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-medium">NIM</label>
-                <p className="font-semibold">{currentRequest.nim}</p>
+                <Textarea
+                  placeholder="Masukkan alasan penolakan..."
+                  value={keterangan}
+                  onChange={(e) => setKeterangan(e.target.value)}
+                  className="w-full p-2 text-sm border rounded-md resize-none"
+                  rows={3}
+                  required
+                />
               </div>
-
-              <div>
-                <label className="text-sm font-medium">Nama Asisten</label>
-                <p className="font-semibold">{currentRequest.nama_asisten}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium">Status Saat Ini</label>
-                <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Pilih status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="Disetujui">Disetujui</SelectItem>
-                    <SelectItem value="Ditolak">Ditolak</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {selectedStatus === "Ditolak" && (
-                <div>
-                  <label className="text-sm font-medium">Alasan Penolakan</label>
-                  <textarea
-                    placeholder="Masukkan alasan penolakan..."
-                    value={keterangan}
-                    onChange={(e) => setKeterangan(e.target.value)}
-                    className="w-full p-2 text-sm border rounded-md resize-none"
-                    rows={3}
-                  />
-                </div>
-              )}
 
               <div className="flex gap-2 justify-end">
                 <Button variant="outline" onClick={handleCancelEdit} disabled={updating}>
                   Batal
                 </Button>
-                <Button onClick={handleStatusChange} disabled={updating}>
+                <Button onClick={handleStatusChange} disabled={updating || !keterangan.trim()}>
                   {updating ? "Menyimpan..." : "Simpan"}
                 </Button>
               </div>

@@ -1,6 +1,6 @@
 # Todo
 
-- [ ] Edit profil
+- [x] Edit profil
 
 - [ ] Navbar
 
@@ -17,7 +17,7 @@
 - [ ] 10. Tahun mulai mengajar dibuat seperti periode
 
 
-- [ ] 12. Help center masukin link dm instagram
+- [x] 12. Help center masukin link dm instagram
 
 - [ ] 13. Setting untuk ganti password
 
@@ -28,7 +28,7 @@
 
 jadwal (√), data lab (cuma tampil atau gimana), kalab (belum), sertifikat (√), asisten (√)
 
-- [ ] 17. Sertifikat : tujuan pengajuan dan ajukan
+- [x] 17. Sertifikat : tujuan pengajuan dan ajukan
 
 Yang tidak perlu d dashboard
 * Data asisten

@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Building } from 'lucide-react';
-import LoginForm from './login-form';
+import Link from "next/link";
+import { Building } from "lucide-react";
+import LoginForm from "./login-form";
 
 export default function LoginPage() {
   return (
@@ -8,10 +8,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
-            <a
-              href="#"
-              className="flex flex-col items-center gap-2 font-medium"
-            >
+            <a href="#" className="flex flex-col items-center gap-2 font-medium">
               <div className="flex h-24 w-24 items-center justify-center rounded-md">
                 <Building className="size-24" />
               </div>
@@ -20,12 +17,6 @@ export default function LoginPage() {
             <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
           </div>
           <LoginForm />
-        </div>
-        <div className="text-center ">
-          Don&apos;t have an account?{' '}
-          <Link href="/register" className="underline underline-offset-4">
-            Register (sementara)
-          </Link>
         </div>
       </div>
     </div>

@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
+import { HelpCircle } from "lucide-react";
 
 export function NavUser({ user }) {
   const { isMobile } = useSidebar();
@@ -97,6 +98,17 @@ export function NavUser({ user }) {
               <DropdownMenuItem>
                 <Bell />
                 Notifications
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link
+                  href={
+                    "https://www.instagram.com/labjif.upnyk?utm_source=ig_web_button_share_sheet&igsh=NWl6Y2lueHo0ZDNq"
+                  }
+                  target="_blank"
+                >
+                  <HelpCircle />
+                  Butuh Bantuan
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
