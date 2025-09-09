@@ -64,9 +64,16 @@ export const columns = [
     },
   },
   {
-    accessorKey: 'waktu',
+    accessorKey: 'waktu_mulai',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Waktu" />
+      <DataTableColumnHeader column={column} title="Waktu Mulai" />
+    ),
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'waktu_selesai',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Waktu Selesai" />
     ),
     enableSorting: true,
   },

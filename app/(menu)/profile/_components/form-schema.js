@@ -49,3 +49,19 @@ export const defaultValues = {
     profile_picture: "",
   },
 };
+
+// Change password schema
+export const changePasswordSchema = z.object({
+  currentPassword: z.string().min(1, "Password lama harus diisi"),
+  newPassword: z.string().min(6, "Password baru minimal 6 karakter"),
+  confirmPassword: z.string().min(1, "Konfirmasi password harus diisi"),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Password baru dan konfirmasi password tidak sama",
+  path: ["confirmPassword"],
+});
+
+export const changePasswordDefaultValues = {
+  currentPassword: "",
+  newPassword: "",
+  confirmPassword: "",
+};

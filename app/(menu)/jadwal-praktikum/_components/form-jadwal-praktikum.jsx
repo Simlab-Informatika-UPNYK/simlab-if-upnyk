@@ -46,7 +46,8 @@ export function FormJadwalPraktikum({
       labId: "",
       aslabIds: [],
       jenisPraktikan: "",
-      waktu: "",
+      waktuMulai: "",
+      waktuSelesai: "",
       tahunSemesterId: "",
     },
   });
@@ -255,15 +256,30 @@ export function FormJadwalPraktikum({
           )}
         />
 
-        {/* Waktu */}
+        {/* Waktu Mulai */}
         <FormField
           control={form.control}
-          name="waktu"
+          name="waktuMulai"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Waktu</FormLabel>
+              <FormLabel>Waktu Mulai</FormLabel>
               <FormControl>
-                <Input placeholder="Contoh: 13:00-15:00" {...field} />
+                <Input type="time" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Waktu Selesai */}
+        <FormField
+          control={form.control}
+          name="waktuSelesai"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Waktu Selesai</FormLabel>
+              <FormControl>
+                <Input type="time" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

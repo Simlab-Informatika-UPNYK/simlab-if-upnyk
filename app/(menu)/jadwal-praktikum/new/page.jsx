@@ -31,7 +31,8 @@ export default async function Page() {
         hari: "",
         labId: "",
         jenisPraktikan: "",
-        waktu: "",
+        waktuMulai: "",
+        waktuSelesai: "",
         tahunSemesterId: "",
         aslabIds: [
           {

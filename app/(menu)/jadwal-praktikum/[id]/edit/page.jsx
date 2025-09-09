@@ -27,15 +27,15 @@ export default async function EditPage({ params }) {
     getTahunSemesterOptions(),
   ]);
 
+  if (!jadwal) {
+    redirect("/jadwal-praktikum");
+  }
+
   if (
     session.user.role === "aslab" &&
     session.user.username &&
     !jadwal.kelasAslab.some((item) => item.aslab?.nim === session.user.username)
   ) {
-    redirect("/jadwal-praktikum");
-  }
-
-  if (!jadwal) {
     redirect("/jadwal-praktikum");
   }
 
@@ -45,7 +45,8 @@ export default async function EditPage({ params }) {
     dosenPengampuId: jadwal.dosenPengampu?.id.toString() ?? "",
     jumlahPraktikan: jadwal.jumlah_praktikan ?? "",
     hari: jadwal.hari ?? "",
-    waktu: jadwal.waktu ?? "",
+    waktuMulai: jadwal.waktu_mulai ?? "",
+    waktuSelesai: jadwal.waktu_selesai ?? "",
     labId: jadwal.lab?.id.toString() ?? "",
     jenisPraktikan: jadwal.jenis_praktikan ?? "",
     tahunSemesterId: jadwal.tahun_semester?.toString() ?? "",

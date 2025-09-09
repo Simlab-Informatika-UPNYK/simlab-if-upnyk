@@ -1,10 +1,11 @@
 "use server";
 
 import { db } from "@/db";
-import { user, aslab } from "@/db/schema";
+import { user, aslab, account } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getServerSession } from "@/lib/auth-server";
+import { headers } from "next/headers";
 
 // Get user profile data
 export async function getProfile() {
@@ -158,5 +159,26 @@ export async function checkEmailAvailability(email, currentUserId) {
   } catch (error) {
     console.error("Error checking email:", error);
     return false;
+  }
+}
+
+// Change password
+export async function changePassword(data) {
+  try {
+    const { auth } = await import("@/lib/auth");
+
+    await auth.api.changePassword({
+      body: {
+        newPassword: data.newPassword,
+        currentPassword: data.currentPassword,
+      },
+      headers: await headers(),
+    });
+
+    revalidatePath("/profile");
+    return { success: true, message: "Password berhasil diubah" };
+  } catch (error) {
+    console.error("Error changing password:", error);
+    throw new Error(error.message || "Failed to change password");
   }
 }

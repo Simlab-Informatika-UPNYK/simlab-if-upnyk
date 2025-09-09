@@ -1,8 +1,9 @@
 import { getServerSession } from "@/lib/auth-server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProfileForm } from "./_components/form-profile";
-import { getProfile, updateProfile } from "./actions";
+import { getProfile, updateProfile, changePassword } from "./actions";
 import { ProfileFormAslab } from "./_components/form-profile-aslab";
+import { ChangePasswordForm } from "./_components/form-change-password";
 
 const ProfilePage = async () => {
   const session = await getServerSession();
@@ -15,6 +16,16 @@ const ProfilePage = async () => {
       // Tidak perlu return apa-apa, cukup await selesai untuk trigger success toast
     } catch (error) {
       console.error("Error in handleUpdateProfile:", error);
+      throw error;
+    }
+  };
+
+  const handleChangePassword = async (data) => {
+    "use server";
+    try {
+      await changePassword(data);
+    } catch (error) {
+      console.error("Error in handleChangePassword:", error);
       throw error;
     }
   };
@@ -39,7 +50,7 @@ const ProfilePage = async () => {
   };
 
   return (
-    <div className={`space-y-6 ${session.user.role === "aslab" ? "md:space-y-0 md:grid md:grid-cols-2 gap-4" : ""}`}>
+    <div className={`space-y-6 ${session.user.role === "aslab" ? "md:space-y-0 md:grid lg:grid-cols-2 gap-4" : ""}`}>
       <Card className="w-full">
         <CardHeader>
           <CardTitle>Edit Profil</CardTitle>
@@ -63,6 +74,15 @@ const ProfilePage = async () => {
           </CardContent>
         </Card>
       )}
+
+      <Card className="w-full">
+        <CardHeader>
+          <CardTitle>Ganti Password</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ChangePasswordForm onSubmit={handleChangePassword} />
+        </CardContent>
+      </Card>
     </div>
   );
 };

@@ -9,15 +9,16 @@ import { redirect } from "next/navigation";
 export default async function JadwalDetailPage({ params }) {
   const { id } = await params;
   const session = await getServerSession();
-  
+
   if (
     session.user.role === "aslab" &&
     session.user.username &&
+    jadwal &&
     !jadwal.kelasAslab.some((item) => item.aslab?.nim === session.user.username)
   ) {
     redirect("/jadwal-praktikum");
   }
-  
+
   const jadwal = await findOneById(id);
   if (!jadwal) {
     return (
@@ -89,8 +90,12 @@ export default async function JadwalDetailPage({ params }) {
                 <p className="font-medium">{jadwal.hari}</p>
               </div>
               <div>
-                <h3 className="text-sm text-gray-500">Waktu</h3>
-                <p className="font-medium">{jadwal.waktu}</p>
+                <h3 className="text-sm text-gray-500">Waktu Mulai</h3>
+                <p className="font-medium">{jadwal.waktu_mulai}</p>
+              </div>
+              <div>
+                <h3 className="text-sm text-gray-500">Waktu Selesai</h3>
+                <p className="font-medium">{jadwal.waktu_selesai}</p>
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Laboratorium</h3>
