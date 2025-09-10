@@ -64,6 +64,13 @@
       "when": 1757405056220,
       "tag": "0008_add_waktu_mulai_selesai",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1757405824717,
+      "tag": "0009_add_requires_password_change_column",
+      "breakpoints": true
     }
   ]
 }

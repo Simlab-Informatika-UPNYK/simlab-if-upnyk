@@ -165,6 +165,11 @@ export async function checkEmailAvailability(email, currentUserId) {
 // Change password
 export async function changePassword(data) {
   try {
+    const session = await getServerSession();
+    if (!session?.user) {
+      throw new Error("User not authenticated");
+    }
+
     const { auth } = await import("@/lib/auth");
 
     await auth.api.changePassword({
@@ -174,6 +179,15 @@ export async function changePassword(data) {
       },
       headers: await headers(),
     });
+
+    // Also update requiresPasswordChange to false if it was true
+    await db
+      .update(user)
+      .set({ 
+        requiresPasswordChange: false,
+        updatedAt: new Date()
+      })
+      .where(eq(user.id, session.user.id));
 
     revalidatePath("/profile");
     return { success: true, message: "Password berhasil diubah" };

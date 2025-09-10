@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { login } from './actions';
-import { useRouter } from 'next/navigation';
-import { useToast } from '@/hooks/use-toast';
+import { useState } from "react";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { login } from "./actions";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
 
 export default function LoginForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
@@ -19,23 +20,33 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPending(true);
-    setError('');
+    setError("");
 
     const formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
+    formData.append("username", username);
+    formData.append("password", password);
     const result = await login(formData);
 
     setPending(false);
 
     if (result.success) {
-      toast({
-        title: 'Berhasil Login',
-        description: `Login berhasil, sedang mengalihkan...`,
-      });
-      router.replace('/dashboard');
+      const user = (await authClient.getSession()).data.user;
+      if (user.requiresPasswordChange === true) {
+        // Redirect to change password page
+        toast({
+          title: "Login Berhasil",
+          description: "Anda perlu mengubah password sebelum melanjutkan.",
+        });
+        router.replace("/change-password");
+      } else {
+        toast({
+          title: "Berhasil Login",
+          description: `Login berhasil, sedang mengalihkan...`,
+        });
+        router.replace("/dashboard");
+      }
     } else {
-      setError(result.error || 'Login gagal. Cek kembali data Anda.');
+      setError(result.error || "Login gagal. Cek kembali data Anda.");
     }
   };
 
@@ -50,7 +61,7 @@ export default function LoginForm() {
             placeholder="Masukkan NIM"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={error ? 'border-red-500 focus-visible:ring-red-500' : ''}
+            className={error ? "border-red-500 focus-visible:ring-red-500" : ""}
             required
           />
         </div>
@@ -62,15 +73,13 @@ export default function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={error ? 'border-red-500 focus-visible:ring-red-500' : ''}
+            className={error ? "border-red-500 focus-visible:ring-red-500" : ""}
             required
           />
         </div>
-        {error && (
-          <div className="text-red-500 text-sm text-center">{error}</div>
-        )}
+        {error && <div className="text-red-500 text-sm text-center">{error}</div>}
         <Button type="submit" className="w-full" disabled={pending}>
-          {pending ? 'Loading...' : 'Login'}
+          {pending ? "Loading..." : "Login"}
         </Button>
       </div>
     </form>

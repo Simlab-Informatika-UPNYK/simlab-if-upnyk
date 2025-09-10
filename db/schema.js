@@ -1,19 +1,6 @@
-import {
-  pgTable,
-  serial,
-  text,
-  varchar,
-  timestamp,
-  date,
-  integer,
-  pgEnum,
-  boolean,
-} from "drizzle-orm/pg-core";
+import { pgTable, serial, text, varchar, timestamp, date, integer, pgEnum, boolean } from "drizzle-orm/pg-core";
 
-export const programStudiEnum = pgEnum("program_studi", [
-  "Sistem Informasi",
-  "Informatika",
-]);
+export const programStudiEnum = pgEnum("program_studi", ["Sistem Informasi", "Informatika"]);
 export const statusAslabEnum = pgEnum("status_aslab", ["Aktif", "Tidak Aktif"]);
 export const userRoleEnum = pgEnum("user_role", ["admin", "aslab"]);
 
@@ -75,9 +62,7 @@ export const kelas_praktikum = pgTable("kelas_praktikum", {
   id: serial("id").primaryKey(),
   created_at: timestamp("created_at"),
   kelas: text("kelas"),
-  mata_kuliah: integer("mata_kuliah").references(
-    () => mata_kuliah_praktikum.id
-  ),
+  mata_kuliah: integer("mata_kuliah").references(() => mata_kuliah_praktikum.id),
   id_dosen: integer("id_dosen").references(() => dosen_pengampu.id),
   jumlah_praktikan: integer("jumlah_praktikan"),
   hari: text("hari"),
@@ -138,6 +123,9 @@ export const user = pgTable("user", {
   username: text("username").unique(),
   displayUsername: text("display_username"),
   nip: text("nip"),
+  requiresPasswordChange: boolean("requires_password_change")
+    .$defaultFn(() => true)
+    .notNull(),
 });
 
 export const session = pgTable("session", {
@@ -176,12 +164,8 @@ export const verification = pgTable("verification", {
   identifier: text("identifier").notNull(),
   value: text("value").notNull(),
   expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
-  ),
-  updatedAt: timestamp("updated_at").$defaultFn(
-    () => /* @__PURE__ */ new Date()
-  ),
+  createdAt: timestamp("created_at").$defaultFn(() => /* @__PURE__ */ new Date()),
+  updatedAt: timestamp("updated_at").$defaultFn(() => /* @__PURE__ */ new Date()),
 });
 
 export const tahun_semester = pgTable("tahun_semester", {

@@ -87,6 +87,16 @@ export async function createAslab(data) {
           aslab_id: aslabData.id_aslab,
         },
       });
+
+      // Ensure requiresPasswordChange is set to true for new ASLAB users
+      // We need to update the user after creation since better-auth might not support additional fields in signUp
+      const userResult = await db.select().from(user).where(eq(user.username, data.nim));
+      if (userResult[0]) {
+        await db
+          .update(user)
+          .set({ requiresPasswordChange: true })
+          .where(eq(user.id, userResult[0].id));
+      }
     } catch (authError) {
       // Jika gagal membuat user, hapus data aslab yang baru dibuat
       await db.delete(aslab).where(eq(aslab.id_aslab, aslabData.id_aslab));
