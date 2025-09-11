@@ -136,7 +136,7 @@ export default function Page() {
           )}
         </div>
         <div className="flex gap-2">
-          <Link href="/jadwal-praktikum/new">
+          <Link href={`/jadwal-praktikum/new${currentTahunSemester ? `?tahunsemester=${currentTahunSemester}` : ""}`}>
             <Button>
               <PlusCircle className="mr-2 h-4 w-4" />
               Tambah Jadwal

@@ -3,11 +3,11 @@ import { columns } from "./_components/columns";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getTahunSemester } from "./actions";
+import { getTahunSemesterWithUsage } from "./actions";
 import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
 async function TahunSemesterPage() {
-  const data = await getTahunSemester();
+  const data = await getTahunSemesterWithUsage();
 
   return (
     <div className="container mx-auto px-4 py-2">

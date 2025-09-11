@@ -32,12 +32,9 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
       return (
-        <Link
-          href={`/admin/tahun-semester/${data.slug}`}
-          className="text-blue-600"
-        >
+        <span className="text-foreground">
           {data.tahun_ajaran} Semester {data.semester}
-        </Link>
+        </span>
       );
     },
   },

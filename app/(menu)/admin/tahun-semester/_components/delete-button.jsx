@@ -17,7 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { deleteTahunSemester } from "../actions";
 
-export function DeleteButton({ slug, variant = "outline" }) {
+export function DeleteButton({ slug, variant = "outline", disabled = false }) {
   const router = useRouter();
   const { toast } = useToast();
 
@@ -42,7 +42,12 @@ export function DeleteButton({ slug, variant = "outline" }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant={variant} size="icon" className="text-red-500">
+        <Button 
+          variant={variant} 
+          size="icon" 
+          className={`text-red-500 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={disabled}
+        >
           <Trash className="h-4 w-4" />
         </Button>
       </AlertDialogTrigger>

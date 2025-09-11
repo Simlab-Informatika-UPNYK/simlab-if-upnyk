@@ -177,7 +177,7 @@ export async function createJadwal(formData) {
       const [newJadwal] = await tx.insert(kelas_praktikum).values(dbData).returning();
 
       // Insert related aslab if any
-      if (formData.aslabIds?.length) {
+      if (formData.aslabIds?.length > 0) {
         await tx.insert(kelas_aslab).values(
           formData.aslabIds.map((aslabId) => ({
             kelas: newJadwal.id,

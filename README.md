@@ -1,26 +1,22 @@
 # Todo
-
-
-- [ ] Navbar
-
-- [ ] 4. Dosen pengampu, mata kuliah pake drop down 
-
-- [ ] 5. Buatkan cara penulisan untuk kelas karena input sendiri 
---> panduan untuk menginput kelas (jadwal di menu sekarang), apakah kelas diganti menjadi jadwal?
-
-- [ ] 6. Kondisi b, rr, rb
-
-- [ ] 7. Buat password auto nanti baru asisten yang ngedit
-- [ ] 8. Ganti jadi rincian honor asisten
-
-- [ ] 10. Tahun mulai mengajar dibuat seperti periode
+- [ ] style navbar
+- [ ] jenis praktikan apa aja?
+- [ ] perbaiki tahun, jika tahun semester sudah dipakai di tabel lain, maka tidak bisa di edit
+- [ ] halaman mata kuliah dipisahkan per periode, jumlah kelas per periode
 
 - [ ] 14. Jadwal, kalab, sama pengumuman di dashboard
-
-
+- [ ] perbaiki tabel di halaman /honor
+    - [ ] nama, nim, mata kuliah (kelas) (list), jumlah honor
+    - [ ] bisa di export excel / pdf
+- [ ] perbaiki halaman inventaris
+    - [ ] halaman inventaris setelah dihapus belum ter refresh      
+    - [ ] detail spec pc, pindahkan ke keterangan
+    - [ ] nama, tahun, kondisi, keterangan
+- [ ] perbaiki halaman jadwal
+    - [ ] buat agar bisa di print menjadi pdf/excel
+- [ ] data updateable di halaman honor asisten 
+- [ ] nama kajur bisa di update, tanda tangan kajur bisa di upload di halaman sertifikat
 - [ ] 16. Asisten : jadwal (√), data lab, kalab, sertifikat (√), asisten (√)
-
-jadwal (√), data lab (cuma tampil atau gimana), kalab (belum), sertifikat (√), asisten (√)
 
 
 Yang tidak perlu d dashboard
@@ -28,6 +24,12 @@ Yang tidak perlu d dashboard
 * Pengumuman
 * Computer usage
 
+- [x] 6. Kondisi b, rr, rb
+- [x] 8. Ganti jadi rincian honor asisten
+- [x] 10. Tahun mulai mengajar dibuat seperti periode
+- [x] 4. Dosen pengampu, mata kuliah pake drop down 
+- [x] 5. Buatkan cara penulisan untuk kelas karena input sendiri 
+- [x] 7. Buat password auto nanti baru asisten yang ngedit
 - [x] 9. Waktu mulai dan selesai kayak di logbook sadewa
 - [x] 13. Setting untuk ganti password (sudah bisa, bisa tingkatin ui nya)
 - [x] Edit profil

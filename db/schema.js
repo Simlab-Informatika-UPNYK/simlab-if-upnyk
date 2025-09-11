@@ -16,7 +16,7 @@ export const aslab = pgTable("aslab", {
 
 export const aslab_honor = pgTable("aslab_honor", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   aslab: integer("aslab").references(() => aslab.id_aslab),
   tahun_semester: integer("tahun_semester").references(() => tahun_semester.id),
   status_honor: text("status_honor"),
@@ -25,7 +25,7 @@ export const aslab_honor = pgTable("aslab_honor", {
 
 export const dosen_pengampu = pgTable("dosen_pengampu", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   nama: text("nama"),
   nip: text("nip"),
   email: text("email"),
@@ -34,7 +34,7 @@ export const dosen_pengampu = pgTable("dosen_pengampu", {
 
 export const honor_jenis = pgTable("honor_jenis", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   jenis: text("jenis"),
   biaya: integer("biaya"),
   slug: text("slug").unique().notNull(),
@@ -42,7 +42,7 @@ export const honor_jenis = pgTable("honor_jenis", {
 
 export const kalab = pgTable("kalab", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   nama: text("nama"),
   nip: text("nip"),
   email: text("email"),
@@ -53,14 +53,14 @@ export const kalab = pgTable("kalab", {
 
 export const kelas_aslab = pgTable("kelas_aslab", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   aslab: integer("aslab").references(() => aslab.id_aslab),
   kelas: integer("kelas").references(() => kelas_praktikum.id),
 });
 
 export const kelas_praktikum = pgTable("kelas_praktikum", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   kelas: text("kelas"),
   mata_kuliah: integer("mata_kuliah").references(() => mata_kuliah_praktikum.id),
   id_dosen: integer("id_dosen").references(() => dosen_pengampu.id),
@@ -75,7 +75,7 @@ export const kelas_praktikum = pgTable("kelas_praktikum", {
 
 export const lab = pgTable("lab", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   nama: text("nama"),
   lantai: text("lantai"),
   kapasitas: integer("kapasitas"),
@@ -85,7 +85,7 @@ export const lab = pgTable("lab", {
 
 export const mata_kuliah_praktikum = pgTable("mata_kuliah_praktikum", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   nama: text("nama"),
   semester: text("semester"),
   jumlah_kelas: integer("jumlah_kelas"),
@@ -95,7 +95,7 @@ export const mata_kuliah_praktikum = pgTable("mata_kuliah_praktikum", {
 
 export const permintaan_sertifikat = pgTable("permintaan_sertifikat", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   updated_at: timestamp("updated_at"),
   id_aslab: integer("id_aslab").references(() => aslab.id_aslab),
   waktu_pengajuan: timestamp("waktu_pengajuan"),
@@ -170,7 +170,7 @@ export const verification = pgTable("verification", {
 
 export const tahun_semester = pgTable("tahun_semester", {
   id: serial("id").primaryKey(),
-  created_at: timestamp("created_at"),
+  created_at: timestamp("created_at").defaultNow(),
   semester: text("semester"),
   tahun_ajaran: text("tahun_ajaran"),
   slug: text("slug").unique().notNull(),

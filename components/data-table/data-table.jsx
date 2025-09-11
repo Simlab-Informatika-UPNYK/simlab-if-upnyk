@@ -8,29 +8,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import React from "react";
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Input } from "../ui/input";
 
-export function DataTable({
-  columns,
-  data,
-  globalSearch,
-  viewOptions,
-  toolbar,
-  filters = [],
-  pagination,
-  meta,
-}) {
+export function DataTable({ columns, data, globalSearch, viewOptions, toolbar, filters = [], pagination, meta }) {
   const [sorting, setSorting] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState([]);
   const [rowSelection, setRowSelection] = React.useState({});
@@ -70,12 +54,7 @@ export function DataTable({
             if (!column) return null;
 
             return (
-              <DataTableFacetedFilter
-                key={filter.id}
-                column={column}
-                title={filter.title}
-                options={filter.options}
-              />
+              <DataTableFacetedFilter key={filter.id} column={column} title={filter.title} options={filter.options} />
             );
           })}
         </div>
@@ -89,12 +68,7 @@ export function DataTable({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                      {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                     </TableHead>
                   );
                 })}
@@ -104,26 +78,15 @@ export function DataTable({
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+                    <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
+                <TableCell colSpan={columns.length} className="h-24 text-center">
                   No results.
                 </TableCell>
               </TableRow>

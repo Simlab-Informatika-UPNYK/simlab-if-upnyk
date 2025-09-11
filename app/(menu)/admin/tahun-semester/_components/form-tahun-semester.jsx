@@ -1,34 +1,16 @@
-'use client';
+"use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { tahunSemesterSchema, defaultValues } from './form-schema';
-import { useToast } from '@/hooks/use-toast';
-import { useRouter } from 'next/navigation';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { tahunSemesterSchema, defaultValues } from "./form-schema";
+import { useToast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
 
-export function FormTahunSemester({
-  initialData,
-  onSubmitHandler,
-  successMessage,
-  successRedirect,
-}) {
+export function FormTahunSemester({ initialData, onSubmitHandler, successMessage, successRedirect }) {
   const { toast } = useToast();
   const router = useRouter();
 
@@ -42,9 +24,9 @@ export function FormTahunSemester({
       await onSubmitHandler(values);
 
       toast({
-        title: 'Berhasil',
+        title: "Berhasil",
         description: successMessage,
-        variant: 'success',
+        variant: "success",
       });
 
       if (successRedirect) {
@@ -53,9 +35,9 @@ export function FormTahunSemester({
       }
     } catch (error) {
       toast({
-        title: 'Gagal',
+        title: "Gagal",
         description: error.message,
-        variant: 'destructive',
+        variant: "destructive",
       });
     }
   }
@@ -71,7 +53,7 @@ export function FormTahunSemester({
               <FormItem>
                 <FormLabel>Tahun Ajaran</FormLabel>
                 <FormControl>
-                  <Input placeholder="Contoh: 2022/2023" {...field} />
+                  <Input placeholder="Pastika format penulisan benar" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -84,10 +66,7 @@ export function FormTahunSemester({
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Semester</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Pilih semester" />

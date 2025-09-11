@@ -42,7 +42,19 @@ export default async function Page() {
           },
         ],
       }
-    : {};
+    : {
+        kelas: "",
+        mataKuliahId: "",
+        dosenPengampuId: "",
+        jumlahPraktikan: 0,
+        hari: "",
+        labId: "",
+        jenisPraktikan: "",
+        waktuMulai: "",
+        waktuSelesai: "",
+        tahunSemesterId: "",
+        aslabIds: [],
+      };
 
   return (
     <FormJadwalPraktikum
