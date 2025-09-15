@@ -64,3 +64,11 @@ export const permintaanSertifikatRelations = relations(permintaan_sertifikat, ({
     references: [aslab.id_aslab],
   }),
 }));
+
+export const mataKuliahPraktikumRelations = relations(mata_kuliah_praktikum, ({ many }) => ({
+  kelasPraktikum: many(kelas_praktikum),
+}));
+
+export const tahunSemesterRelations = relations(tahun_semester, ({ many }) => ({
+  kelasPraktikum: many(kelas_praktikum),
+}));

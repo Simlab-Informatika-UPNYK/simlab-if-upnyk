@@ -7,39 +7,22 @@ import { DeleteButton } from "./delete-button";
 
 export const columns = [
   {
-    accessorKey: "Kode Mata Kuliah",
+    accessorKey: "kode_mk",
     header: "Kode Mata Kuliah",
   },
   {
-    accessorKey: "Nama",
+    accessorKey: "nama",
     header: ({ column }) => {
       return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
+        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Nama
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
-    cell: ({ row }) => {
-      const mk_praktikum = row.original;
-      return (
-        <Link href={`/admin/mk-praktikum/${mk_praktikum.slug}`}>
-          <span className="text-blue-600 hover:underline cursor-pointer">
-            {mk_praktikum["Nama"]}
-          </span>
-        </Link>
-      );
-    },
   },
   {
-    accessorKey: "Semester",
-    header: "Semester",
-  },
-  {
-    accessorKey: "Jumlah Kelas",
+    accessorKey: "jumlah_kelas",
     header: "Jumlah Kelas",
   },
   {

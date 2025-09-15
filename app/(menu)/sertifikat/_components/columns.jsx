@@ -68,25 +68,4 @@ export const columns = [
       return <span className="font-medium">{data.total_courses} kelas</span>;
     },
   },
-  /*   {
-    header: "Aksi",
-    id: "Aksi",
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <div className="flex gap-2">
-          <Link href={`/sertifikat/${data.nim}`}>
-            <Button variant="outline" size="sm">
-              <Eye className="h-4 w-4 mr-1" />
-              Detail
-            </Button>
-          </Link>
-          { <Button size="sm">
-            <Printer className="h-4 w-4 mr-1" />
-            Cetak
-          </Button> *
-        </div>
-      );
-    },
-  }, */
 ];

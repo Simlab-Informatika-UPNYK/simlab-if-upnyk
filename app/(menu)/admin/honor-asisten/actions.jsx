@@ -25,30 +25,6 @@ export async function getAllHonorJenis() {
 }
 
 /**
- * Create a new honor jenis record
- */
-export async function createHonorJenis({ jenis, biaya }) {
-  try {
-    await requireAdmin();
-    const data = await db
-      .insert(honor_jenis)
-      .values({
-        jenis,
-        biaya,
-        slug: slugify(jenis),
-        created_at: new Date()
-      })
-      .returning();
-
-    revalidatePath("/admin/honor-asisten");
-    return data[0];
-  } catch (error) {
-    const errorMessage = translatePostgresError(error);
-    throw new Error(errorMessage);
-  }
-}
-
-/**
  * Update an existing honor jenis record
  */
 export async function updateHonorJenis({ id, jenis, biaya }) {
@@ -66,24 +42,6 @@ export async function updateHonorJenis({ id, jenis, biaya }) {
 
     revalidatePath("/admin/honor-asisten");
     return data[0];
-  } catch (error) {
-    const errorMessage = translatePostgresError(error);
-    throw new Error(errorMessage);
-  }
-}
-
-/**
- * Delete a honor jenis record
- */
-export async function deleteHonorJenis(id) {
-  try {
-    await requireAdmin();
-    await db
-      .delete(honor_jenis)
-      .where(eq(honor_jenis.id, id));
-
-    revalidatePath("/admin/honor-asisten");
-    return { success: true };
   } catch (error) {
     const errorMessage = translatePostgresError(error);
     throw new Error(errorMessage);

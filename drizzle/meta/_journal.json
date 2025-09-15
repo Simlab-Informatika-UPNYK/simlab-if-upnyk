@@ -71,6 +71,13 @@
       "when": 1757405824717,
       "tag": "0009_add_requires_password_change_column",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1757647440857,
+      "tag": "0010_add_unique_in_kode_mk",
+      "breakpoints": true
     }
   ]
 }

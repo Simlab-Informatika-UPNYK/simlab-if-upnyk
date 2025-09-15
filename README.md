@@ -1,29 +1,29 @@
 # Todo
 - [ ] style navbar
 - [ ] jenis praktikan apa aja?
-- [ ] perbaiki tahun, jika tahun semester sudah dipakai di tabel lain, maka tidak bisa di edit
-- [ ] halaman mata kuliah dipisahkan per periode, jumlah kelas per periode
 
 - [ ] 14. Jadwal, kalab, sama pengumuman di dashboard
-- [ ] perbaiki tabel di halaman /honor
-    - [ ] nama, nim, mata kuliah (kelas) (list), jumlah honor
-    - [ ] bisa di export excel / pdf
 - [ ] perbaiki halaman inventaris
     - [ ] halaman inventaris setelah dihapus belum ter refresh      
     - [ ] detail spec pc, pindahkan ke keterangan
     - [ ] nama, tahun, kondisi, keterangan
 - [ ] perbaiki halaman jadwal
     - [ ] buat agar bisa di print menjadi pdf/excel
-- [ ] data updateable di halaman honor asisten 
 - [ ] nama kajur bisa di update, tanda tangan kajur bisa di upload di halaman sertifikat
 - [ ] 16. Asisten : jadwal (√), data lab, kalab, sertifikat (√), asisten (√)
 
-
+****
 Yang tidak perlu d dashboard
 * Data asisten
 * Pengumuman
 * Computer usage
 
+- [x] perbaiki tabel di halaman /honor
+    - [x] nama, nim, mata kuliah (kelas) (list), jumlah honor
+    - [x] bisa di export excel 
+- [x] data updateable di halaman honor asisten 
+- [x] halaman mata kuliah dipisahkan per periode, jumlah kelas per periode
+- [x] perbaiki tahun, jika tahun semester sudah dipakai di tabel lain, maka tidak bisa di edit
 - [x] 6. Kondisi b, rr, rb
 - [x] 8. Ganti jadi rincian honor asisten
 - [x] 10. Tahun mulai mengajar dibuat seperti periode

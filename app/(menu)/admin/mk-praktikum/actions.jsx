@@ -1,24 +1,44 @@
 "use server";
 import { db } from "@/db";
-import { mata_kuliah_praktikum } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { kelas_praktikum, mata_kuliah_praktikum, tahun_semester } from "@/db/schema";
+import { asc, count, desc, eq } from "drizzle-orm";
 import { mkPraktikumSchema } from "./_components/form-schema";
 import slugify from "react-slugify";
 import { findAllOrdered, findOneBySlug, checkExists } from "./db-utils";
 import { requireAdmin } from "@/lib/admin-auth";
 import { translatePostgresError } from "@/lib/postgres-error-translator";
+import { mataKuliahPraktikumRelations } from "@/db/relations";
 
-export const getAllMk = async () => {
+export const getAllMk = async (year_id = 1) => {
   try {
-    const result = await findAllOrdered();
-    return result.map((item) => ({
-      "Kode Mata Kuliah": item.kode_mk,
-      Nama: item.nama,
-      Semester: item.semester,
-      "Jumlah Kelas": item.jumlah_kelas,
-      id: item.id,
-      slug: item.slug,
-    }));
+    const allmk = await db
+      .select({
+        id: mata_kuliah_praktikum.id,
+        kode_mk: mata_kuliah_praktikum.kode_mk,
+        nama: mata_kuliah_praktikum.nama,
+        slug: mata_kuliah_praktikum.slug,
+      })
+      .from(mata_kuliah_praktikum)
+      .orderBy(asc(mata_kuliah_praktikum.kode_mk));
+
+    const kelasCount = await db
+      .select({
+        mata_kuliah: kelas_praktikum.mata_kuliah,
+        jumlah_kelas: count(kelas_praktikum.id),
+      })
+      .from(kelas_praktikum)
+      .where(eq(kelas_praktikum.tahun_semester, year_id))
+      .groupBy(kelas_praktikum.mata_kuliah);
+
+    const mergedData = allmk.map((mk) => {
+      const countData = kelasCount.find((k) => k.mata_kuliah === mk.id);
+      return {
+        ...mk,
+        jumlah_kelas: countData ? countData.jumlah_kelas : 0,
+      };
+    });
+
+    return mergedData;
   } catch (error) {
     const errorMessage = translatePostgresError(error);
     throw new Error(errorMessage);
@@ -31,10 +51,8 @@ export const getOneMk = async (slug) => {
     if (!item) return null;
 
     return {
-      "Kode Mata Kuliah": item.kode_mk,
-      Nama: item.nama,
-      Semester: item.semester,
-      "Jumlah Kelas": item.jumlah_kelas,
+      kode_mk: item.kode_mk,
+      nama: item.nama,
       id: item.id,
       slug: item.slug,
     };
@@ -51,17 +69,12 @@ export async function createMk(formData) {
     await requireAdmin();
     const validatedData = mkPraktikumSchema.parse(formData);
     const mkData = {
-      kode_mk: validatedData["Kode Mata Kuliah"],
-      nama: validatedData.Nama,
-      semester: validatedData.Semester,
-      jumlah_kelas: validatedData["Jumlah Kelas"],
-      slug: slugify(validatedData.Nama),
+      kode_mk: validatedData.kode_mk,
+      nama: validatedData.nama,
+      slug: slugify(validatedData.nama),
     };
 
-    const [data] = await db
-      .insert(mata_kuliah_praktikum)
-      .values(mkData)
-      .returning();
+    const [data] = await db.insert(mata_kuliah_praktikum).values(mkData).returning();
 
     return data;
   } catch (error) {
@@ -76,10 +89,8 @@ export async function editMk(id, formData) {
       await requireAdmin();
       const validatedData = mkPraktikumSchema.parse(formData);
       const mkData = {
-        kode_mk: validatedData["Kode Mata Kuliah"],
-        nama: validatedData.Nama,
-        semester: validatedData.Semester,
-        jumlah_kelas: validatedData["Jumlah Kelas"],
+        kode_mk: validatedData.kode_mk,
+        nama: validatedData.nama,
         slug: slugify(validatedData.Nama),
       };
 
@@ -100,9 +111,7 @@ export async function editMk(id, formData) {
 export async function deleteMk(id) {
   try {
     await requireAdmin();
-    await db
-      .delete(mata_kuliah_praktikum)
-      .where(eq(mata_kuliah_praktikum.id, id));
+    await db.delete(mata_kuliah_praktikum).where(eq(mata_kuliah_praktikum.id, id));
     return { success: true };
   } catch (error) {
     const errorMessage = translatePostgresError(error);

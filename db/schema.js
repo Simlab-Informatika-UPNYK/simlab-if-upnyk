@@ -90,7 +90,7 @@ export const mata_kuliah_praktikum = pgTable("mata_kuliah_praktikum", {
   semester: text("semester"),
   jumlah_kelas: integer("jumlah_kelas"),
   slug: text("slug").unique().notNull(),
-  kode_mk: integer("kode_mk"),
+  kode_mk: integer("kode_mk").unique().notNull(),
 });
 
 export const permintaan_sertifikat = pgTable("permintaan_sertifikat", {

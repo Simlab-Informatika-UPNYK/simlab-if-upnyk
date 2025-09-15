@@ -26,10 +26,7 @@ export const columns = [
     cell: ({ row }) => {
       const data = row.original;
       return (
-        <Link
-          href={`/honor-praktikum/${data.tahun_semester}/${data.nim}`}
-          className="text-blue-600 hover:underline"
-        >
+        <Link href={`/honor-praktikum/${data.tahun_semester}/${data.nim}`} className="text-blue-600 hover:underline">
           {data.nim}
         </Link>
       );
@@ -51,11 +48,23 @@ export const columns = [
     },
   },
   {
-    accessorKey: "email",
-    header: "Email",
+    accessorKey: "mata_kuliah",
+    header: "Mata Kuliah",
+    cell: ({ row }) => {
+      const mataKuliah = row.getValue("mata_kuliah");
+      if (mataKuliah.length < 1) return "-";
+      const mataKuliahList = mataKuliah.split("|").map((item) => item.trim());
+      return (
+        <ul className="list-disc list-inside">
+          {mataKuliahList.map((item, index) => (
+            <li key={index}>{item}</li>
+          ))}
+        </ul>
+      );
+    },
   },
   {
-    accessorKey: "jumlah_kelas",
+    accessorKey: "jumlah_honor",
     header: ({ column }) => {
       return (
         <Button
@@ -63,18 +72,14 @@ export const columns = [
           className="px-0 hover:bg-black/0"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Jumlah Kelas
+          Jumlah Honor
           <ArrowUpDown />
         </Button>
       );
     },
     cell: ({ row }) => {
-      const jumlahKelas = row.getValue("jumlah_kelas");
-      return (
-        <span className={jumlahKelas > 0 ? "text-green-600 font-medium" : "text-gray-400"}>
-          {jumlahKelas} kelas
-        </span>
-      );
+      const jumlahHonor = row.getValue("jumlah_honor");
+      return <span>{jumlahHonor > 0 ? `Rp. ${jumlahHonor.toLocaleString("id-ID")}` : "-"}</span>;
     },
   },
 ];
