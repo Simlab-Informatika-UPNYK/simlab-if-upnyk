@@ -1,8 +1,5 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
-import { PlusCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { getAllLab } from "../lab/actions";
 import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 

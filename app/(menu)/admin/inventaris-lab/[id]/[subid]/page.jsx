@@ -1,10 +1,9 @@
-'use client';
+"use client";
 
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { getInventarisById } from '../../actions';
-import InventoryForm, { upsToString } from '../_components/inventory-form';
-// import { upsToString } from "../../_components/inventory-form";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getInventarisById } from "../../actions";
+import InventoryForm from "../_components/inventory-form";
 
 export default function EditInventarisPage() {
   const params = useParams();
@@ -22,7 +21,6 @@ export default function EditInventarisPage() {
           // console.log(result);
           setInventarisData({
             ...result.data,
-            ups: upsToString(result.data.ups),
           });
         }
       } catch (error) {

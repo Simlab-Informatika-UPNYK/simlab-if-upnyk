@@ -53,7 +53,7 @@ export function FormTahunSemester({ initialData, onSubmitHandler, successMessage
               <FormItem>
                 <FormLabel>Tahun Ajaran</FormLabel>
                 <FormControl>
-                  <Input placeholder="Pastika format penulisan benar" {...field} />
+                  <Input placeholder="Pastikan format penulisan benar" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

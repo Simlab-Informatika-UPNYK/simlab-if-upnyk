@@ -2,11 +2,6 @@
 - [ ] style navbar
 - [ ] jenis praktikan apa aja?
 
-- [ ] 14. Jadwal, kalab, sama pengumuman di dashboard
-- [ ] perbaiki halaman inventaris
-    - [ ] halaman inventaris setelah dihapus belum ter refresh      
-    - [ ] detail spec pc, pindahkan ke keterangan
-    - [ ] nama, tahun, kondisi, keterangan
 - [ ] perbaiki halaman jadwal
     - [ ] buat agar bisa di print menjadi pdf/excel
 - [ ] nama kajur bisa di update, tanda tangan kajur bisa di upload di halaman sertifikat
@@ -18,6 +13,11 @@ Yang tidak perlu d dashboard
 * Pengumuman
 * Computer usage
 
+- [x] perbaiki halaman inventaris
+    - [x] halaman inventaris setelah dihapus belum ter refresh      
+    - [x] detail spec pc, pindahkan ke keterangan
+    - [x] nama, tahun, kondisi, keterangan
+- [x] 14. Jadwal, kalab, sama pengumuman di dashboard
 - [x] perbaiki tabel di halaman /honor
     - [x] nama, nim, mata kuliah (kelas) (list), jumlah honor
     - [x] bisa di export excel 
