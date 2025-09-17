@@ -193,3 +193,12 @@ export const inventaris = pgTable("inventaris", {
   keterangan: text("keterangan"),
   created_at: timestamp("created_at").defaultNow(),
 });
+
+export const pengumuman = pgTable("pengumuman", {
+  id: serial("id").primaryKey(),
+  judul: text("judul"),
+  isi: text("isi"),
+  active: boolean("active").default(true),
+  created_at: timestamp("created_at").defaultNow(),
+  created_by: text("created_by").references(() => user.id),
+});

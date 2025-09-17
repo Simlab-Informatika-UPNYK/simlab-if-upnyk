@@ -100,3 +100,20 @@ export async function getTahunSemesterWithUsage() {
 
   return dataWithUsage;
 }
+
+// Get latest tahun semester (terbaru)
+export async function getLatestTahunSemester() {
+  try {
+    const tahunSemesterData = await findAllOrdered();
+    
+    if (tahunSemesterData.length === 0) {
+      return null;
+    }
+    
+    // Return the first item (already ordered by slug descending)
+    return tahunSemesterData[0];
+  } catch (error) {
+    const errorMessage = translatePostgresError(error);
+    throw new Error(errorMessage);
+  }
+}

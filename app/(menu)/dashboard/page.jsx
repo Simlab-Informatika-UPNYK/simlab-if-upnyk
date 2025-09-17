@@ -1,51 +1,40 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/auth-server";
+import { getActivePengumuman, getJadwalAslab, getKalabList, getDashboardStats } from "./actions";
+import { PengumumanCard } from "./_components/pengumuman-card";
+import { JadwalAslabCard } from "./_components/jadwal-aslab-card";
+import { KalabListCard } from "./_components/kalab-list-card";
+import Link from "next/link";
 
 export default async function Page() {
   const session = await getServerSession();
   const userRole = session?.user?.role || "Unknown";
+  const aslabId = session?.user?.aslab_id;
+
+  // Get data based on user role
+  const [pengumuman, jadwalData, kalabList, stats] = await Promise.all([
+    getActivePengumuman(),
+    userRole === "aslab" && aslabId ? getJadwalAslab(aslabId) : Promise.resolve({ jadwal: [], tahunSemester: null }),
+    getKalabList(),
+    getDashboardStats(),
+  ]);
+
+  const jadwal = jadwalData.jadwal || [];
+  const tahunSemester = jadwalData.tahunSemester;
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
-      <div className="mb-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader>
-            <CardTitle>Jumlah Kepala Laboratorium</CardTitle>
-            <CardDescription>Total keseluruhan kalab</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold">{50}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Total Kapasitas</CardTitle>
-            <CardDescription>
-              Total keseluruhan kapasitas laboratorium
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold">{50}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Anda</CardTitle>
-            <CardDescription>
-              Status akses saat ini
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold capitalize">{userRole}</p>
-          </CardContent>
-        </Card>
+      <div className="space-y-6">
+        {userRole === "admin" && (
+          <Button asChild>
+            <Link href={"/admin/pengumuman"}>Kelola pengemuman</Link>
+          </Button>
+        )}
+        {pengumuman.length > 0 && <PengumumanCard pengumuman={pengumuman} />}
+        {userRole === "aslab" && <JadwalAslabCard jadwal={jadwal} tahunSemester={tahunSemester} />}
+        <KalabListCard kalabList={kalabList} />
       </div>
-      <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-        <div className="aspect-video rounded-xl bg-muted/50" />
-      </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
     </div>
   );
 }

@@ -78,6 +78,13 @@
       "when": 1757647440857,
       "tag": "0010_add_unique_in_kode_mk",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1758032653975,
+      "tag": "0011_add_pengumuman",
+      "breakpoints": true
     }
   ]
 }
