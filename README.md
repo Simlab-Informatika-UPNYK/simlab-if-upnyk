@@ -1,10 +1,6 @@
 # Todo
 - [ ] style navbar
-- [ ] jenis praktikan apa aja?
-
-- [ ] perbaiki halaman jadwal
-    - [ ] buat agar bisa di print menjadi pdf/excel
-- [ ] nama kajur bisa di update, tanda tangan kajur bisa di upload di halaman sertifikat
+- [ ] hilangkan jenis praktikan
 - [ ] 16. Asisten : jadwal (√), data lab, kalab, sertifikat (√), asisten (√)
 
 ****
@@ -13,6 +9,10 @@ Yang tidak perlu d dashboard
 * Pengumuman
 * Computer usage
 
+- [x] jika status aslab disetujui, aslab harus bisa melihat sertifikat
+- [x] nama kajur bisa di update, tanda tangan kajur bisa di upload di halaman sertifikat
+- [x] perbaiki halaman jadwal
+    - [x] buat agar bisa di print menjadi pdf/excel
 - [x] perbaiki halaman inventaris
     - [x] halaman inventaris setelah dihapus belum ter refresh      
     - [x] detail spec pc, pindahkan ke keterangan

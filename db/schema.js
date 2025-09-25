@@ -194,3 +194,16 @@ export const pengumuman = pgTable("pengumuman", {
   created_at: timestamp("created_at").defaultNow(),
   created_by: text("created_by").references(() => user.id),
 });
+
+export const kajur = pgTable("kajur", {
+  id: serial("id").primaryKey(),
+  nama: text("nama"),
+  nip: text("nip"),
+  tanda_tangan: text("tanda_tangan"),
+  signature_top: integer("signature_top").default(0),
+  signature_left: integer("signature_left").default(0),
+  signature_height: integer("signature_height").default(100),
+  signature_width: integer("signature_width").default(200),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at"),
+});

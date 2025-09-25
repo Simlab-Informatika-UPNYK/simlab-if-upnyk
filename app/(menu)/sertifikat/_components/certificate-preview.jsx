@@ -4,9 +4,11 @@ import { useState, useEffect } from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import SertifikatPDF from "./sertifikat-pdf";
 import { getAslabDetailByNim } from "../actions";
+import { getKajurPublic } from "../kajur/actions";
 
 export default function CertificatePreview({ nim, namaAsisten, onCertificateDataLoaded }) {
   const [certificateData, setCertificateData] = useState("Default");
+  const [kajur, setKajur] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -17,7 +19,10 @@ export default function CertificatePreview({ nim, namaAsisten, onCertificateData
       setLoading(true);
       setError(null);
       try {
-        const detail = await getAslabDetailByNim(nim);
+        const [detail, kajurData] = await Promise.all([
+          getAslabDetailByNim(nim),
+          getKajurPublic()
+        ]);
 
         // Format data untuk sertifikat
         const formattedData = {
@@ -26,8 +31,8 @@ export default function CertificatePreview({ nim, namaAsisten, onCertificateData
           nim: nim,
         };
 
-        // setCertificateData(formattedData);
         setCertificateData(detail);
+        setKajur(kajurData);
         if (onCertificateDataLoaded) {
           onCertificateDataLoaded(formattedData);
         }
@@ -76,7 +81,7 @@ export default function CertificatePreview({ nim, namaAsisten, onCertificateData
       </p>
 
       <PDFViewer style={{ width: "100%", height: "50rem" }}>
-        <SertifikatPDF data={certificateData} />
+        <SertifikatPDF data={certificateData} kajur={kajur} />
       </PDFViewer>
     </div>
   );

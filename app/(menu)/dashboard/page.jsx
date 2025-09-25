@@ -26,12 +26,17 @@ export default async function Page() {
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 pt-4">
       <div className="space-y-6">
-        {userRole === "admin" && (
-          <Button asChild>
-            <Link href={"/admin/pengumuman"}>Kelola pengemuman</Link>
-          </Button>
-        )}
-        {pengumuman.length > 0 && <PengumumanCard pengumuman={pengumuman} />}
+        <div className="">
+          <div className="flex w-full justify-between mb-2 items-center">
+            <div className="text-xl font-semibold">Pengumuman</div>
+            {userRole === "admin" && (
+              <Button asChild variant="outline">
+                <Link href={"/admin/pengumuman"}>Kelola pengemuman</Link>
+              </Button>
+            )}
+          </div>
+          {pengumuman.length > 0 && <PengumumanCard pengumuman={pengumuman} />}
+        </div>
         {userRole === "aslab" && <JadwalAslabCard jadwal={jadwal} tahunSemester={tahunSemester} />}
         <KalabListCard kalabList={kalabList} />
       </div>

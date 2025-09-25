@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { getCertificateRequestByIdForAslab } from "../../actions";
+import { getKajurPublic } from "../../kajur/actions";
 import BackButton from "@/components/back-button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Clock, CheckCircle, XCircle } from "lucide-react";
+import { PDFViewer } from "@react-pdf/renderer";
+import SertifikatPDF from "../../_components/sertifikat-pdf";
 
 const statusIcons = {
   Pending: <Clock className="h-4 w-4 text-yellow-600" />,
@@ -22,13 +25,18 @@ const statusColors = {
 export default function AslabCertificateDetail({ requestId }) {
   const { toast } = useToast();
   const [data, setData] = useState(null);
+  const [kajur, setKajur] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const certificateData = await getCertificateRequestByIdForAslab(parseInt(requestId));
+        const [certificateData, kajurData] = await Promise.all([
+          getCertificateRequestByIdForAslab(parseInt(requestId)),
+          getKajurPublic()
+        ]);
         setData(certificateData);
+        setKajur(kajurData);
       } catch (error) {
         toast({
           title: "Error",
@@ -164,6 +172,28 @@ export default function AslabCertificateDetail({ requestId }) {
           </div>
         )}
       </div>
+
+      {/* Tampilkan sertifikat jika status Disetujui */}
+      {data.status === "Disetujui" && (
+        <div className="bg-white rounded-lg border p-6 mt-6">
+          <h2 className="text-xl font-semibold mb-4">Sertifikat Anda</h2>
+          <p className="text-gray-600 mb-4">
+            Permintaan sertifikat Anda telah disetujui. Anda dapat melihat dan mengunduh sertifikat di bawah ini.
+          </p>
+          
+          <PDFViewer style={{ width: "100%", height: "50rem" }}>
+            <SertifikatPDF
+              data={{
+                nama: data.nama_asisten,
+                nim: data.nim,
+                program_studi: data.program_studi,
+                courses: data.courses || []
+              }}
+              kajur={kajur}
+            />
+          </PDFViewer>
+        </div>
+      )}
     </div>
   );
 }

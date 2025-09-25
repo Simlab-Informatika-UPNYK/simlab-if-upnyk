@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
-import { PlusCircle } from "lucide-react";
+import { PlusCircle, Download } from "lucide-react";
+import * as XLSX from "xlsx";
 import {
   findAllJadwalByAslab,
   findAllJadwalByTahunSemester,
@@ -81,6 +82,7 @@ export default function Page() {
         const formattedData = jadwalData.map((item) => ({
           ...item,
           kelas: item.kelas,
+          kode_mk: item.mataKuliah.kode_mk,
           mata_kuliah: item.mataKuliah?.nama || "-",
           dosen: item.dosenPengampu?.nama || "-",
           jumlah_praktikan: item.jumlah_praktikan,
@@ -113,6 +115,39 @@ export default function Page() {
     }
 
     router.push(`/jadwal-praktikum/?${params.toString()}`);
+  };
+
+  const exportToExcel = () => {
+    if (data.length === 0) return;
+
+    // Prepare data for export
+    const exportData = data.map((item) => ({
+      "Kode MK": item.kode_mk || "-",
+      "Mata Kuliah": item.mata_kuliah || "-",
+      "Kelas": item.kelas || "-",
+      "Dosen": item.dosen || "-",
+      "Hari": item.hari || "-",
+      "Waktu Mulai": item.waktu_mulai || "-",
+      "Waktu Selesai": item.waktu_selesai || "-",
+      "Asisten": Array.isArray(item.asisten) && item.asisten.length > 0 ? item.asisten.join(", ") : "-",
+      "Jenis Praktikan": item.jenis_praktikan || "-",
+      "Jumlah Praktikan": item.jumlah_praktikan || 0,
+      "Lab": item.lab || "-",
+    }));
+
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(exportData);
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "Jadwal Praktikum");
+
+    // Generate file name
+    const currentDate = new Date().toISOString().split("T")[0];
+    const fileName = `jadwal-praktikum-${currentTahunSemester || "all"}-${currentDate}.xlsx`;
+
+    // Download the file
+    XLSX.writeFile(wb, fileName);
   };
 
   if (status) {
@@ -158,6 +193,12 @@ export default function Page() {
           data={data}
           emptyMessage="Data jadwal praktikum tidak ditemukan"
           meta={{ onRefresh: handleRefresh }}
+          toolbar={
+            <Button onClick={exportToExcel} variant="outline" size="sm" className="ml-auto">
+              <Download className="mr-2 h-4 w-4" />
+              Export Excel
+            </Button>
+          }
         />
       )}
     </div>

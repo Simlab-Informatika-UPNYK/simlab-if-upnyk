@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import BackButton from "@/components/back-button";
 import { getAslabDetailByNim } from "../actions";
+import { getKajurPublic } from "../kajur/actions";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import SertifikatPDF from "../_components/sertifikat-pdf";
@@ -12,13 +13,18 @@ export default function AslabDetailClient({ nim }) {
   const { toast } = useToast();
 
   const [data, setData] = useState(null);
+  const [kajur, setKajur] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const aslabData = await getAslabDetailByNim(nim);
+        const [aslabData, kajurData] = await Promise.all([
+          getAslabDetailByNim(nim),
+          getKajurPublic()
+        ]);
         setData(aslabData);
+        setKajur(kajurData);
       } catch (error) {
         toast({
           title: "Error",
@@ -121,9 +127,9 @@ export default function AslabDetailClient({ nim }) {
         )}
       </div>
 
-      <h2>Sertifikat</h2>
+      <h2 className="text-xl font-semibold mb-4">Sertifikat</h2>
       <PDFViewer style={{ width: "100%", height: "50rem" }}>
-        <SertifikatPDF data={data} />
+        <SertifikatPDF data={data} kajur={kajur} />
       </PDFViewer>
     </div>
   );

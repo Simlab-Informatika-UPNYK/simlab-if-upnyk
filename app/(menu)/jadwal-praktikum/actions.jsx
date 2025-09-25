@@ -56,7 +56,7 @@ export async function findAllJadwalByTahunSemester(tahunSemesterId) {
       where: eq(kelas_praktikum.tahun_semester, tahunSemesterId),
       with: {
         dosenPengampu: { columns: { nama: true } },
-        mataKuliah: { columns: { nama: true } },
+        mataKuliah: { columns: { nama: true, kode_mk: true } },
         lab: { columns: { nama: true } },
         kelasAslab: {
           with: {
@@ -101,7 +101,7 @@ export async function findAllJadwalByAslabAndTahunSemester(aslabId, tahunSemeste
       where: (jadwal, { inArray, eq }) => and(inArray(jadwal.id, kelasIds), eq(jadwal.tahun_semester, tahunSemesterId)),
       with: {
         dosenPengampu: { columns: { nama: true } },
-        mataKuliah: { columns: { nama: true } },
+        mataKuliah: { columns: { nama: true, kode_mk: true } },
         lab: { columns: { nama: true } },
         kelasAslab: {
           with: {

@@ -203,35 +203,36 @@ const styles = StyleSheet.create({
 // Fungsi untuk mendapatkan periode aajaran dari courses
 const getPeriodFromCourses = (courses) => {
   if (!courses || courses.length === 0) return "GENAP 2021/2022 - GENAP 2023/2024";
-  
+
   const semesters = courses.map(course => course.semester);
   const uniqueSemesters = [...new Set(semesters)];
-  
+
   if (uniqueSemesters.length === 1) {
     return uniqueSemesters[0];
   }
-  
+
   // Sort semesters chronologically
   uniqueSemesters.sort((a, b) => {
     const [semA, yearA] = a.split(' ');
     const [semB, yearB] = b.split(' ');
-    
+
     const yearNumA = parseInt(yearA.split('/')[0]);
     const yearNumB = parseInt(yearB.split('/')[0]);
-    
+
     if (yearNumA !== yearNumB) return yearNumA - yearNumB;
     return semA === "Gasal" ? -1 : 1;
   });
-  
+
   const earliest = uniqueSemesters[0];
   const latest = uniqueSemesters[uniqueSemesters.length - 1];
-  
+
   return `${earliest} S.D. ${latest}`;
 };
 
 // Komponen Sertifikat PDF
-const SertifikatPDF = ({ data }) => {
+const SertifikatPDF = ({ data = {}, kajur }) => {
   // Transform data aslab ke format yang dibutuhkan template sertifikat
+  console.log('ada data', kajur);
   const certificateData = {
     recipientName: data.nama || "NAMA MAHASISWA",
     nim: data.nim || "NIM",
@@ -239,8 +240,14 @@ const SertifikatPDF = ({ data }) => {
     activity: 'PRAKTIKUM DI JURUSAN INFORMATIKA \nUNIVERSITAS PEMBANGUNAN NASIONAL "VETERAN" YOGYAKARTA',
     period: getPeriodFromCourses(data.courses),
     role: "ASISTEN",
-    chairmanName: "Dr. Heriyanto, A.Md, S.Kom., M.Cs.",
-    chairmanNIP: "19770608 202121 1004",
+    chairmanName: kajur?.nama || "Dr. Heriyanto, A.Md, S.Kom., M.Cs.",
+    chairmanNIP: kajur?.nip || "19770608 202121 1004",
+    signatureStyle: {
+      top: Number(kajur?.signature_top ?? 0),
+      left: Number(kajur?.signature_left ?? 0),
+      height: Number(kajur?.signature_height ?? 100),
+      width: Number(kajur?.signature_width ?? 200),
+    },
     courses: data.courses ? data.courses.map((course, index) => ({
       no: index + 1,
       subject: course.mata_kuliah,
@@ -284,6 +291,20 @@ const SertifikatPDF = ({ data }) => {
 
         <View style={styles.signatureBlock} fixed>
           <Text style={styles.headerText}>KETUA JURUSAN INFORMATIKA</Text>
+          {/* TANDA TANGAN */}
+          {kajur?.tanda_tangan && (
+            <Image
+              src={kajur.tanda_tangan}
+              style={{
+                position: "absolute",
+                zIndex: -1,
+                height: certificateData.signatureStyle.height,
+                width: certificateData.signatureStyle.width,
+                top: certificateData.signatureStyle.top,
+                left: certificateData.signatureStyle.left,
+              }}
+            />
+          )}
           <Text style={styles.signatureName}>
             {certificateData.chairmanName}
           </Text>

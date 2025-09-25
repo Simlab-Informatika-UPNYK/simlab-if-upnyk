@@ -11,7 +11,7 @@ export default function BackButton() {
 
   return (
     <Link href={parentPath}>
-      <Button variant="ghost" size="icon">
+      <Button type="button" variant="ghost" size="icon">
         <X className="h-4 w-4" />
       </Button>
     </Link>

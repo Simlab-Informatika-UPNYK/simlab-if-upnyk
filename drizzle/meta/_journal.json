@@ -92,6 +92,20 @@
       "when": 1758082396553,
       "tag": "0012_update_columns_in_inventaris",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1758100917503,
+      "tag": "0013_add_kajur_table",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1758812114434,
+      "tag": "0014_add_signature_position",
+      "breakpoints": true
     }
   ]
 }

@@ -97,9 +97,8 @@ export default function AdminCertificateView() {
             <SelectTrigger className="border-0 shadow-none">
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-2 py-1 rounded-full text-xs ${
-                    statusColors[request.status] || "bg-gray-100 text-gray-800"
-                  }`}
+                  className={`px-2 py-1 rounded-full text-xs ${statusColors[request.status] || "bg-gray-100 text-gray-800"
+                    }`}
                 >
                   {request.status || "Pending"}
                 </span>
@@ -248,11 +247,6 @@ export default function AdminCertificateView() {
 
   return (
     <div className="container mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Kelola Permintaan Sertifikat</h1>
-        <p className="text-gray-600">Kelola semua permintaan sertifikat dari asisten laboratorium</p>
-      </div>
-
       {requests.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">Tidak ada permintaan sertifikat</p>
