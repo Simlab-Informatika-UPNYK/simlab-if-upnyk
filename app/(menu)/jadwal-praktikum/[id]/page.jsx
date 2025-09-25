@@ -10,6 +10,8 @@ export default async function JadwalDetailPage({ params }) {
   const { id } = await params;
   const session = await getServerSession();
 
+  
+  const jadwal = await findOneById(id);
   if (
     session.user.role === "aslab" &&
     session.user.username &&
@@ -18,8 +20,7 @@ export default async function JadwalDetailPage({ params }) {
   ) {
     redirect("/jadwal-praktikum");
   }
-
-  const jadwal = await findOneById(id);
+  
   if (!jadwal) {
     return (
       <div className="container mx-auto p-6">
@@ -65,7 +66,6 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Mata Kuliah</h3>
                 <p className="font-medium">{jadwal.mataKuliah?.nama || "Tidak tersedia"}</p>
-                {jadwal.mataKuliah?.id && <p className="text-sm text-gray-500">id: {jadwal.mata_kuliah.id}</p>}
               </div>
               <div>
                 <h3 className="text-sm text-gray-500">Dosen Pengampu</h3>
@@ -74,10 +74,6 @@ export default async function JadwalDetailPage({ params }) {
               <div>
                 <h3 className="text-sm text-gray-500">Jumlah Praktikan</h3>
                 <p className="font-medium">{jadwal.jumlah_praktikan} orang</p>
-              </div>
-              <div>
-                <h3 className="text-sm text-gray-500">Jenis Praktikan</h3>
-                <p className="font-medium">{jadwal.jenis_praktikan}</p>
               </div>
             </div>
           </div>

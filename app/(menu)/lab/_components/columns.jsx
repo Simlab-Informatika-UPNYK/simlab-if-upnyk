@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Edit } from "lucide-react";
 import { DeleteButton } from "./delete-button";
+import { createAuthClient } from "better-auth/react";
 
 export const columns = [
   {
@@ -19,19 +20,6 @@ export const columns = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Nama Laboratorium" /> // Updated title
     ),
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <div className="flex items-center">
-          <Link
-            href={`/admin/lab/${data.slug}`}
-            className="text-blue-600 font-medium"
-          >
-            {data.nama}
-          </Link>
-        </div>
-      );
-    },
   },
   {
     accessorKey: "lantai", // Updated accessorKey
@@ -61,7 +49,7 @@ export const columns = [
       const data = row.original;
       return (
         <div className="flex items-center space-x-2">
-          <Link href={`/admin/lab/${data.slug}/edit`}>
+          <Link href={`/lab/${data.slug}/edit`}>
             <Button variant="ghost" size="icon">
               <Edit className="h-4 w-4" />
             </Button>

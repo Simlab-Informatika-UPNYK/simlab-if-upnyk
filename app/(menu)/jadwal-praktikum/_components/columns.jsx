@@ -24,14 +24,14 @@ export const columns = [
   {
     accessorKey: "kelas",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Kelas" />,
-    cell: ({ row }) => {
-      const data = row.original;
-      return (
-        <Link href={`/jadwal-praktikum/${data.id}`} className="text-blue-600 hover:underline">
-          {data.kelas}
-        </Link>
-      );
-    },
+    // cell: ({ row }) => {
+    //   const data = row.original;
+    //   return (
+    //     <Link href={`/jadwal-praktikum/${data.id}`} className="text-blue-600 hover:underline">
+    //       {data.kelas}
+    //     </Link>
+    //   );
+    // },
     enableSorting: true,
     enableHiding: false,
   },
@@ -71,14 +71,6 @@ export const columns = [
           )}
         </ul>
       );
-    },
-  },
-  {
-    accessorKey: "jenis_praktikan",
-    header: ({ column }) => <DataTableColumnHeader column={column} title="Jenis Praktikan" />,
-    enableSorting: true,
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id));
     },
   },
   {

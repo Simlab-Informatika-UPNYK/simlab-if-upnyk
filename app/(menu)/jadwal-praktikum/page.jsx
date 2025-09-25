@@ -90,7 +90,6 @@ export default function Page() {
           waktu_mulai: item.waktu_mulai,
           waktu_selesai: item.waktu_selesai,
           lab: item.lab?.nama || "-",
-          jenis_praktikan: item.jenis_praktikan,
           asisten: item.kelasAslab?.map((a) => a.aslab?.user?.name) || [],
           asisten_nim: item.kelasAslab?.map((a) => a.aslab?.nim) || [],
         }));
@@ -130,7 +129,6 @@ export default function Page() {
       "Waktu Mulai": item.waktu_mulai || "-",
       "Waktu Selesai": item.waktu_selesai || "-",
       "Asisten": Array.isArray(item.asisten) && item.asisten.length > 0 ? item.asisten.join(", ") : "-",
-      "Jenis Praktikan": item.jenis_praktikan || "-",
       "Jumlah Praktikan": item.jumlah_praktikan || 0,
       "Lab": item.lab || "-",
     }));

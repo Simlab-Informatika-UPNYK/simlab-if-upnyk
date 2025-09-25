@@ -11,10 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { getAllLab } from "./actions.jsx";
-import { withAdminAuth } from "@/components/hoc/with-admin-auth";
+import { withRoleAuth } from "@/components/hoc/with-role-auth";
+import { getServerSession } from "@/lib/auth-server";
+import { aslabColumn } from "./_components/aslab-columns";
 
 async function LabPage() {
   const data = await getAllLab();
+  const session = await getServerSession();
+  const isAdmin = session?.user?.role === 'admin';
 
   const totalCapacity = data.reduce((sum, lab) => {
     const kapasitas = parseInt(lab.kapasitas) || 0;
@@ -48,22 +52,24 @@ async function LabPage() {
 
       <DataTable
         toolbar={
-          <Link href="/admin/lab/new">
-            <Button>
-              <PlusCircle />
-              Add Data
-            </Button>
-          </Link>
+          isAdmin && (
+            <Link href="/lab/new">
+              <Button>
+                <PlusCircle />
+                Add Data
+              </Button>
+            </Link>
+          )
         }
         viewOptions={true}
         globalSearch={true}
         // filters={filters}
         pagination={true}
-        columns={columns}
+        columns={isAdmin ? columns : aslabColumn}
         data={data}
       />
     </div>
   );
 }
 
-export default withAdminAuth(LabPage);
+export default withRoleAuth(LabPage, ['admin', 'aslab']);

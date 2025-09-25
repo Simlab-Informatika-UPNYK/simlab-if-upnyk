@@ -22,7 +22,7 @@ export function FormEditLab({ lab, listKalab }) {
           title: 'Berhasil Mengubah',
           description: `Laboratorium ${values.nama} telah berhasil diperbarui`,
         });
-        router.push('/admin/lab');
+        router.push('/lab');
         router.refresh();
       } else {
         toast({

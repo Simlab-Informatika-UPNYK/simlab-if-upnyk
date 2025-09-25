@@ -48,7 +48,6 @@ export default async function EditPage({ params }) {
     waktuMulai: jadwal.waktu_mulai ?? "",
     waktuSelesai: jadwal.waktu_selesai ?? "",
     labId: jadwal.lab?.id.toString() ?? "",
-    jenisPraktikan: jadwal.jenis_praktikan ?? "",
     tahunSemesterId: jadwal.tahun_semester?.toString() ?? "",
     aslabIds:
       jadwal.kelasAslab?.map((ka) => ({

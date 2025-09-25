@@ -1,8 +1,9 @@
 import { FormEditLab } from "./form-edit-lab";
 import BackButton from "@/components/back-button";
 import { getOneLab, getAllKalab } from "../../actions.jsx";
+import { withRoleAuth } from "@/components/hoc/with-role-auth";
 
-export default async function EditLabPage({ params }) {
+async function EditLabPage({ params }) {
   const slug = (await params).id;
   const lab = await getOneLab(slug);
   const listKalab = await getAllKalab();
@@ -26,3 +27,5 @@ export default async function EditLabPage({ params }) {
     </div>
   );
 }
+
+export default withRoleAuth(EditLabPage, ['admin']);

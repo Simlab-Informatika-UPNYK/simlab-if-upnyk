@@ -13,16 +13,6 @@ export const columns = [
   {
     accessorKey: "Nama Lengkap",
     header: "Nama Lengkap",
-    cell: ({ row }) => {
-      const kalab = row.original;
-      return (
-        <Link href={`/admin/kalab/${kalab.slug}`}>
-          <span className="text-blue-600 hover:underline cursor-pointer">
-            {kalab["Nama Lengkap"]}
-          </span>
-        </Link>
-      );
-    },
   },
   {
     accessorKey: "NIDN/NIP",
@@ -40,7 +30,6 @@ export const columns = [
     id: "actions",
     cell: ({ row }) => {
       const kalab = row.original;
-
       return (
         <div className="flex gap-2">
           <Link href={`/admin/kalab/${kalab.slug}/edit`}>

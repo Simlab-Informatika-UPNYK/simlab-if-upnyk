@@ -13,7 +13,7 @@ export const columns = [
   {
     accessorKey: "nama",
     header: ({ column }) => <DataTableColumnHeader column={column} title="Nama" />,
-    cell: ({ row }) => {
+    /* cell: ({ row }) => {
       const user = row.original;
 
       return (
@@ -21,7 +21,7 @@ export const columns = [
           <span className="text-blue-600">{user.nama}</span>
         </Link>
       );
-    },
+    }, */
   },
   {
     accessorKey: "nim",

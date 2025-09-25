@@ -1,6 +1,6 @@
 import { DataTable } from "@/components/data-table/data-table";
 import { columns } from "./_components/columns";
-import { getAllLab } from "../lab/actions";
+import { getAllLab } from "../../lab/actions";
 import { withAdminAuth } from "@/components/hoc/with-admin-auth";
 
 async function InventarisLabPage() {

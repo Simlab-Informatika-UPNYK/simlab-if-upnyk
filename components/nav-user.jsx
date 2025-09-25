@@ -95,10 +95,6 @@ export function NavUser({ user }) {
                   Account
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link
                   href={

@@ -170,7 +170,6 @@ export async function createJadwal(formData) {
         waktu_mulai: formData.waktuMulai,
         waktu_selesai: formData.waktuSelesai,
         lab: parseInt(formData.labId),
-        jenis_praktikan: formData.jenisPraktikan,
         tahun_semester: parseInt(formData.tahunSemesterId),
       };
 
@@ -216,7 +215,6 @@ export async function updateJadwal(id, formData) {
         waktu_mulai: formData.waktuMulai,
         waktu_selesai: formData.waktuSelesai,
         lab: parseInt(formData.labId),
-        jenis_praktikan: formData.jenisPraktikan,
         tahun_semester: parseInt(formData.tahunSemesterId),
       };
 

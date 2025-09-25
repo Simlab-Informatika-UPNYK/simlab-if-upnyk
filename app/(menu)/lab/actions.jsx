@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { lab, kalab } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin-auth";
+import { requireAdminOrAslab } from "@/lib/role-auth";
 import { translatePostgresError } from "@/lib/postgres-error-translator";
 
 export async function getAllKalab() {
@@ -23,6 +24,9 @@ export async function getAllKalab() {
 
 export async function getAllLab() {
   try {
+    // Read access untuk admin dan aslab
+    await requireAdminOrAslab();
+
     const data = await db.select({
       nama: lab.nama,
       lantai: lab.lantai,
@@ -45,6 +49,9 @@ export async function getAllLab() {
 
 export async function getOneLab(slug) {
   try {
+    // Read access untuk admin dan aslab
+    await requireAdminOrAslab();
+
     const [data] = await db.select({
       id: lab.id,
       nama: lab.nama,

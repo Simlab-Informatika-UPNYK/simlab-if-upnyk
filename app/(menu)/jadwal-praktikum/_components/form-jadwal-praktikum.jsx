@@ -45,7 +45,6 @@ export function FormJadwalPraktikum({
       hari: "",
       labId: "",
       aslabIds: [],
-      jenisPraktikan: "",
       waktuMulai: "",
       waktuSelesai: "",
       tahunSemesterId: "",
@@ -228,29 +227,6 @@ export function FormJadwalPraktikum({
                 onChange={field.onChange}
                 currentAslabId={currentAslabId}
               />
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Jenis Praktikan */}
-        <FormField
-          control={form.control}
-          name="jenisPraktikan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Jenis Praktikan</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih Jenis" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Reguler">Reguler</SelectItem>
-                  <SelectItem value="Spesial">Spesial</SelectItem>
-                </SelectContent>
-              </Select>
               <FormMessage />
             </FormItem>
           )}

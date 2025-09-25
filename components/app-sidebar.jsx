@@ -24,6 +24,8 @@ import {
 import Image from "next/image";
 import favicon from "@/app/favicon.svg";
 import Link from "next/link";
+import { Beaker } from "lucide-react";
+import { UserRound } from "lucide-react";
 
 const data = {
   user: {
@@ -65,14 +67,6 @@ const data = {
           url: "/admin/tahun-semester",
         },
         {
-          title: "Lab",
-          url: "/admin/lab",
-        },
-        {
-          title: "Kalab",
-          url: "/admin/kalab",
-        },
-        {
           title: "MK Praktikum",
           url: "/admin/mk-praktikum",
         },
@@ -93,6 +87,16 @@ const data = {
           url: "/admin/honor-asisten",
         },
       ],
+    },
+    {
+      title: "Lab",
+      url: "/lab",
+      icon: Beaker,
+    },
+    {
+      title: "Kalab",
+      url: "/kalab",
+      icon: UserRound, 
     },
     {
       title: "Asisten",
@@ -119,8 +123,18 @@ const data = {
 };
 
 export function AppSidebar({ userRole, ...props }) {
-  const filteredNavMain = data.navMain.filter((item) => {
+  const filteredNavMain = data.navMain.map((item) => {
     if (item.title === "Master Setup" && userRole === "aslab") {
+      // Filter items untuk aslab - hanya tampilkan Lab
+      return {
+        ...item,
+        items: item.items.filter(subItem => subItem.title === "Lab")
+      };
+    }
+    return item;
+  }).filter((item) => {
+    // Hapus Master Setup jika tidak ada items
+    if (item.title === "Master Setup" && (!item.items || item.items.length === 0)) {
       return false;
     }
     return true;

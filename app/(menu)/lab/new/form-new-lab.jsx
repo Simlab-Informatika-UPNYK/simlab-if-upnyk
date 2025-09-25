@@ -22,7 +22,7 @@ export function FormNewLab({ listKalab }) {
           title: "Berhasil Menambahkan",
           description: `Laboratorium ${values.nama} telah berhasil ditambahkan`,
         });
-        router.push("/admin/lab");
+        router.push("/lab");
       } else {
         toast({
           title: "Gagal Menambahkan",
