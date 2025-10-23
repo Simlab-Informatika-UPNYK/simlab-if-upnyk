@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { DeleteButton } from "./delete-button";
+import { Edit } from "lucide-react";
 
 export const columns = [
   {
@@ -34,7 +35,7 @@ export const columns = [
         <div className="flex gap-2">
           <Link href={`/admin/kalab/${kalab.slug}/edit`}>
             <Button variant="ghost" size="sm">
-              <Pencil className="h-4 w-4" />
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
           <DeleteButton slug={kalab.slug} />

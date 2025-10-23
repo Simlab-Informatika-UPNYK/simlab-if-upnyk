@@ -25,13 +25,7 @@ export function RegisterForm({
       <form action={formAction}>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
-            <a href="#" className="flex flex-col items-center gap-2 font-medium">
-              <div className="flex h-24 w-24 items-center justify-center rounded-md">
-                <Building className="size-24" />
-              </div>
-              <span className="sr-only">Acme Inc.</span>
-            </a>
-            <h1 className="text-xl font-bold">Welcome to Acme Inc.</h1>
+            <h1 className="text-xl font-bold">SIMLAB</h1>
           </div>
           <div className="flex flex-col gap-6">
             <div className="grid gap-2">
@@ -60,8 +54,8 @@ export function RegisterForm({
                 <ul className="text-red-500">
                   {Array.isArray(state.errors.password)
                     ? state.errors.password.map((error, index) => (
-                        <li key={index}>{error}</li>
-                      ))
+                      <li key={index}>{error}</li>
+                    ))
                     : <li>{state.errors.password}</li>
                   }
                 </ul>

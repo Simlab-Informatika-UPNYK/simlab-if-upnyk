@@ -73,25 +73,20 @@ export default function MKPraktikumClient() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex items-center justify-between py-4">
-        <div className="flex gap-2">
-          {tahunSemester.length > 0 && (
-            <TahunSemesterFilter
-              tahunSemester={tahunSemester}
-              onTahunSemesterChange={handleTahunSemesterChange}
-              defaultValue={currentYearId || tahunSemester[0]?.id?.toString()}
-            />
-          )}
-        </div>
-        <div className="flex gap-2">
-          <Link href="/admin/mk-praktikum/new">
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Add Data
-            </Button>
-          </Link>
-        </div>
+    <div className="container mx-auto px-4 py-2">
+      <h1 className="text-3xl font-bold">Mata Kuliah Praktikum</h1>
+      <p className="text-gray-500 mb-4">
+        Daftar mata kuliah praktikum laboratorium informatika
+      </p>
+
+      <div className="md:hidden">
+        {tahunSemester.length > 0 && (
+          <TahunSemesterFilter
+            tahunSemester={tahunSemester}
+            onTahunSemesterChange={handleTahunSemesterChange}
+            defaultValue={currentYearId || tahunSemester[0]?.id?.toString()}
+          />
+        )}
       </div>
 
       {loading ? (
@@ -101,7 +96,25 @@ export default function MKPraktikumClient() {
         </div>
       ) : (
         <DataTable
-          toolbar={null}
+          toolbar={(<div className="flex space-x-2">
+            <div className="hidden md:flex">
+              {tahunSemester.length > 0 && (
+                <TahunSemesterFilter
+                  tahunSemester={tahunSemester}
+                  onTahunSemesterChange={handleTahunSemesterChange}
+                  defaultValue={currentYearId || tahunSemester[0]?.id?.toString()}
+                />
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Link href="/admin/mk-praktikum/new">
+                <Button>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Add Data
+                </Button>
+              </Link>
+            </div>
+          </div>)}
           viewOptions={true}
           globalSearch={true}
           filters={filters}

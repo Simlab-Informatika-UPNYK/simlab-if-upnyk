@@ -9,6 +9,7 @@ import { useParams } from "next/navigation";
 import { getInventarisByLabId } from "../actions";
 import { getLabDetail } from "./actions";
 import { DataTable } from "@/components/data-table/data-table";
+import { Edit } from "lucide-react";
 
 const Page = () => {
   const params = useParams();
@@ -122,7 +123,7 @@ const Page = () => {
                     <div className="flex">
                       <Link href={`/admin/inventaris-lab/${labSlug}/${item.id}`}>
                         <Button size="icon" variant="ghost">
-                          <Pencil className="h-4 w-4" />
+                          <Edit className="h-4 w-4" />
                         </Button>
                       </Link>
                       <DeleteInventoryButton

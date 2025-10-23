@@ -12,6 +12,7 @@ export const columns = [
   },
   {
     accessorKey: "kode_mk",
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Kode MK" />,
   },
   {
     accessorKey: "mata_kuliah",

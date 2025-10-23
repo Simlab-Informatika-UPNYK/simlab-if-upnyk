@@ -157,9 +157,14 @@ export default function Page() {
   }
 
   return (
-    <div>
+    <div className="container mx-auto px-4 py-2">
+      <h1 className="text-3xl font-bold">Jadwal Praktikum</h1>
+      <p className="text-gray-500 mb-4">
+        Daftar jadwal praktikum laboratorium informatika
+      </p>
+
       <div className="flex items-center justify-between py-4">
-        <div className="flex gap-2">
+        <div className="flex space-x-2 w-full">
           {tahunSemester.length > 0 && (
             <JadwalFilter
               tahunSemester={tahunSemester}
@@ -167,14 +172,18 @@ export default function Page() {
               defaultValue={currentTahunSemester || tahunSemester[0].slug}
             />
           )}
-        </div>
-        <div className="flex gap-2">
-          <Link href={`/jadwal-praktikum/new${currentTahunSemester ? `?tahunsemester=${currentTahunSemester}` : ""}`}>
-            <Button>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Tambah Jadwal
-            </Button>
-          </Link>
+          <div className="flex gap-2 ms-auto">
+            <Link href={`/jadwal-praktikum/new${currentTahunSemester ? `?tahunsemester=${currentTahunSemester}` : ""}`}>
+              <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Tambah Jadwal
+              </Button>
+            </Link>
+          </div>
+          <Button onClick={exportToExcel} variant="outline">
+            <Download className="mr-2 h-4 w-4" />
+            Export Excel
+          </Button>
         </div>
       </div>
 
@@ -185,18 +194,13 @@ export default function Page() {
         </div>
       ) : (
         <DataTable
+          globalSearch={true}
           filters={filters}
           pagination={true}
           columns={columns}
           data={data}
           emptyMessage="Data jadwal praktikum tidak ditemukan"
           meta={{ onRefresh: handleRefresh }}
-          toolbar={
-            <Button onClick={exportToExcel} variant="outline" size="sm" className="ml-auto">
-              <Download className="mr-2 h-4 w-4" />
-              Export Excel
-            </Button>
-          }
         />
       )}
     </div>

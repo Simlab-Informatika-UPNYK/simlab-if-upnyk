@@ -1,36 +1,58 @@
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function Loading() {
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <Skeleton className="h-10 w-32" />
-        <Skeleton className="h-10 w-32" />
-      </div>
-      
-      <div className="rounded-md border">
-        <div className="p-4 grid grid-cols-4 gap-4 border-b">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="h-6" />
-          ))}
-        </div>
-        
-        {Array.from({ length: 5 }).map((_, rowIndex) => (
-          <div key={rowIndex} className="p-4 grid grid-cols-4 gap-4 border-b">
-            {Array.from({ length: 4 }).map((_, colIndex) => (
-              <Skeleton key={colIndex} className="h-6" />
-            ))}
-          </div>
-        ))}
+    <div className="container mx-auto px-4 py-2">
+      {/* Header */}
+      <div className="mb-6">
+        <Skeleton className="h-10 w-80 mb-2" />
+        <Skeleton className="h-4 w-96" />
       </div>
 
-      <div className="flex items-center justify-between mt-4">
-        <Skeleton className="h-8 w-32" />
-        <div className="flex gap-2">
-          <Skeleton className="h-8 w-8" />
-          <Skeleton className="h-8 w-8" />
-          <Skeleton className="h-8 w-8" />
+      {/* DataTable Skeleton */}
+      <div className="rounded-md border">
+        {/* Table Header with Search and Toolbar */}
+        <div className="border-b p-4">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-9 w-64" /> {/* Search */}
+            <div className="flex gap-2">
+              <Skeleton className="h-9 w-36" /> {/* Tambah Kalab Button */}
+              <Skeleton className="h-9 w-10" /> {/* Column visibility */}
+              <Skeleton className="h-9 w-10" /> {/* View options */}
+            </div>
+          </div>
+        </div>
+
+        {/* Table Rows */}
+        <div className="divide-y">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex items-center p-4">
+              <Skeleton className="h-4 w-12 mr-4" /> {/* No */}
+              <Skeleton className="h-4 w-48 mr-4" /> {/* Nama Lengkap */}
+              <Skeleton className="h-4 w-32 mr-4" /> {/* NIP */}
+              <Skeleton className="h-4 w-48 mr-4" /> {/* Email */}
+              <Skeleton className="h-4 w-32 mr-4" /> {/* No HP */}
+              <Skeleton className="h-4 w-28 mr-4" /> {/* Periode Mulai */}
+              <Skeleton className="h-4 w-28 mr-4" /> {/* Periode Selesai */}
+              <div className="flex gap-1 ml-auto">
+                <Skeleton className="h-8 w-8" /> {/* View */}
+                <Skeleton className="h-8 w-8" /> {/* Edit */}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        <div className="border-t p-4">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-48" />
+            <div className="flex gap-1">
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+              <Skeleton className="h-8 w-8" />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -55,8 +55,8 @@ export const updateKajur = async (payload) => {
     // Tambahkan data posisi tanda tangan jika ada
     if (signature_top !== undefined) updateData.signature_top = signature_top;
     if (signature_left !== undefined) updateData.signature_left = signature_left;
-    if (signature_height !== undefined) updateData.signature_height = signature_height;
-    if (signature_width !== undefined) updateData.signature_width = signature_width;
+    if (signature_height !== undefined) updateData.signature_height = Math.max(50, signature_height);
+    if (signature_width !== undefined) updateData.signature_width = Math.max(100, signature_width);
 
     if (existing) {
       const result = await db
@@ -73,8 +73,8 @@ export const updateKajur = async (payload) => {
       ...updateData,
       signature_top: signature_top || 0,
       signature_left: signature_left || 0,
-      signature_height: signature_height || 100,
-      signature_width: signature_width || 200,
+      signature_height: Math.max(50, signature_height || 100),
+      signature_width: Math.max(100, signature_width || 200),
       created_at: new Date(),
     };
 
@@ -98,10 +98,17 @@ export const updateKajurFromForm = async (prevState, formData) => {
     const nama = formData.get("nama")?.toString() || "";
     const nip = formData.get("nip")?.toString() || "";
     const file = formData.get("signature");
-    const signature_top = parseInt(formData.get("signature_top")?.toString() || "0");
-    const signature_left = parseInt(formData.get("signature_left")?.toString() || "0");
-    const signature_height = parseInt(formData.get("signature_height")?.toString() || "100");
-    const signature_width = parseInt(formData.get("signature_width")?.toString() || "200");
+
+    // Parse and validate signature position values
+    let signature_top = parseInt(formData.get("signature_top")?.toString() || "0");
+    let signature_left = parseInt(formData.get("signature_left")?.toString() || "0");
+    let signature_height = parseInt(formData.get("signature_height")?.toString() || "100");
+    let signature_width = parseInt(formData.get("signature_width")?.toString() || "200");
+
+    // Apply minimum values to prevent invalid sizes (position can be negative)
+    signature_height = Math.max(50, signature_height);
+    signature_width = Math.max(100, signature_width);
+    // signature_top and signature_left can be negative for flexible positioning
 
     if (!nama || !nama.trim()) {
       throw new Error("Nama kajur wajib diisi");
@@ -199,6 +206,11 @@ export const updateSignaturePosition = async (payload) => {
       throw new Error("Semua field posisi tanda tangan harus diisi");
     }
 
+    // Apply minimum values to prevent invalid sizes (position can be negative)
+    const validatedHeight = Math.max(50, signature_height);
+    const validatedWidth = Math.max(100, signature_width);
+    // Use signature_top and signature_left as-is (can be negative)
+
     // Update posisi tanda tangan untuk kajur (asumsi hanya ada 1 kajur)
     const existing = (await db.select().from(kajur).limit(1))[0] || null;
 
@@ -209,10 +221,10 @@ export const updateSignaturePosition = async (payload) => {
     const result = await db
       .update(kajur)
       .set({
-        signature_top,
-        signature_left,
-        signature_height,
-        signature_width,
+        signature_top: signature_top,
+        signature_left: signature_left,
+        signature_height: validatedHeight,
+        signature_width: validatedWidth,
         updated_at: new Date()
       })
       .where(eq(kajur.id, existing.id))

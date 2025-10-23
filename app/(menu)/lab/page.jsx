@@ -26,8 +26,13 @@ async function LabPage() {
   }, 0);
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="container mx-auto px-4 py-2">
+      <h1 className="text-3xl font-bold">Data Laboratorium</h1>
+      <p className="text-gray-500 mb-4">
+        Daftar laboratorium dan kapasitas praktikum
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
         <Card>
           <CardHeader>
             <CardTitle>Jumlah Laboratorium</CardTitle>

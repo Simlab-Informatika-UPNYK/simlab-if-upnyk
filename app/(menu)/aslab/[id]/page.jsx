@@ -11,6 +11,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { getAslabByNim } from "../actions";
 import { getServerSession } from "@/lib/auth-server";
+import { Edit } from "lucide-react";
 
 export default async function Page({ params }) {
   const nim = (await params).id;
@@ -29,7 +30,7 @@ export default async function Page({ params }) {
           {session.user.role === "admin" && (
             <Button className="ms-auto" variant="outline" size="icon">
               <Link href={`/aslab/${nim}/edit`}>
-                <Pencil className="h-4 w-4" />
+                <Edit className="h-4 w-4" />
               </Link>
             </Button>
           )}

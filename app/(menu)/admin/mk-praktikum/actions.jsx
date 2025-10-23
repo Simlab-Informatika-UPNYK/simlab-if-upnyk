@@ -76,7 +76,7 @@ export async function createMk(formData) {
 
     const [data] = await db.insert(mata_kuliah_praktikum).values(mkData).returning();
 
-    return data;
+    return { success: true, data };
   } catch (error) {
     const errorMessage = translatePostgresError(error);
     throw new Error(errorMessage);
@@ -91,7 +91,7 @@ export async function editMk(id, formData) {
       const mkData = {
         kode_mk: validatedData.kode_mk,
         nama: validatedData.nama,
-        slug: slugify(validatedData.Nama),
+        slug: slugify(validatedData.nama),
       };
 
       const [data] = await tx

@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { getOneUser } from "../actions";
+import { Edit } from "lucide-react";
 
 export default async function UserDetailPage({ params }) {
   const slug = (await params).id;
@@ -43,7 +44,7 @@ export default async function UserDetailPage({ params }) {
         <div className="flex gap-2">
           <Link href={`/user/${user.slug}/edit`}>
             <Button variant="outline" size="icon">
-              <Pencil className="h-4 w-4" />
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
           <DropdownMenu>

@@ -232,7 +232,9 @@ const getPeriodFromCourses = (courses) => {
 // Komponen Sertifikat PDF
 const SertifikatPDF = ({ data = {}, kajur }) => {
   // Transform data aslab ke format yang dibutuhkan template sertifikat
-  console.log('ada data', kajur);
+  console.log('SertifikatPDF - kajur data:', kajur);
+  console.log('SertifikatPDF - signaturePreviewUrl:', kajur?.signaturePreviewUrl);
+  console.log('SertifikatPDF - tanda_tangan:', kajur?.tanda_tangan);
   const certificateData = {
     recipientName: data.nama || "NAMA MAHASISWA",
     nim: data.nim || "NIM",
@@ -243,10 +245,10 @@ const SertifikatPDF = ({ data = {}, kajur }) => {
     chairmanName: kajur?.nama || "Dr. Heriyanto, A.Md, S.Kom., M.Cs.",
     chairmanNIP: kajur?.nip || "19770608 202121 1004",
     signatureStyle: {
-      top: Number(kajur?.signature_top ?? 0),
-      left: Number(kajur?.signature_left ?? 0),
-      height: Number(kajur?.signature_height ?? 100),
-      width: Number(kajur?.signature_width ?? 200),
+      top: Number(kajur?.signatureStyle?.top ?? kajur?.signature_top ?? 0),
+      left: Number(kajur?.signatureStyle?.left ?? kajur?.signature_left ?? 0),
+      height: Number(kajur?.signatureStyle?.height ?? kajur?.signature_height ?? 100),
+      width: Number(kajur?.signatureStyle?.width ?? kajur?.signature_width ?? 200),
     },
     courses: data.courses ? data.courses.map((course, index) => ({
       no: index + 1,
@@ -292,9 +294,9 @@ const SertifikatPDF = ({ data = {}, kajur }) => {
         <View style={styles.signatureBlock} fixed>
           <Text style={styles.headerText}>KETUA JURUSAN INFORMATIKA</Text>
           {/* TANDA TANGAN */}
-          {kajur?.tanda_tangan && (
+          {(kajur?.tanda_tangan || kajur?.signaturePreviewUrl) && (
             <Image
-              src={kajur.tanda_tangan}
+              src={kajur?.signaturePreviewUrl || kajur.tanda_tangan}
               style={{
                 position: "absolute",
                 zIndex: -1,

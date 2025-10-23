@@ -11,6 +11,11 @@ async function TahunSemesterPage() {
 
   return (
     <div className="container mx-auto px-4 py-2">
+      <h1 className="text-3xl font-bold">Data Tahun Semester</h1>
+      <p className="text-gray-500 mb-4">
+        Daftar tahun ajaran semester aktif untuk praktikum
+      </p>
+
       <DataTable
         toolbar={
           <Link href="tahun-semester/new">

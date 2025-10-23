@@ -5,6 +5,7 @@ import BackButton from "@/components/back-button";
 import { deleteJadwal, findOneById } from "../actions";
 import { getServerSession } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
+import { Edit } from "lucide-react";
 
 export default async function JadwalDetailPage({ params }) {
   const { id } = await params;
@@ -48,7 +49,7 @@ export default async function JadwalDetailPage({ params }) {
         <div className="flex gap-2">
           <Link href={`/jadwal-praktikum/${jadwal.id}/edit`}>
             <Button variant="outline" size="icon">
-              <Pencil className="h-4 w-4" />
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
           <BackButton />

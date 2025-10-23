@@ -4,7 +4,7 @@ import NavbarLayout from "@/components/navbar-layout";
 const Layout = ({ children }) => {
   return (
     <NavbarLayout title="Jadwal Praktikum">
-      <div className="p-6">{children}</div>
+      <div className="">{children}</div>
     </NavbarLayout>
   );
 };

@@ -33,12 +33,13 @@ export default function KajurClient({ initial, action }) {
     const [namaKajur, setNamaKajur] = useState(initial?.nama || "");
     const [nipKajur, setNipKajur] = useState(initial?.nip || "");
     const [signatureFile, setSignatureFile] = useState(null);
+    const [signaturePreviewUrl, setSignaturePreviewUrl] = useState(null);
     const [editing, setEditing] = useState(false);
     const [signaturePosition, setSignaturePosition] = useState({
         top: initial?.signature_top || 0,
         left: initial?.signature_left || 0,
-        height: initial?.signature_height || 100,
-        width: initial?.signature_width || 200
+        height: Math.max(50, initial?.signature_height || 100),
+        width: Math.max(100, initial?.signature_width || 200)
     });
     const fileInputRef = useRef(null);
 
@@ -50,8 +51,8 @@ export default function KajurClient({ initial, action }) {
         setSignaturePosition({
             top: initial?.signature_top || 0,
             left: initial?.signature_left || 0,
-            height: initial?.signature_height || 100,
-            width: initial?.signature_width || 200
+            height: Math.max(50, initial?.signature_height || 100),
+            width: Math.max(100, initial?.signature_width || 200)
         });
     }, [initial]);
 
@@ -72,6 +73,7 @@ export default function KajurClient({ initial, action }) {
             setDisplayKajur(formState.data || null);
             setEditing(false);
             setSignatureFile(null);
+            setSignaturePreviewUrl(null);
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }
@@ -84,10 +86,27 @@ export default function KajurClient({ initial, action }) {
         }
     }, [formState, toast]);
 
+    // Cleanup URL object when component unmounts or previewUrl changes
+    useEffect(() => {
+        return () => {
+            if (signaturePreviewUrl) {
+                console.log('KajurClient - Revoking signature preview URL:', signaturePreviewUrl);
+                URL.revokeObjectURL(signaturePreviewUrl);
+            }
+        };
+    }, [signaturePreviewUrl]);
+
+    // Debug: Track signature changes
+    useEffect(() => {
+        console.log('KajurClient - signaturePreviewUrl changed:', signaturePreviewUrl);
+        console.log('KajurClient - signatureFile:', signatureFile);
+    }, [signaturePreviewUrl, signatureFile]);
+
     const handleFileChange = (e) => {
         const f = e.target.files?.[0] ?? null;
         if (!f) {
             setSignatureFile(null);
+            setSignaturePreviewUrl(null);
             return;
         }
 
@@ -98,10 +117,15 @@ export default function KajurClient({ initial, action }) {
         }
 
         setSignatureFile(f);
+        // Create preview URL for the uploaded file
+        const previewUrl = URL.createObjectURL(f);
+        console.log('KajurClient - New signature preview URL created:', previewUrl);
+        setSignaturePreviewUrl(previewUrl);
     };
 
     const handleRemoveSignature = () => {
         setSignatureFile(null);
+        setSignaturePreviewUrl(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
@@ -110,17 +134,35 @@ export default function KajurClient({ initial, action }) {
             setNamaKajur(displayKajur?.nama || "");
             setNipKajur(displayKajur?.nip || "");
             setSignatureFile(null);
+            setSignaturePreviewUrl(null);
             if (fileInputRef.current) fileInputRef.current.value = "";
+            // Reset signature position to saved values
+            setSignaturePosition({
+                top: displayKajur?.signature_top || 0,
+                left: displayKajur?.signature_left || 0,
+                height: Math.max(50, displayKajur?.signature_height || 100),
+                width: Math.max(100, displayKajur?.signature_width || 200)
+            });
         }
         setEditing((prev) => !prev);
+    };
+
+    const handleSignaturePositionChange = (newPosition) => {
+        // Validate and clamp values (position can be negative, but size must be positive)
+        const validatedPosition = {
+            top: newPosition.top || 0,
+            left: newPosition.left || 0,
+            height: Math.max(50, newPosition.height || 100),
+            width: Math.max(100, newPosition.width || 200)
+        };
+        setSignaturePosition(validatedPosition);
     };
 
     const currentSignatureUrl = signatureFile ? null : displayKajur?.tanda_tangan || null;
 
     return (
-        <div className="container mx-auto p-6">
+        <div>
             <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-bold">Konfigurasi Kepala Jurusan</h1>
                 <div className="flex gap-4">
                     <Button type="button" onClick={handleToggleEditing}>{editing ? "Batal" : "Edit"}</Button>
                     <BackButton />
@@ -165,23 +207,29 @@ export default function KajurClient({ initial, action }) {
                                         )}
                                     </div>
 
-                                    <div className="mt-4 space-y-2 text-sm text-gray-500">
-                                        {signatureFile ? (
-                                            <div>Tanda tangan siap diunggah: {signatureFile.name}</div>
+                                    <div className="mt-4 space-y-2">
+                                        {signatureFile && signaturePreviewUrl ? (
+                                            <div className="flex flex-col gap-2">
+                                                <span className="text-sm text-gray-600">Preview tanda tangan:</span>
+                                                <img src={signaturePreviewUrl} alt="preview tanda tangan" className="h-24 w-auto object-contain border rounded p-2 bg-gray-50" />
+                                                <span className="text-xs text-gray-500">Tanda tangan siap diunggah: {signatureFile.name}</span>
+                                            </div>
                                         ) : currentSignatureUrl ? (
                                             <div className="flex flex-col gap-2">
-                                                <span>Tanda tangan saat ini:</span>
+                                                <span className="text-sm text-gray-600">Tanda tangan saat ini:</span>
                                                 <img src={currentSignatureUrl} alt="tanda tangan" className="h-24 w-auto object-contain border rounded p-2 bg-gray-50" />
                                             </div>
                                         ) : (
-                                            <div>Belum ada tanda tangan diunggah.</div>
+                                            <div className="text-sm text-gray-500">Belum ada tanda tangan diunggah.</div>
                                         )}
                                     </div>
                                 </div>
 
                                 <CertificatePreview
                                     kajur={displayKajur}
-                                    onPositionChange={setSignaturePosition}
+                                    signaturePreviewUrl={signaturePreviewUrl}
+                                    signaturePosition={signaturePosition}
+                                    onPositionChange={handleSignaturePositionChange}
                                 />
 
                                 <div className="mt-4 flex gap-3">

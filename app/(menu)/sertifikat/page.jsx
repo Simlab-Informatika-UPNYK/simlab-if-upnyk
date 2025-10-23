@@ -13,15 +13,14 @@ export default async function CertificatePage() {
 
   if (user?.role === "admin") {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="container mx-auto px-4 py-2">
+        <h1 className="text-3xl font-bold">Kelola Permintaan Sertifikat</h1>
+        <p className="text-gray-500 mb-4">
+          Kelola semua permintaan sertifikat dari asisten laboratorium
+        </p>
+
         <div className="mb-6">
           <div className="flex justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Kelola Permintaan Sertifikat</h1>
-              <p className="text-gray-600 mt-1">
-                Kelola semua permintaan sertifikat dari asisten laboratorium
-              </p>
-            </div>
             <div className="space-y-2">
               <Button asChild>
                 <Link href="/sertifikat/kajur" className="inline-flex items-center px-4 py-2">
@@ -47,14 +46,19 @@ export default async function CertificatePage() {
 
   if (user?.role === "aslab") {
     return (
-      <div className="container mx-auto p-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="container mx-auto px-4 py-2">
+        <h1 className="text-3xl font-bold">Sertifikat Saya</h1>
+        <p className="text-gray-500 mb-4">
+          Daftar sertifikat yang dapat Anda unduh
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
-            <h3 className="font-semibold text-sm text-gray-600">Nama</h3>
+            <h3 className="font-semibold text-sm text-gray-600">Nama Kepala Jurusan</h3>
             <p className="text-lg mt-1">{kajur?.nama || "Belum diatur"}</p>
           </div>
           <div>
-            <h3 className="font-semibold text-sm text-gray-600">NIP</h3>
+            <h3 className="font-semibold text-sm text-gray-600">NIP Kepala Jurusan</h3>
             <p className="text-lg mt-1">{kajur?.nip || "Belum diatur"}</p>
           </div>
         </div>
@@ -64,10 +68,10 @@ export default async function CertificatePage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-4 py-2">
       <div className="text-center p-6">
-        <h1 className="text-2xl font-bold mb-4">Akses Ditolak</h1>
-        <p className="text-gray-600">Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+        <h1 className="text-3xl font-bold mb-4">Akses Ditolak</h1>
+        <p className="text-gray-500">Anda tidak memiliki izin untuk mengakses halaman ini.</p>
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Pencil } from "lucide-react";
 import { DeleteButton } from "./delete-button";
+import { Edit } from "lucide-react";
 
 export const columns = [
   {
@@ -36,20 +37,21 @@ export const columns = [
     accessorKey: "kalab",
     header: "Kepala Lab",
   },
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => {
-  //     const lab = row.original;
-  //     return (
-  //       <div className="flex gap-2">
-  //         <Link href={`/admin/inventaris-lab/${lab.slug}/edit`}>
-  //           <Button variant="ghost" size="sm">
-  //             <Pencil className="h-4 w-4" />
-  //           </Button>
-  //         </Link>
-  //         <DeleteButton id={lab.id} labId={lab.id} />
-  //       </div>
-  //     );
-  //   },
-  // },
+  {
+    id: "actions",
+    header: () => <div className="text-right px-4">Aksi</div>,
+    cell: ({ row }) => {
+      const lab = row.original;
+      return (
+        <div className="flex gap-2 ms-auto w-fit">
+          <Link href={`/admin/inventaris-lab/${lab.slug}/edit`}>
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </Link>
+          <DeleteButton id={lab.id} labId={lab.id} />
+        </div>
+      );
+    },
+  },
 ];

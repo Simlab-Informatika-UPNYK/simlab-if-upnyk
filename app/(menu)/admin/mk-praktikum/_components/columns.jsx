@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "./delete-button";
+import { Edit } from "lucide-react";
 
 export const columns = [
   {
@@ -27,16 +28,21 @@ export const columns = [
   },
   {
     id: "actions",
+    header: () => <div className="text-right px-4">Aksi</div>,
     cell: ({ row }) => {
       const mk = row.original;
 
       return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 ms-auto w-fit">
           <Link href={`/admin/mk-praktikum/${mk.slug}/edit`}>
-            <Button variant="outline" size="sm">
-              Edit
+            <Button
+              variant="ghost"
+              size="icon"
+            >
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
+
           <DeleteButton id={mk.id} />
         </div>
       );

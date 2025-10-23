@@ -27,7 +27,12 @@ async function DosenPengampuPage() {
   const data = await getAllDosen();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4 py-2">
+      <h1 className="text-3xl font-bold">Data Dosen Pengampu</h1>
+      <p className="text-gray-500 mb-4">
+        Daftar dosen pengampu mata kuliah praktikum
+      </p>
+
       <DataTable
         toolbar={
           <Link href="/admin/dosen-pengampu/new">

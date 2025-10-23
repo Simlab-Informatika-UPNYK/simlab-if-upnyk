@@ -8,7 +8,12 @@ export default async function Page() {
   const { user } = await getServerSession();
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto px-4 py-2">
+      <h1 className="text-3xl font-bold">Data Asisten Laboratorium</h1>
+      <p className="text-gray-500 mb-4">
+        Daftar asisten laboratorium informatika UPNYK
+      </p>
+
       <div className="relative w-[0] min-w-full overflow-x-auto">
         <DataTable role={user?.role} columns={columns} data={data} />
       </div>

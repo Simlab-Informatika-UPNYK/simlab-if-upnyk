@@ -8,9 +8,9 @@ async function InventarisLabPage() {
 
   return (
     <div className="container mx-auto px-4 py-2">
-      <h1 className="text-3xl font-bold">Inventaris Laboratorium</h1>
+      <h1 className="text-3xl font-bold">Data Inventaris Laboratorium</h1>
       <p className="text-gray-500 mb-4">
-        Daftar Laboratorium Informatika UPNYK
+        Daftar inventaris dan barang laboratorium informatika
       </p>
 
       <DataTable

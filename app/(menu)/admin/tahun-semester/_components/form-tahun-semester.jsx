@@ -26,7 +26,6 @@ export function FormTahunSemester({ initialData, onSubmitHandler, successMessage
       toast({
         title: "Berhasil",
         description: successMessage,
-        variant: "success",
       });
 
       if (successRedirect) {

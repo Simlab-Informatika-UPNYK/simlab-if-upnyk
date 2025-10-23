@@ -43,8 +43,8 @@ export function DeleteButton({ slug }) {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button variant="destructive" size="sm">
-          <Trash2 className="h-4 w-4" />
+        <Button variant="ghost" size="sm">
+          <Trash2 className="h-4 w-4 text-red-500" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>

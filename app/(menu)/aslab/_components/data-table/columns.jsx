@@ -55,6 +55,7 @@ export const columns = [
   },
   {
     id: "actions",
+    header: () => <div className="text-right px-4">Aksi</div>,
     enableHiding: false,
     cell: ({ row }) => {
       return <ActionCell row={row.original} />;

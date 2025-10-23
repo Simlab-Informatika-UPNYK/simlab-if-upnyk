@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown, MoreHorizontal, Pencil } from "lucide-react";
 import Link from "next/link";
 import { DeleteButton } from "./delete-button";
+import { Edit } from "lucide-react";
 
 export const columns = [
   {
@@ -30,14 +31,15 @@ export const columns = [
   },
   {
     id: "actions",
+    header: () => <div className="text-right px-4">Aksi</div>,
     cell: ({ row }) => {
       const dosen = row.original;
 
       return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 ms-auto w-fit">
           <Link href={`/admin/dosen-pengampu/${dosen.slug}/edit`}>
-            <Button variant="ghost" size="sm">
-              <Pencil className="h-4 w-4" />
+            <Button variant="ghost" size="icon">
+              <Edit className="h-4 w-4" />
             </Button>
           </Link>
           <DeleteButton slug={dosen.slug} />

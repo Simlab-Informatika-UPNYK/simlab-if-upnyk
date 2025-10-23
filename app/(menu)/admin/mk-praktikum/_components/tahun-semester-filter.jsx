@@ -13,7 +13,7 @@ import {
 export default function TahunSemesterFilter({ tahunSemester, onTahunSemesterChange, defaultValue }) {
   return (
     <Select onValueChange={onTahunSemesterChange} defaultValue={defaultValue}>
-      <SelectTrigger className="w-[250px]">
+      <SelectTrigger className="">
         <SelectValue placeholder="Pilih Tahun Semester" />
       </SelectTrigger>
       <SelectContent>

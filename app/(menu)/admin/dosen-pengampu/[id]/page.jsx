@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { DeleteButton } from "../_components/delete-button"
+import { Edit } from "lucide-react"
 
 export default async function DosenDetailPage({ params }) {
   const dosen = await getOneDosen(params.id)
@@ -18,7 +19,7 @@ export default async function DosenDetailPage({ params }) {
         <div className="flex gap-2">
           <Link href={`/admin/dosen-pengampu/${params.id}/edit`}>
             <Button variant="outline" size="sm">
-              <Pencil className="h-4 w-4 mr-2" />
+              <Edit className="h-4 w-4 mr-2" />
               Edit
             </Button>
           </Link>
